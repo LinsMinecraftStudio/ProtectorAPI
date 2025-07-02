@@ -1,11 +1,13 @@
 package io.github.lijinhong11.protector.api;
 
 import com.google.common.base.Preconditions;
-import org.bukkit.Bukkit;
+import io.github.lijinhong11.protector.api.flag.CommonFlags;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ProtectorAPI {
@@ -31,5 +33,21 @@ public class ProtectorAPI {
         }
 
         return null;
+    }
+
+    public static boolean allowBreak(Player player) {
+        Location location = player.getLocation();
+        IProtectionModule module = findModule(location);
+        if (module == null) {
+            for (IProtectionModule m2 : modules) {
+                if (m2.isSupportGlobalFlags()) {
+                    return (boolean) Objects.requireNonNull(m2.getGlobalFlag(CommonFlags.BREAK, location.getWorld().getName())).getValue();
+                }
+            }
+
+            return true;
+        }
+
+        return (boolean) Objects.requireNonNull(module.getProtectionRangeInfo(location)).getFlagState(CommonFlags.BREAK).getValue();
     }
 }

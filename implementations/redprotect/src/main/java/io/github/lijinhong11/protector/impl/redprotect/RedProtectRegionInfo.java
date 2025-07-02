@@ -3,13 +3,17 @@ package io.github.lijinhong11.protector.impl.redprotect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import io.github.lijinhong11.protector.api.ProtectionRangeInfo;
 import io.github.lijinhong11.protector.api.convertions.FlagMap;
+import io.github.lijinhong11.protector.api.flag.CommonFlags;
 import io.github.lijinhong11.protector.api.flag.FlagState;
+import io.github.lijinhong11.protector.api.flag.IFlagState;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class RedProtectRegionInfo implements ProtectionRangeInfo {
     private final Region region;
@@ -19,29 +23,44 @@ public class RedProtectRegionInfo implements ProtectionRangeInfo {
     }
 
     @Override
-    public Map<String, FlagState> getFlags() {
-        return new FlagMap(region.getFlags(), o -> {
+    public Map<String, IFlagState<?>> getFlags() {
+        return Collections.unmodifiableMap(new FlagMap(region.getFlags(), o -> {
            if (o instanceof Boolean b) {
                return FlagState.fromNullableBoolean(b);
            } else {
-               return FlagState.NULL;
+               return FlagState.of(FlagState.FlagType.OBJECT, o);
            }
-        });
+        }));
     }
 
     @Override
-    public FlagState getFlagState(String flag) {
+    public IFlagState<?> getFlagState(String flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public FlagState getFlagState(String flag, OfflinePlayer player) {
-        return FlagState.fromBoolean(region.getFlagBool(flag));
+    public IFlagState<?> getFlagState(String flag, OfflinePlayer player) {
+        return Objects.requireNonNullElse(getFlags().get(flag), FlagState.UNSUPPORTED);
+    }
+
+    @Override
+    public IFlagState<?> getFlagState(CommonFlags flag) {
+        return getFlagState(flag.getForRedProtect(), null);
+    }
+
+    @Override
+    public IFlagState<?> getFlagState(CommonFlags flag, OfflinePlayer player) {
+        return getFlagState(flag.getForRedProtect(), player);
     }
 
     @Override
     public List<OfflinePlayer> getAdmins() {
         return region.getAdmins().stream().map(r -> Bukkit.getOfflinePlayer(r.getUUID())).toList();
+    }
+
+    @Override
+    public List<OfflinePlayer> getMembers() {
+        return region.getMembers().stream().map(r -> Bukkit.getOfflinePlayer(r.getUUID())).toList();
     }
 
     @Override

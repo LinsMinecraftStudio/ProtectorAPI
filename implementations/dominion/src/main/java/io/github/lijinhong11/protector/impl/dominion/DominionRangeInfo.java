@@ -8,14 +8,14 @@ import cn.lunadeer.dominion.api.dtos.flag.Flags;
 import cn.lunadeer.dominion.api.dtos.flag.PriFlag;
 import io.github.lijinhong11.protector.api.ProtectionRangeInfo;
 import io.github.lijinhong11.protector.api.convertions.FlagMap;
+import io.github.lijinhong11.protector.api.flag.CommonFlags;
 import io.github.lijinhong11.protector.api.flag.FlagState;
+import io.github.lijinhong11.protector.api.flag.IFlagState;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DominionRangeInfo implements ProtectionRangeInfo {
     private final DominionDTO dominion;
@@ -25,34 +25,61 @@ public class DominionRangeInfo implements ProtectionRangeInfo {
     }
 
     @Override
-    public Map<String, FlagState> getFlags() {
-        Map<String, FlagState> flagMap = new FlagMap();
+    public Map<String, IFlagState<?>> getFlags() {
+        FlagMap flagMap = new FlagMap();
         dominion.getEnvironmentFlagValue().forEach((f, b) -> flagMap.put(f.getFlagName(), FlagState.fromBoolean(b)));
         dominion.getGuestPrivilegeFlagValue().forEach((f, b) -> flagMap.put(f.getFlagName(), FlagState.fromBoolean(b)));
-        return flagMap;
+        return Collections.unmodifiableMap(flagMap);
     }
 
     @Override
-    public FlagState getFlagState(String flag) {
+    public IFlagState<?> getFlagState(String flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public FlagState getFlagState(String flag, OfflinePlayer player) {
+    public IFlagState<?> getFlagState(String flag, OfflinePlayer player) {
         Flag dominionFlag = Flags.getFlag(flag);
         if (dominionFlag == null) {
-            return FlagState.NULL;
+            return FlagState.UNSUPPORTED;
         }
 
         if (dominionFlag instanceof EnvFlag ef) {
-            return FlagState.fromBoolean(dominion.getEnvFlagValue(ef));
+            return FlagState.fromNullableBoolean(dominion.getEnvFlagValue(ef));
         }
 
         if (dominionFlag instanceof PriFlag pf) {
-            return FlagState.fromBoolean(dominion.getGuestFlagValue(pf));
+            if (player == null) {
+                return FlagState.fromNullableBoolean(dominion.getGuestFlagValue(pf));
+            } else {
+                if (player.getUniqueId() == dominion.getOwner()) {
+                    return FlagState.fromNullableBoolean(dominion.getGuestFlagValue(pf));
+                }
+
+                Optional<MemberDTO> memberDTO = dominion.getMembers()
+                        .stream()
+                        .filter(m -> m.getPlayerUUID().equals(player.getUniqueId()))
+                        .findFirst();
+
+                if (memberDTO.isEmpty()) {
+                    return FlagState.fromNullableBoolean(dominion.getGuestFlagValue(pf));
+                }
+
+                return FlagState.fromNullableBoolean(memberDTO.get().getFlagValue(pf));
+            }
         }
 
-        return FlagState.NULL;
+        return FlagState.UNSUPPORTED;
+    }
+
+    @Override
+    public IFlagState<?> getFlagState(CommonFlags flag) {
+        return getFlagState(flag.getForDominion());
+    }
+
+    @Override
+    public IFlagState<?> getFlagState(CommonFlags flag, OfflinePlayer player) {
+        return getFlagState(flag.getForDominion(), player);
     }
 
     @Override
@@ -64,6 +91,17 @@ public class DominionRangeInfo implements ProtectionRangeInfo {
             }
         }
         return admins;
+    }
+
+    @Override
+    public List<OfflinePlayer> getMembers() {
+        List<OfflinePlayer> members = new ArrayList<>();
+        for (MemberDTO member : dominion.getMembers()) {
+            if (!member.getFlagValue(Flags.ADMIN)) {
+                members.add(Bukkit.getOfflinePlayer(member.getPlayerUUID()));
+            }
+        }
+        return members;
     }
 
     @Override
