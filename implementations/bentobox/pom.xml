@@ -11,7 +11,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>protectorapi-residence</artifactId>
+    <artifactId>protectorapi-bentobox</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -25,9 +25,9 @@
             <artifactId>paper-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.zrips</groupId>
-            <artifactId>Residence</artifactId>
-            <version>5.1.7.5</version>
+            <groupId>world.bentobox</groupId>
+            <artifactId>bentobox</artifactId>
+            <version>1.21.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

@@ -12,18 +12,25 @@
     <modules>
         <module>common</module>
 
-        <module>implementations/residence</module>
+        <module>implementations/bentobox</module>
         <module>implementations/dominion</module>
         <module>implementations/redprotect</module>
+        <module>implementations/residence</module>
+        <module>implementations/worldguard</module>
     </modules>
 
     <properties>
+        <revision>1.0-SNAPSHOT</revision>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <repositories>
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
+        </repository>
         <repository>
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
