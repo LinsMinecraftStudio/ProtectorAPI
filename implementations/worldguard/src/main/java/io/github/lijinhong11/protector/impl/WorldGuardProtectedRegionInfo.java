@@ -9,6 +9,7 @@ import io.github.lijinhong11.protector.api.flag.FlagState;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class WorldGuardProtectedRegionInfo implements ProtectionRangeInfo {
     }
 
     @Override
-    public Map<String, IFlagState<?>> getFlags() {
+    public @NotNull Map<String, IFlagState<?>> getFlags() {
         Map<String, IFlagState<?>> flagMap = new FlagMap();
         for (Map.Entry<Flag<?>, Object> entry : protectedRegion.getFlags().entrySet()) {
             Flag<?> flag = entry.getKey();
@@ -37,22 +38,22 @@ public class WorldGuardProtectedRegionInfo implements ProtectionRangeInfo {
     }
 
     @Override
-    public IFlagState<?> getFlagState(String flag) {
+    public IFlagState<?> getFlagState(@NotNull String flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public IFlagState<?> getFlagState(String flag, OfflinePlayer player) {
+    public IFlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
         return getFlags().get(flag);
     }
 
     @Override
-    public IFlagState<?> getFlagState(CommonFlags flag) {
+    public IFlagState<?> getFlagState(@NotNull CommonFlags flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public IFlagState<?> getFlagState(CommonFlags flag, OfflinePlayer player) {
+    public IFlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
         if (flag.getForWorldGuard() == null) {
             return FlagState.UNSUPPORTED;
         }

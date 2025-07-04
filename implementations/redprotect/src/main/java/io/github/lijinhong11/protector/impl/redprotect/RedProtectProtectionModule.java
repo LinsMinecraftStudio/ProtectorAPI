@@ -57,7 +57,7 @@ public class RedProtectProtectionModule implements IProtectionModule {
     }
 
     @Override
-    public @Nullable ProtectionRangeInfo getProtectionRangeInfo(@Nullable Location location) {
+    public @Nullable ProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location) {
         Region region = api.getRegion(location);
         if (region == null) {
             return null;

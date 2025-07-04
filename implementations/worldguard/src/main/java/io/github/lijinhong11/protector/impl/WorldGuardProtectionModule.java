@@ -60,7 +60,7 @@ public class WorldGuardProtectionModule implements IProtectionModule {
     }
 
     @Override
-    public @Nullable ProtectionRangeInfo getProtectionRangeInfo(@Nullable Location location) {
+    public @Nullable ProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location) {
         ProtectedRegion[] regions = api.createQuery().getApplicableRegions(toWELocation(location)).getRegions().toArray(ProtectedRegion[]::new);
         if (regions.length > 0) {
             return new WorldGuardProtectedRegionInfo(regions[0]);

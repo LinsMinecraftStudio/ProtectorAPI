@@ -10,6 +10,7 @@ import io.github.lijinhong11.protector.api.ProtectionRangeInfo;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -26,27 +27,27 @@ public class ResidenceInfo implements ProtectionRangeInfo {
     }
 
     @Override
-    public Map<String, IFlagState<?>> getFlags() {
+    public @NotNull Map<String, IFlagState<?>> getFlags() {
         return Collections.unmodifiableMap(new FlagMap(permissions.getFlags(), FlagState::fromNullableBoolean));
     }
 
     @Override
-    public IFlagState<?> getFlagState(String flag) {
+    public IFlagState<?> getFlagState(@NotNull String flag) {
         return FlagState.fromNullableBoolean(permissions.getFlags().get(flag));
     }
 
     @Override
-    public IFlagState<?> getFlagState(String flag, OfflinePlayer player) {
+    public IFlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
         return FlagState.fromNullableBoolean(permissions.getPlayerFlags(player.getName()).get(flag));
     }
 
     @Override
-    public IFlagState<?> getFlagState(CommonFlags flag) {
+    public IFlagState<?> getFlagState(@NotNull CommonFlags flag) {
         return getFlagState(flag.getForResidence());
     }
 
     @Override
-    public IFlagState<?> getFlagState(CommonFlags flag, OfflinePlayer player) {
+    public IFlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
         return getFlagState(flag.getForResidence(), player);
     }
 

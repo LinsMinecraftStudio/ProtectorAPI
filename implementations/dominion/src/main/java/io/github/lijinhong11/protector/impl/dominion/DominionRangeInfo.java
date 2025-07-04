@@ -13,6 +13,7 @@ import io.github.lijinhong11.protector.api.flag.FlagState;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -25,7 +26,7 @@ public class DominionRangeInfo implements ProtectionRangeInfo {
     }
 
     @Override
-    public Map<String, IFlagState<?>> getFlags() {
+    public @NotNull Map<String, IFlagState<?>> getFlags() {
         FlagMap flagMap = new FlagMap();
         dominion.getEnvironmentFlagValue().forEach((f, b) -> flagMap.put(f.getFlagName(), FlagState.fromBoolean(b)));
         dominion.getGuestPrivilegeFlagValue().forEach((f, b) -> flagMap.put(f.getFlagName(), FlagState.fromBoolean(b)));
@@ -33,12 +34,12 @@ public class DominionRangeInfo implements ProtectionRangeInfo {
     }
 
     @Override
-    public IFlagState<?> getFlagState(String flag) {
+    public IFlagState<?> getFlagState(@NotNull String flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public IFlagState<?> getFlagState(String flag, OfflinePlayer player) {
+    public IFlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
         Flag dominionFlag = Flags.getFlag(flag);
         if (dominionFlag == null) {
             return FlagState.UNSUPPORTED;
@@ -73,12 +74,12 @@ public class DominionRangeInfo implements ProtectionRangeInfo {
     }
 
     @Override
-    public IFlagState<?> getFlagState(CommonFlags flag) {
+    public IFlagState<?> getFlagState(@NotNull CommonFlags flag) {
         return getFlagState(flag.getForDominion());
     }
 
     @Override
-    public IFlagState<?> getFlagState(CommonFlags flag, OfflinePlayer player) {
+    public IFlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
         return getFlagState(flag.getForDominion(), player);
     }
 

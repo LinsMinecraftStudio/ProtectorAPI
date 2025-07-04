@@ -45,7 +45,7 @@ public class ResidenceProtectionModule implements IProtectionModule {
     }
 
     @Override
-    public @Nullable ProtectionRangeInfo getProtectionRangeInfo(@Nullable Location location) {
+    public @Nullable ProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location) {
         ClaimedResidence res = ResidenceApi.getResidenceManager().getByLoc(location);
         if (res == null) {
             return null;

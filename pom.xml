@@ -11,12 +11,15 @@
 
     <modules>
         <module>common</module>
+        <module>plugin</module>
 
         <module>implementations/bentobox</module>
         <module>implementations/dominion</module>
         <module>implementations/redprotect</module>
         <module>implementations/residence</module>
         <module>implementations/worldguard</module>
+
+        <module>block-implementations/blocklocker</module>
     </modules>
 
     <properties>

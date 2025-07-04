@@ -1,0 +1,7 @@
+name: ProtectorAPI
+main: me.mmmjjkx.protectorapi.ProtectorAPIPlugin
+version: ${project.version}
+authors: [mmmjjkx]
+api-version: 1.18
+description: A simple API for protection plugins
+softdepend: ["WorldGuard", "Residence", "Dominion", "BentoBox", "RedProtect"]

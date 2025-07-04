@@ -26,7 +26,7 @@ Add the dependency to your project
   <scope>provided</scope>  
 </dependency>
 ```
-**Gradle**
+**Gradle**  
 Groovy DSL:
 ```groovy
 dependencies {

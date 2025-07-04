@@ -13,12 +13,14 @@ import java.util.List;
 public interface IProtectionModule {
     /**
      * Get the name of the corresponding plugin
+     *
      * @return the name of the corresponding plugin
      */
     String getPluginName();
 
     /**
      * Check if the player is in the protection range
+     *
      * @param player the player
      * @return true if the player is in the protection range
      */
@@ -26,6 +28,7 @@ public interface IProtectionModule {
 
     /**
      * Get the protection range info of the player's location
+     *
      * @param player the player
      * @return the protection range info
      */
@@ -41,6 +44,7 @@ public interface IProtectionModule {
 
     /**
      * Check if the location is in the protection range
+     *
      * @param location the location
      * @return true if the location is in the protection range
      */
@@ -48,10 +52,11 @@ public interface IProtectionModule {
 
     /**
      * Get the protection range info of the location
+     *
      * @param location the location
      * @return the protection range info (if the location is not in the protection range, return null)
      */
-    @Nullable ProtectionRangeInfo getProtectionRangeInfo(@Nullable Location location);
+    @Nullable ProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location);
 
     /**
      * Whether the module supports global flags
@@ -71,6 +76,7 @@ public interface IProtectionModule {
 
     /**
      * Get the global flag
+     *
      * @param flag the flag
      * @param world the world
      * @return the global flag
@@ -80,6 +86,7 @@ public interface IProtectionModule {
 
     /**
      * Set the global flag
+     *
      * @param flag the flag
      * @throws UnsupportedOperationException if the module does not support global flags
      */
