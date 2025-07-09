@@ -6,16 +6,15 @@ import com.bekvon.bukkit.residence.protection.ResidencePermissions;
 import io.github.lijinhong11.protector.api.convertions.FlagMap;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
 import io.github.lijinhong11.protector.api.flag.FlagState;
-import io.github.lijinhong11.protector.api.ProtectionRangeInfo;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
+import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 public class ResidenceInfo implements ProtectionRangeInfo {
     private final ClaimedResidence residence;
@@ -38,7 +37,8 @@ public class ResidenceInfo implements ProtectionRangeInfo {
 
     @Override
     public IFlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
-        return FlagState.fromNullableBoolean(permissions.getPlayerFlags(player.getName()).get(flag));
+        return FlagState.fromNullableBoolean(
+                permissions.getPlayerFlags(player.getName()).get(flag));
     }
 
     @Override
@@ -53,12 +53,16 @@ public class ResidenceInfo implements ProtectionRangeInfo {
 
     @Override
     public List<OfflinePlayer> getAdmins() {
-        return getMembers().stream().filter(r -> permissions.playerHas(r.getName(), Flags.admin, false)).toList();
+        return getMembers().stream()
+                .filter(r -> permissions.playerHas(r.getName(), Flags.admin, false))
+                .toList();
     }
 
     @Override
     public List<OfflinePlayer> getMembers() {
-        return residence.getTrustedPlayers().stream().map(r -> Bukkit.getOfflinePlayer(r.getUniqueId())).toList();
+        return residence.getTrustedPlayers().stream()
+                .map(r -> Bukkit.getOfflinePlayer(r.getUniqueId()))
+                .toList();
     }
 
     @Override

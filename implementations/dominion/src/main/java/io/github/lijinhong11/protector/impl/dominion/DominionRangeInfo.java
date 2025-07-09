@@ -6,17 +6,16 @@ import cn.lunadeer.dominion.api.dtos.flag.EnvFlag;
 import cn.lunadeer.dominion.api.dtos.flag.Flag;
 import cn.lunadeer.dominion.api.dtos.flag.Flags;
 import cn.lunadeer.dominion.api.dtos.flag.PriFlag;
-import io.github.lijinhong11.protector.api.ProtectionRangeInfo;
 import io.github.lijinhong11.protector.api.convertions.FlagMap;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
 import io.github.lijinhong11.protector.api.flag.FlagState;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
+import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
+import java.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
 
 public class DominionRangeInfo implements ProtectionRangeInfo {
     private final DominionDTO dominion;
@@ -57,8 +56,7 @@ public class DominionRangeInfo implements ProtectionRangeInfo {
                     return FlagState.fromNullableBoolean(dominion.getGuestFlagValue(pf));
                 }
 
-                Optional<MemberDTO> memberDTO = dominion.getMembers()
-                        .stream()
+                Optional<MemberDTO> memberDTO = dominion.getMembers().stream()
                         .filter(m -> m.getPlayerUUID().equals(player.getUniqueId()))
                         .findFirst();
 

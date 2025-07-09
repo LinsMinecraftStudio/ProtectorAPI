@@ -1,22 +1,19 @@
 package io.github.lijinhong11.protector.impl.bentobox;
 
-import io.github.lijinhong11.protector.api.IProtectionModule;
-import io.github.lijinhong11.protector.api.ProtectionRangeInfo;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import world.bentobox.bentobox.BentoBox;
-import world.bentobox.bentobox.database.objects.Island;
-import world.bentobox.bentobox.managers.IslandWorldManager;
-
+import io.github.lijinhong11.protector.api.protection.IProtectionModule;
+import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.database.objects.Island;
 
 public class BentoBoxProtectionModule implements IProtectionModule {
     private final BentoBox bentoBox;
@@ -26,27 +23,16 @@ public class BentoBoxProtectionModule implements IProtectionModule {
     }
 
     @Override
-    public String getPluginName() {
+    public @NotNull String getPluginName() {
         return "BentoBox";
     }
 
     @Override
-    public boolean isInProtectionRange(Player player) {
-        return isInProtectionRange(player.getLocation());
-    }
-
-    @Override
-    public @Nullable ProtectionRangeInfo getProtectionRangeInfo(Player player) {
-        return getProtectionRangeInfo(player.getLocation());
-    }
-
-    @Override
-    public List<? extends ProtectionRangeInfo> getProtectionRangeInfos(OfflinePlayer player) {
+    public List<? extends ProtectionRangeInfo> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
         Collection<Island> islands = bentoBox.getIslands().getIslands();
         if (islands.isEmpty()) {
             return List.of();
         }
-
 
         for (Island island : islands) {
             if (island.getMembers().containsKey(player.getUniqueId())) {
@@ -58,7 +44,7 @@ public class BentoBoxProtectionModule implements IProtectionModule {
     }
 
     @Override
-    public boolean isInProtectionRange(Location location) {
+    public boolean isInProtectionRange(@NotNull Location location) {
         return false;
     }
 

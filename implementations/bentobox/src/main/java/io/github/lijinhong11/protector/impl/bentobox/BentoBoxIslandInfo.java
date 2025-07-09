@@ -1,10 +1,14 @@
 package io.github.lijinhong11.protector.impl.bentobox;
 
-import io.github.lijinhong11.protector.api.ProtectionRangeInfo;
 import io.github.lijinhong11.protector.api.convertions.FlagMap;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
 import io.github.lijinhong11.protector.api.flag.FlagState;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
+import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -15,11 +19,6 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.managers.FlagsManager;
 import world.bentobox.bentobox.managers.RanksManager;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 public class BentoBoxIslandInfo implements ProtectionRangeInfo {
     private final Island island;
@@ -73,15 +72,19 @@ public class BentoBoxIslandInfo implements ProtectionRangeInfo {
 
     @Override
     public List<OfflinePlayer> getAdmins() {
-        return getMembers().stream().filter(m -> {
-            User user = BentoBox.getInstance().getPlayers().getUser(m.getUniqueId());
-            return island.getRank(user) >= RanksManager.SUB_OWNER_RANK;
-        }).toList();
+        return getMembers().stream()
+                .filter(m -> {
+                    User user = BentoBox.getInstance().getPlayers().getUser(m.getUniqueId());
+                    return island.getRank(user) >= RanksManager.SUB_OWNER_RANK;
+                })
+                .toList();
     }
 
     @Override
     public List<OfflinePlayer> getMembers() {
-        return island.getMembers().keySet().stream().map(Bukkit::getOfflinePlayer).toList();
+        return island.getMembers().keySet().stream()
+                .map(Bukkit::getOfflinePlayer)
+                .toList();
     }
 
     @Override

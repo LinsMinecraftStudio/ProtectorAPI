@@ -4,20 +4,18 @@ import br.net.fabiozumbi12.RedProtect.Bukkit.API.RedProtectAPI;
 import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import br.net.fabiozumbi12.RedProtect.Core.config.Category.GlobalFlagsCategory;
-import io.github.lijinhong11.protector.api.IProtectionModule;
-import io.github.lijinhong11.protector.api.ProtectionRangeInfo;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
 import io.github.lijinhong11.protector.api.flag.FlagState;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
+import io.github.lijinhong11.protector.api.protection.IProtectionModule;
+import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RedProtectProtectionModule implements IProtectionModule {
     private final RedProtectAPI api;
@@ -27,22 +25,12 @@ public class RedProtectProtectionModule implements IProtectionModule {
     }
 
     @Override
-    public String getPluginName() {
+    public @NotNull String getPluginName() {
         return "RedProtect";
     }
 
     @Override
-    public boolean isInProtectionRange(Player player) {
-        return isInProtectionRange(player.getLocation());
-    }
-
-    @Override
-    public @Nullable ProtectionRangeInfo getProtectionRangeInfo(Player player) {
-        return getProtectionRangeInfo(player.getLocation());
-    }
-
-    @Override
-    public List<? extends ProtectionRangeInfo> getProtectionRangeInfos(OfflinePlayer player) {
+    public List<? extends ProtectionRangeInfo> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
         List<RedProtectRegionInfo> protectionRangeInfos = new ArrayList<>();
         for (Region region : api.getPlayerRegions(String.valueOf(player.getUniqueId()))) {
             protectionRangeInfos.add(new RedProtectRegionInfo(region));
@@ -52,7 +40,7 @@ public class RedProtectProtectionModule implements IProtectionModule {
     }
 
     @Override
-    public boolean isInProtectionRange(Location location) {
+    public boolean isInProtectionRange(@NotNull Location location) {
         return api.getRegion(location) != null;
     }
 

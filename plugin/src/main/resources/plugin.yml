@@ -1,7 +1,23 @@
 name: ProtectorAPI
-main: me.mmmjjkx.protectorapi.ProtectorAPIPlugin
+main: me.mmmjjkx.protectorapi.ProtectorAPIPluginImpl
 version: ${project.version}
 authors: [mmmjjkx]
 api-version: 1.18
 description: A simple API for protection plugins
-softdepend: ["WorldGuard", "Residence", "Dominion", "BentoBox", "RedProtect"]
+softdepend:
+  - WorldGuard
+  - Residence
+  - Dominion
+  - BentoBox
+  - RedProtect
+  - PlotSquared
+  - BlockLocker
+  - Bolt
+  - ChestProtection
+  - Lands
+  - LockettePro
+  - LWC
+  - QuickShop-Reremake
+  - QuickShop-Hikari
+  - ShopChest
+  - Towny

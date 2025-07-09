@@ -2,17 +2,15 @@ package io.github.lijinhong11.protector.impl.dominion;
 
 import cn.lunadeer.dominion.api.DominionAPI;
 import cn.lunadeer.dominion.api.dtos.DominionDTO;
-import io.github.lijinhong11.protector.api.IProtectionModule;
-import io.github.lijinhong11.protector.api.ProtectionRangeInfo;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
+import io.github.lijinhong11.protector.api.protection.IProtectionModule;
+import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
+import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class DominionProtectionModule implements IProtectionModule {
     private final DominionAPI api;
@@ -22,28 +20,18 @@ public class DominionProtectionModule implements IProtectionModule {
     }
 
     @Override
-    public String getPluginName() {
+    public @NotNull String getPluginName() {
         return "Dominion";
     }
 
     @Override
-    public boolean isInProtectionRange(Player player) {
-        return isInProtectionRange(player.getLocation());
-    }
-
-    @Override
-    public @Nullable ProtectionRangeInfo getProtectionRangeInfo(Player player) {
-        return getProtectionRangeInfo(player.getLocation());
-    }
-
-    @Override
-    public List<? extends ProtectionRangeInfo> getProtectionRangeInfos(OfflinePlayer player) {
+    public List<? extends ProtectionRangeInfo> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
         List<DominionDTO> list = api.getPlayerAdminDominionDTOs(player.getUniqueId());
         return list.stream().map(DominionRangeInfo::new).toList();
     }
 
     @Override
-    public boolean isInProtectionRange(Location location) {
+    public boolean isInProtectionRange(@NotNull Location location) {
         return api.getDominion(location) != null;
     }
 

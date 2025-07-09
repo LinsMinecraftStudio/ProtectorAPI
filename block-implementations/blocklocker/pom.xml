@@ -32,9 +32,9 @@
         </dependency>
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
-            <artifactId>protectorapi-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <artifactId>protectorapi-api</artifactId>
+            <version>${revision}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
