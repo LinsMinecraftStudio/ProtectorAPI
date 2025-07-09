@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.lijinhong11</groupId>
         <artifactId>ProtectorAPI</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>plugin</artifactId>
@@ -56,92 +56,92 @@
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-worldguard</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-dominion</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-redprotect</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-residence</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-bentobox</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-plotsquared</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-block-blocklocker</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-block-towny</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-block-chestprotection</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-block-bolt</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-block-lwcx</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-block-lands</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-block-quickshop</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-block-shopchest</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-block-lockettepro</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

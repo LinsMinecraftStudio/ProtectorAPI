@@ -6,7 +6,7 @@
 
     <groupId>io.github.lijinhong11</groupId>
     <artifactId>ProtectorAPI</artifactId>
-    <version>1.0</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <name>ProtectorAPI</name>
@@ -84,9 +84,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>osscentral</publishingServerId>
-                    <autoPublish>true</autoPublish>
-                    <waitUntil>published</waitUntil>
-                    <ignorePublishedComponents>true</ignorePublishedComponents>
                     <excludeArtifacts>
                         <artifact>plugin</artifact>
 
@@ -158,7 +155,7 @@
     </modules>
 
     <properties>
-        <revision>1.0</revision>
+        <revision>1.0.1</revision>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
