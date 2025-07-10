@@ -52,6 +52,21 @@ public class ProtectorAPI {
     }
 
     /**
+     * Find the protection module by plugin name
+     * @param pluginName the plugin name
+     * @return the protection module
+     */
+    @Nullable public static IProtectionModule getModuleByPluginName(String pluginName) {
+        for (IProtectionModule module : modules) {
+            if (module.getPluginName().equalsIgnoreCase(pluginName)) {
+                return module;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Find the protection module that protects the protection range
      * @param location the location in the protection range
      * @return the protection module
@@ -121,7 +136,7 @@ public class ProtectorAPI {
             return true;
         }
 
-        return (Boolean) info.getFlagState(CommonFlags.BREAK, player).getValue();
+        return (boolean) info.getFlagState(CommonFlags.BREAK, player).getValue();
     }
 
     /**
