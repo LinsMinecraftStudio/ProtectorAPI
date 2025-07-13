@@ -5,6 +5,7 @@ import io.github.lijinhong11.protector.api.ProtectorAPI;
 import io.github.lijinhong11.protector.block_impl.blocklocker.BlockLockerBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.bolt.BoltBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.chestprotection.ChestProtectionBlockProtectionModule;
+import io.github.lijinhong11.protector.block_impl.chestshop.ChestShopBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.lands.LandsBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.lockettepro.LocketteProBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.lwcx.LWCXBlockProtectionModule;
@@ -80,6 +81,10 @@ public class ProtectorAPIPluginImpl extends ProtectionAPIPlugin {
 
         if (pm.isPluginEnabled("ChestProtection")) {
             ProtectorAPI.register(new ChestProtectionBlockProtectionModule());
+        }
+
+        if (pm.isPluginEnabled("ChestShop")) {
+            ProtectorAPI.register(new ChestShopBlockProtectionModule());
         }
 
         if (pm.isPluginEnabled("LockettePro")) {

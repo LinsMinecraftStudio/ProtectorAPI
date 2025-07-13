@@ -13,6 +13,13 @@
     <description>An API used to docking almost all protection plugins</description>
     <url>https://github.com/LinsMinecraftStudio/ProtectorAPI</url>
 
+    <properties>
+        <revision>1.0.2</revision>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <licenses>
         <license>
             <name>GPL License 3.0</name>
@@ -38,6 +45,13 @@
             <url>https://github.com/lijinhong11</url>
         </developer>
     </developers>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
         <plugins>
@@ -97,7 +111,7 @@
                         <artifact>protectorapi-block-blocklocker</artifact>
                         <artifact>protectorapi-block-bolt</artifact>
                         <artifact>protectorapi-block-chestprotection</artifact>
-                        <!--<artifact>protectorapi-block-chestshop</artifact>-->
+                        <artifact>protectorapi-block-chestshop</artifact>
                         <artifact>protectorapi-block-lands</artifact>
                         <artifact>protectorapi-block-lockettepro</artifact>
                         <artifact>protectorapi-block-lwcx</artifact>
@@ -146,6 +160,7 @@
         <module>block-implementations/blocklocker</module>
         <module>block-implementations/bolt</module>
         <module>block-implementations/chestprotection</module>
+        <module>block-implementations/chestshop</module>
         <module>block-implementations/lands</module> <!--move to block implementation due to location-required methods-->
         <module>block-implementations/lockettepro</module>
         <module>block-implementations/lwcx</module>
@@ -154,14 +169,11 @@
         <module>block-implementations/towny</module>
     </modules>
 
-    <properties>
-        <revision>1.0.1</revision>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <repositories>
+        <repository>
+            <id>chestshop-repo</id>
+            <url>https://repo.minebench.de/</url>
+        </repository>
         <repository>
             <id>codemc-repo</id>
             <url>https://repo.codemc.org/repository/maven-public/</url>
