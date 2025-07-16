@@ -52,6 +52,15 @@ public class ProtectorAPI {
     }
 
     /**
+     * Get the first available protection module
+     * @return the first available protection module
+     */
+    @Nullable
+    public static IProtectionModule getFirstAvailableModule() {
+        return modules.get(0);
+    }
+
+    /**
      * Find the protection module by plugin name
      * @param pluginName the plugin name
      * @return the protection module
@@ -97,6 +106,11 @@ public class ProtectorAPI {
         return null;
     }
 
+    /**
+     * Check the event is to check player permission
+     * @param event the event
+     * @return true if the event is fake, false otherwise
+     */
     public static boolean isEventFake(@NotNull Event event) {
         boolean fake = false;
         for (IBlockProtectionModule module : blockModules) {

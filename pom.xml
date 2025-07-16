@@ -14,7 +14,7 @@
     <url>https://github.com/LinsMinecraftStudio/ProtectorAPI</url>
 
     <properties>
-        <revision>1.0.2</revision>
+        <revision>1.0.3-SNAPSHOT</revision>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -98,6 +98,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>osscentral</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                    <waitUntil>published</waitUntil>
                     <excludeArtifacts>
                         <artifact>plugin</artifact>
 
@@ -112,6 +114,8 @@
                         <artifact>protectorapi-block-bolt</artifact>
                         <artifact>protectorapi-block-chestprotection</artifact>
                         <artifact>protectorapi-block-chestshop</artifact>
+                        <artifact>protectorapi-block-factionsuuid</artifact>
+                        <artifact>protectorapi-block-funnyguilds</artifact>
                         <artifact>protectorapi-block-lands</artifact>
                         <artifact>protectorapi-block-lockettepro</artifact>
                         <artifact>protectorapi-block-lwcx</artifact>
@@ -161,6 +165,8 @@
         <module>block-implementations/bolt</module>
         <module>block-implementations/chestprotection</module>
         <module>block-implementations/chestshop</module>
+        <module>block-implementations/factionsuuid</module>
+        <module>block-implementations/funnyguilds</module>
         <module>block-implementations/lands</module> <!--move to block implementation due to location-required methods-->
         <module>block-implementations/lockettepro</module>
         <module>block-implementations/lwcx</module>
@@ -170,6 +176,14 @@
     </modules>
 
     <repositories>
+        <repository>
+            <id>dependency-download</id>
+            <url>https://dependency.download/releases</url>
+        </repository>
+        <repository>
+            <id>reposilite-snapshots</id>
+            <url>https://maven.reposilite.com/snapshots</url>
+        </repository>
         <repository>
             <id>chestshop-repo</id>
             <url>https://repo.minebench.de/</url>
