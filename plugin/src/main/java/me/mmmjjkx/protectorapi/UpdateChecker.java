@@ -26,7 +26,7 @@ public class UpdateChecker {
                 if (result != null) {
                     ProtectionAPIPlugin plugin = ProtectorAPI.getPluginHost();
                     plugin.getLogger()
-                            .info("There is a new version of ProtectorAPI available! (Current: "
+                            .warning("There is a new version of ProtectorAPI available! (Current: "
                                     + plugin.getDescription().getVersion() + ", New: " + result.name + ")");
                 }
             });
