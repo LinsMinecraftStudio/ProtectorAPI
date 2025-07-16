@@ -55,8 +55,7 @@ public class ProtectorAPI {
      * Get the first available protection module
      * @return the first available protection module
      */
-    @Nullable
-    public static IProtectionModule getFirstAvailableModule() {
+    @Nullable public static IProtectionModule getFirstAvailableModule() {
         return modules.get(0);
     }
 

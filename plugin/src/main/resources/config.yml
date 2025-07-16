@@ -1,0 +1,2 @@
+# Whether to enable automatic update check
+update-check: true

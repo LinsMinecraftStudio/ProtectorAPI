@@ -1,9 +1,5 @@
 package io.github.lijinhong11.protector.block_impl.chestshop;
 
-import com.Acrobot.ChestShop.ChestShop;
-import com.Acrobot.ChestShop.Configuration.Messages;
-import com.Acrobot.ChestShop.Configuration.Properties;
-import com.Acrobot.ChestShop.Events.ShopInfoEvent;
 import com.Acrobot.ChestShop.Permission;
 import com.Acrobot.ChestShop.Security;
 import com.Acrobot.ChestShop.Signs.ChestShopSign;

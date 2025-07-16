@@ -6,6 +6,8 @@ import io.github.lijinhong11.protector.block_impl.blocklocker.BlockLockerBlockPr
 import io.github.lijinhong11.protector.block_impl.bolt.BoltBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.chestprotection.ChestProtectionBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.chestshop.ChestShopBlockProtectionModule;
+import io.github.lijinhong11.protector.block_impl.factionsuuid.FactionsUUIDBlockProtectionModule;
+import io.github.lijinhong11.protector.block_impl.funnyguilds.FunnyGuildsBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.lands.LandsBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.lockettepro.LocketteProBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.lwcx.LWCXBlockProtectionModule;
@@ -29,10 +31,19 @@ public class ProtectorAPIPluginImpl extends ProtectionAPIPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+        saveConfig();
+
         registerModules();
         registerBlockModules();
 
+        new Metrics(this, 26519);
+
         getLogger().info("Successfully loaded ProtectorAPI!");
+
+        if (getConfig().getBoolean("update-check")) {
+            UpdateChecker.check();
+        }
     }
 
     @Override
@@ -85,6 +96,14 @@ public class ProtectorAPIPluginImpl extends ProtectionAPIPlugin {
 
         if (pm.isPluginEnabled("ChestShop")) {
             ProtectorAPI.register(new ChestShopBlockProtectionModule());
+        }
+
+        if (pm.isPluginEnabled("FactionsUUID")) {
+            ProtectorAPI.register(new FactionsUUIDBlockProtectionModule());
+        }
+
+        if (pm.isPluginEnabled("FunnyGuilds")) {
+            ProtectorAPI.register(new FunnyGuildsBlockProtectionModule());
         }
 
         if (pm.isPluginEnabled("LockettePro")) {
