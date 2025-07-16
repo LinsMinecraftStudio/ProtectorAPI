@@ -8,6 +8,7 @@ softdepend:
   - WorldGuard
   - Residence
   - Dominion
+  - HuskClaims
   - BentoBox
   - RedProtect
   - PlotSquared

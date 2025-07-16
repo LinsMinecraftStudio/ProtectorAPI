@@ -11,7 +11,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>protectorapi-block-TEMPLATE</artifactId>
+    <artifactId>protectorapi-huskclaims</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -25,12 +25,16 @@
             <artifactId>paper-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>net.william278.huskclaims</groupId>
+            <artifactId>huskclaims-bukkit</artifactId>
+            <version>1.5.10</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-api</artifactId>
             <version>${revision}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Add your protection plugin here -->
-        <!-- ... -->
     </dependencies>
 </project>

@@ -14,7 +14,7 @@
     <url>https://github.com/LinsMinecraftStudio/ProtectorAPI</url>
 
     <properties>
-        <revision>1.0.3-SNAPSHOT</revision>
+        <revision>1.0.3</revision>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -105,6 +105,7 @@
 
                         <artifact>protectorapi-bentobox</artifact>
                         <artifact>protectorapi-dominion</artifact>
+                        <artifact>protectorapi-huskclaims</artifact>
                         <artifact>protectorapi-plotsquared</artifact>
                         <artifact>protectorapi-redprotect</artifact>
                         <artifact>protectorapi-residence</artifact>
@@ -156,6 +157,7 @@
 
         <module>implementations/bentobox</module>
         <module>implementations/dominion</module>
+        <module>implementations/huskclaims</module>
         <module>implementations/plotsquared</module>
         <module>implementations/redprotect</module>
         <module>implementations/residence</module>
@@ -176,6 +178,10 @@
     </modules>
 
     <repositories>
+        <repository>
+            <id>william278.net</id>
+            <url>https://repo.william278.net/releases</url>
+        </repository>
         <repository>
             <id>dependency-download</id>
             <url>https://dependency.download/releases</url>

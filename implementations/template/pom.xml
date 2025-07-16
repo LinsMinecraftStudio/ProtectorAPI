@@ -24,6 +24,12 @@
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.github.lijinhong11</groupId>
+            <artifactId>protectorapi-api</artifactId>
+            <version>${revision}</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Add your protection plugin here -->
         <!-- ... -->
     </dependencies>

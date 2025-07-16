@@ -30,8 +30,7 @@ public class UpdateChecker {
                                     + plugin.getDescription().getVersion() + ", New: " + result.name + ")");
                 }
             });
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+        } catch (URISyntaxException ignored) {
         }
     }
 

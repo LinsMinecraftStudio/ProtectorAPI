@@ -17,6 +17,7 @@ import io.github.lijinhong11.protector.block_impl.shopchest.ShopChestBlockProtec
 import io.github.lijinhong11.protector.block_impl.towny.TownyBlockProtectionModule;
 import io.github.lijinhong11.protector.impl.bentobox.BentoBoxProtectionModule;
 import io.github.lijinhong11.protector.impl.dominion.DominionProtectionModule;
+import io.github.lijinhong11.protector.impl.huskclaims.HuskClaimsProtectionModule;
 import io.github.lijinhong11.protector.impl.plotsquared.PlotSquaredProtectionModule;
 import io.github.lijinhong11.protector.impl.redprotect.RedProtectProtectionModule;
 import io.github.lijinhong11.protector.impl.residence.ResidenceProtectionModule;
@@ -60,6 +61,10 @@ public class ProtectorAPIPluginImpl extends ProtectionAPIPlugin {
 
         if (pm.isPluginEnabled("Dominion")) {
             ProtectorAPI.register(new DominionProtectionModule());
+        }
+
+        if (pm.isPluginEnabled("HuskClaims")) {
+            ProtectorAPI.register(new HuskClaimsProtectionModule());
         }
 
         if (pm.isPluginEnabled("RedProtect")) {
