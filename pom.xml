@@ -87,7 +87,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <passphrase>${gpg.passphrase}</passphrase>
+                    <passphrase>${env.GPG_PASS}</passphrase>
                     <executable>gpg</executable>
                 </configuration>
             </plugin>
@@ -106,6 +106,7 @@
                         <artifact>protectorapi-bentobox</artifact>
                         <artifact>protectorapi-dominion</artifact>
                         <artifact>protectorapi-huskclaims</artifact>
+                        <artifact>protectorapi-nobuildplus</artifact>
                         <artifact>protectorapi-plotsquared</artifact>
                         <artifact>protectorapi-redprotect</artifact>
                         <artifact>protectorapi-residence</artifact>
@@ -179,6 +180,10 @@
 
     <repositories>
         <repository>
+            <id>jitpack</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
             <id>william278.net</id>
             <url>https://repo.william278.net/releases</url>
         </repository>
@@ -201,10 +206,6 @@
         <repository>
             <id>shopchest-repo</id>
             <url>https://epicericee.github.io/ShopChest/maven/</url>
-        </repository>
-        <repository>
-            <id>jitpack</id>
-            <url>https://jitpack.io</url>
         </repository>
         <repository>
             <id>paper</id>
