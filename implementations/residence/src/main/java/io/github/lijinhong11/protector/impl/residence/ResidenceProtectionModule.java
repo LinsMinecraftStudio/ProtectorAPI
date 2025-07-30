@@ -3,7 +3,9 @@ package io.github.lijinhong11.protector.impl.residence;
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.api.ResidenceApi;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
+import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
+import io.github.lijinhong11.protector.api.flag.CustomFlag;
 import io.github.lijinhong11.protector.api.flag.FlagState;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
@@ -43,6 +45,13 @@ public class ResidenceProtectionModule implements IProtectionModule {
         }
 
         return new ResidenceInfo(res);
+    }
+
+    @Override
+    public void registerFlag(CustomFlag flag) {
+        FlagPermissions.addFlag(flag.id());
+        Residence.getInstance().getPermissionManager().getAllFlags().setFlag(flag.id(),
+                flag.defaultValue() ? FlagPermissions.FlagState.TRUE : FlagPermissions.FlagState.FALSE);
     }
 
     @Override

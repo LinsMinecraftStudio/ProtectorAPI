@@ -2,7 +2,9 @@ package io.github.lijinhong11.protector.impl.plotsquared;
 
 import com.plotsquared.core.PlotAPI;
 import com.plotsquared.core.player.PlotPlayer;
+import com.plotsquared.core.plot.flag.GlobalFlagContainer;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
+import io.github.lijinhong11.protector.api.flag.CustomFlag;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
 import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
@@ -45,6 +47,11 @@ public class PlotSquaredProtectionModule implements IProtectionModule {
         }
 
         return new PlotSquaredPlotInfo(loc.getPlot());
+    }
+
+    @Override
+    public void registerFlag(CustomFlag flag) {
+        GlobalFlagContainer.getInstance().addFlag(new PSCustomFlag(flag));
     }
 
     @Override

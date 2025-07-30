@@ -5,9 +5,11 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.BukkitWorldConfiguration;
 import com.sk89q.worldguard.config.ConfigurationManager;
 import com.sk89q.worldguard.protection.flags.Flag;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
+import io.github.lijinhong11.protector.api.flag.CustomFlag;
 import io.github.lijinhong11.protector.api.flag.FlagState;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
@@ -61,6 +63,11 @@ public class WorldGuardProtectionModule implements IProtectionModule {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public void registerFlag(CustomFlag flag) {
+        WorldGuard.getInstance().getFlagRegistry().register(new StateFlag(flag.id(), flag.defaultValue()));
     }
 
     @Override

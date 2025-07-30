@@ -1,6 +1,7 @@
 package io.github.lijinhong11.protector.impl.bentobox;
 
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
+import io.github.lijinhong11.protector.api.flag.CustomFlag;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
 import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
@@ -52,6 +53,11 @@ public class BentoBoxProtectionModule implements IProtectionModule {
     public @Nullable ProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location) {
         Optional<Island> island = bentoBox.getIslands().getIslandAt(location);
         return island.map(BentoBoxIslandInfo::new).orElse(null);
+    }
+
+    @Override
+    public void registerFlag(CustomFlag flag) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -1,11 +1,13 @@
 package io.github.lijinhong11.protector.api.protection;
 
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
+import io.github.lijinhong11.protector.api.flag.CustomFlag;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
 import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,6 +62,14 @@ public interface IProtectionModule {
      * @return the protection range info (if the location is not in the protection range, return null)
      */
     @Nullable ProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location);
+
+    /**
+     * Register a flag
+     *
+     * @param flag the flag
+     * @throws UnsupportedOperationException if the module doesn't support
+     */
+    void registerFlag(CustomFlag flag);
 
     /**
      * Whether the module supports global flags

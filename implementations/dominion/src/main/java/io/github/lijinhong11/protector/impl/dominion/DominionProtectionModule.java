@@ -2,7 +2,11 @@ package io.github.lijinhong11.protector.impl.dominion;
 
 import cn.lunadeer.dominion.api.DominionAPI;
 import cn.lunadeer.dominion.api.dtos.DominionDTO;
+import cn.lunadeer.dominion.api.dtos.flag.Flag;
+import cn.lunadeer.dominion.api.dtos.flag.Flags;
+import cn.lunadeer.dominion.api.dtos.flag.PriFlag;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
+import io.github.lijinhong11.protector.api.flag.CustomFlag;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
 import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
@@ -43,6 +47,14 @@ public class DominionProtectionModule implements IProtectionModule {
         }
 
         return new DominionRangeInfo(dominion);
+    }
+
+    @Override
+    public void registerFlag(CustomFlag flag) {
+        String displayName = flag.displayName() == null ? flag.id() : flag.displayName();
+        String description = flag.description() == null ? "" : flag.description();
+        PriFlag flag1 = new PriFlag(flag.id(), displayName, description, flag.defaultValue(), true);
+        Flags.getAllPriFlags().add(flag1); //is that a great way?
     }
 
     @Override

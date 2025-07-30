@@ -1,21 +1,26 @@
 package io.github.lijinhong11.protector.impl.huskclaims;
 
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
+import io.github.lijinhong11.protector.api.flag.CustomFlag;
 import io.github.lijinhong11.protector.api.flag.FlagState;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
 import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
 import java.util.*;
+
+import net.kyori.adventure.key.Key;
 import net.william278.huskclaims.api.BukkitHuskClaimsAPI;
 import net.william278.huskclaims.claim.Claim;
 import net.william278.huskclaims.claim.ClaimWorld;
 import net.william278.huskclaims.libraries.cloplib.operation.OperationType;
+import net.william278.huskclaims.libraries.cloplib.operation.OperationTypeRegistry;
 import net.william278.huskclaims.position.Position;
 import net.william278.huskclaims.position.World;
 import net.william278.huskclaims.user.OnlineUser;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.intellij.lang.annotations.Subst;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,6 +58,13 @@ public class HuskClaimsProtectionModule implements IProtectionModule {
 
         Optional<Claim> claim = api.getClaimAt(wrapLocation(location));
         return claim.map(HuskClaimsClaimInfo::new).orElse(null);
+    }
+
+    @Override
+    public void registerFlag(CustomFlag flag) {
+        OperationTypeRegistry reg = api.getOperationTypeRegistry();
+        OperationType type = reg.createOperationType(Key.key(flag.namespace(), flag.id()));
+        reg.registerOperationType(type);
     }
 
     @Override

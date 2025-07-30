@@ -5,6 +5,7 @@ import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import br.net.fabiozumbi12.RedProtect.Core.config.Category.GlobalFlagsCategory;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
+import io.github.lijinhong11.protector.api.flag.CustomFlag;
 import io.github.lijinhong11.protector.api.flag.FlagState;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
@@ -52,6 +53,13 @@ public class RedProtectProtectionModule implements IProtectionModule {
         }
 
         return new RedProtectRegionInfo(region);
+    }
+
+    @Override
+    public void registerFlag(CustomFlag flag) {
+        RedProtect.get().getRegionManager().getAllRegions().forEach(r ->
+                r.setFlag(null, flag.id(), flag.defaultValue())
+        );
     }
 
     @Override
