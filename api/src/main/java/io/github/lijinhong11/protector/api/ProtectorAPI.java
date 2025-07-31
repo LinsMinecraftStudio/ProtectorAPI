@@ -3,15 +3,18 @@ package io.github.lijinhong11.protector.api;
 import com.google.common.base.Preconditions;
 import io.github.lijinhong11.protector.api.block.IBlockProtectionModule;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
+import io.github.lijinhong11.protector.api.flag.CustomFlag;
 import io.github.lijinhong11.protector.api.protection.FakeEventMaker;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
 import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,6 +29,10 @@ public class ProtectorAPI {
         blockModules = new CopyOnWriteArrayList<>();
     }
 
+    /**
+     * Register the protection module
+     * @param module the protection module
+     */
     public static void register(IProtectionModule module) {
         Preconditions.checkNotNull(module, "module cannot be null");
         Preconditions.checkArgument(!modules.contains(module), "module already registered");
@@ -33,6 +40,10 @@ public class ProtectorAPI {
         modules.add(module);
     }
 
+    /**
+     * Register the block protection module
+     * @param module the block protection module
+     */
     public static void register(IBlockProtectionModule module) {
         Preconditions.checkNotNull(module, "block module cannot be null");
         Preconditions.checkArgument(!blockModules.contains(module), "block module already registered");
@@ -40,13 +51,26 @@ public class ProtectorAPI {
         blockModules.add(module);
     }
 
+    /**
+     * Set the plugin instance
+     * @param plugin the plugin instance
+     * @apiNote this is not for you
+     */
+    @ApiStatus.Internal
     public static void setPluginHost(ProtectionAPIPlugin plugin) {
         Preconditions.checkNotNull(plugin, "plugin cannot be null");
         Preconditions.checkArgument(pluginHost == null, "plugin host already set");
+        Preconditions.checkArgument(
+                plugin.getClass().getName().equals("me.mmmjjkx.protectorapi.ProtectorAPIPluginImpl"),
+                "you shouldn't do that");
 
         pluginHost = plugin;
     }
 
+    /**
+     * Get the plugin instance
+     * @return the plugin instance
+     */
     public static ProtectionAPIPlugin getPluginHost() {
         return pluginHost;
     }
@@ -72,6 +96,26 @@ public class ProtectorAPI {
         }
 
         return null;
+    }
+
+    /**
+     * Register a custom flag.
+     */
+    public static void registerFlag(CustomFlag flag) {
+        for (IProtectionModule module : modules) {
+            try {
+                module.registerFlag(flag);
+            } catch (UnsupportedOperationException ignored) {
+            }
+        }
+    }
+
+    /**
+     * Get all available protection modules.
+     * @return a list contains all available protection modules.
+     */
+    public static Collection<IProtectionModule> getAllAvailableProtectionModules() {
+        return modules;
     }
 
     /**
@@ -106,7 +150,7 @@ public class ProtectorAPI {
     }
 
     /**
-     * Check the event is to check player permission
+     * Check the event is fake
      * @param event the event
      * @return true if the event is fake, false otherwise
      */

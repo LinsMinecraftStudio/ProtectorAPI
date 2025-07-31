@@ -3,6 +3,9 @@ package io.github.lijinhong11.protector.api.flag;
 import io.github.lijinhong11.protector.api.annotations.WeakImplementation;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * The enum class to store common flags
+ */
 @WeakImplementation(reason = "some plugins' didn't have enough flags")
 public enum CommonFlags {
     BUILD("build", "place", "build", "build", "place-blocks", "PLACE_BLOCKS", "block_place"),

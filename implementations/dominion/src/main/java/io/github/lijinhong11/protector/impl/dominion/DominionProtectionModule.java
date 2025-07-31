@@ -2,7 +2,6 @@ package io.github.lijinhong11.protector.impl.dominion;
 
 import cn.lunadeer.dominion.api.DominionAPI;
 import cn.lunadeer.dominion.api.dtos.DominionDTO;
-import cn.lunadeer.dominion.api.dtos.flag.Flag;
 import cn.lunadeer.dominion.api.dtos.flag.Flags;
 import cn.lunadeer.dominion.api.dtos.flag.PriFlag;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
@@ -54,7 +53,7 @@ public class DominionProtectionModule implements IProtectionModule {
         String displayName = flag.displayName() == null ? flag.id() : flag.displayName();
         String description = flag.description() == null ? "" : flag.description();
         PriFlag flag1 = new PriFlag(flag.id(), displayName, description, flag.defaultValue(), true);
-        Flags.getAllPriFlags().add(flag1); //is that a great way?
+        Flags.getAllPriFlags().add(flag1); // is that a great way?
     }
 
     @Override

@@ -7,7 +7,13 @@ public class FlagState {
     public static final IFlagState<Boolean> ALLOW = new SimpleFlagState<>(FlagType.BOOLEAN, true);
     public static final IFlagState<Boolean> DENY = new SimpleFlagState<>(FlagType.BOOLEAN, false);
     public static final IFlagState<Boolean> NOT_SET = new SimpleFlagState<>(FlagType.BOOLEAN, null);
+    /**
+     * Will use this flag state when the flag is not supported by the protection module.
+     */
     public static final IFlagState<Object> UNSUPPORTED = new UnsupportedFlagState();
+    /**
+     * Will use this flag state when the world is not found.
+     */
     public static final IFlagState<Object> WORLD_NOT_FOUND = new WorldNotFoundFlagState();
 
     private FlagState() {}

@@ -11,5 +11,9 @@ import org.jetbrains.annotations.Nullable;
  * @param displayName the display name of the flag (optional)
  * @param description the description about the flag (optional)
  */
-public record CustomFlag(@NotNull String namespace, @NotNull String id, boolean defaultValue, @Nullable String displayName, @Nullable String description) {
-}
+public record CustomFlag(
+        @NotNull String namespace,
+        @NotNull String id,
+        boolean defaultValue,
+        @Nullable String displayName,
+        @Nullable String description) {}

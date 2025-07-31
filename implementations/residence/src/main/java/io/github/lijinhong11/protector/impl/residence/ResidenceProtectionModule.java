@@ -50,8 +50,12 @@ public class ResidenceProtectionModule implements IProtectionModule {
     @Override
     public void registerFlag(CustomFlag flag) {
         FlagPermissions.addFlag(flag.id());
-        Residence.getInstance().getPermissionManager().getAllFlags().setFlag(flag.id(),
-                flag.defaultValue() ? FlagPermissions.FlagState.TRUE : FlagPermissions.FlagState.FALSE);
+        Residence.getInstance()
+                .getPermissionManager()
+                .getAllFlags()
+                .setFlag(
+                        flag.id(),
+                        flag.defaultValue() ? FlagPermissions.FlagState.TRUE : FlagPermissions.FlagState.FALSE);
     }
 
     @Override

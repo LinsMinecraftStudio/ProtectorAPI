@@ -57,9 +57,10 @@ public class RedProtectProtectionModule implements IProtectionModule {
 
     @Override
     public void registerFlag(CustomFlag flag) {
-        RedProtect.get().getRegionManager().getAllRegions().forEach(r ->
-                r.setFlag(null, flag.id(), flag.defaultValue())
-        );
+        RedProtect.get()
+                .getRegionManager()
+                .getAllRegions()
+                .forEach(r -> r.setFlag(null, flag.id(), flag.defaultValue()));
     }
 
     @Override
