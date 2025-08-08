@@ -168,5 +168,17 @@
             <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>io.github.lijinhong11</groupId>
+            <artifactId>protectorapi-block-griefprevention</artifactId>
+            <version>${revision}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.lijinhong11</groupId>
+            <artifactId>protectorapi-block-husktowns</artifactId>
+            <version>${revision}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

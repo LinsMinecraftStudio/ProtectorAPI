@@ -1,7 +1,6 @@
 package io.github.lijinhong11.protector.block_impl.lands;
 
 import io.github.lijinhong11.protector.api.ProtectorAPI;
-import io.github.lijinhong11.protector.api.annotations.WeakImplementation;
 import io.github.lijinhong11.protector.api.block.IBlockProtectionModule;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.flags.type.Flags;
@@ -13,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 // terrible condition check
-@WeakImplementation
 public class LandsBlockProtectionModule implements IBlockProtectionModule {
     private final LandsIntegration api;
 

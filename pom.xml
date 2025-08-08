@@ -14,7 +14,7 @@
     <url>https://github.com/LinsMinecraftStudio/ProtectorAPI</url>
 
     <properties>
-        <revision>1.0.5</revision>
+        <revision>1.0.6</revision>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -118,6 +118,8 @@
                         <artifact>protectorapi-block-chestshop</artifact>
                         <artifact>protectorapi-block-factionsuuid</artifact>
                         <artifact>protectorapi-block-funnyguilds</artifact>
+                        <artifact>protectorapi-block-griefprevention</artifact>
+                        <artifact>protectorapi-block-husktowns</artifact>
                         <artifact>protectorapi-block-lands</artifact>
                         <artifact>protectorapi-block-lockettepro</artifact>
                         <artifact>protectorapi-block-lwcx</artifact>
@@ -170,6 +172,8 @@
         <module>block-implementations/chestshop</module>
         <module>block-implementations/factionsuuid</module>
         <module>block-implementations/funnyguilds</module>
+        <module>block-implementations/griefprevention</module>
+        <module>block-implementations/husktowns</module>
         <module>block-implementations/lands</module> <!--move to block implementation due to location-required methods-->
         <module>block-implementations/lockettepro</module>
         <module>block-implementations/lwcx</module>
@@ -180,12 +184,12 @@
 
     <repositories>
         <repository>
-            <id>jitpack</id>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
             <id>william278.net</id>
             <url>https://repo.william278.net/releases</url>
+        </repository>
+        <repository>
+            <id>jitpack</id>
+            <url>https://jitpack.io</url>
         </repository>
         <repository>
             <id>dependency-download</id>

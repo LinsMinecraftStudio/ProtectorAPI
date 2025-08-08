@@ -8,6 +8,8 @@ import io.github.lijinhong11.protector.block_impl.chestprotection.ChestProtectio
 import io.github.lijinhong11.protector.block_impl.chestshop.ChestShopBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.factionsuuid.FactionsUUIDBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.funnyguilds.FunnyGuildsBlockProtectionModule;
+import io.github.lijinhong11.protector.block_impl.griefprevention.GriefPreventionBlockProtectionModule;
+import io.github.lijinhong11.protector.block_impl.husktowns.HuskTownsBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.lands.LandsBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.lockettepro.LocketteProBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.lwcx.LWCXBlockProtectionModule;
@@ -109,6 +111,14 @@ public class ProtectorAPIPluginImpl extends ProtectionAPIPlugin {
 
         if (pm.isPluginEnabled("FunnyGuilds")) {
             ProtectorAPI.register(new FunnyGuildsBlockProtectionModule());
+        }
+
+        if (pm.isPluginEnabled("GriefPrevention")) {
+            ProtectorAPI.register(new GriefPreventionBlockProtectionModule());
+        }
+
+        if (pm.isPluginEnabled("HuskTowns")) {
+            ProtectorAPI.register(new HuskTownsBlockProtectionModule());
         }
 
         if (pm.isPluginEnabled("LockettePro")) {

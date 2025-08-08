@@ -8,9 +8,9 @@ import io.github.lijinhong11.protector.api.protection.FakeEventMaker;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
 import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -19,14 +19,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ProtectorAPI {
-    private static final List<IProtectionModule> modules;
-    private static final List<IBlockProtectionModule> blockModules;
+    private static final Set<IProtectionModule> modules;
+    private static final Set<IBlockProtectionModule> blockModules;
 
     private static ProtectionAPIPlugin pluginHost;
 
     static {
-        modules = new CopyOnWriteArrayList<>();
-        blockModules = new CopyOnWriteArrayList<>();
+        modules = new CopyOnWriteArraySet<>();
+        blockModules = new CopyOnWriteArraySet<>();
     }
 
     /**
@@ -60,9 +60,6 @@ public class ProtectorAPI {
     public static void setPluginHost(ProtectionAPIPlugin plugin) {
         Preconditions.checkNotNull(plugin, "plugin cannot be null");
         Preconditions.checkArgument(pluginHost == null, "plugin host already set");
-        Preconditions.checkArgument(
-                plugin.getClass().getName().equals("me.mmmjjkx.protectorapi.ProtectorAPIPluginImpl"),
-                "you shouldn't do that");
 
         pluginHost = plugin;
     }
@@ -80,7 +77,7 @@ public class ProtectorAPI {
      * @return the first available protection module
      */
     @Nullable public static IProtectionModule getFirstAvailableModule() {
-        return modules.get(0);
+        return modules.toArray(IProtectionModule[]::new)[0];
     }
 
     /**
