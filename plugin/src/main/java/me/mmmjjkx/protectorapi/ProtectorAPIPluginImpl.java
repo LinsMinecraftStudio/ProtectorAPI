@@ -13,6 +13,7 @@ import io.github.lijinhong11.protector.block_impl.husktowns.HuskTownsBlockProtec
 import io.github.lijinhong11.protector.block_impl.lands.LandsBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.lockettepro.LocketteProBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.lwcx.LWCXBlockProtectionModule;
+import io.github.lijinhong11.protector.block_impl.nobuildplus.NoBuildPlusBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.quickshop.QuickShopHikariProtection;
 import io.github.lijinhong11.protector.block_impl.quickshop.QuickShopReremakeProtection;
 import io.github.lijinhong11.protector.block_impl.shopchest.ShopChestBlockProtectionModule;
@@ -147,6 +148,10 @@ public class ProtectorAPIPluginImpl extends ProtectionAPIPlugin {
 
         if (pm.isPluginEnabled("Lands")) {
             ProtectorAPI.register(new LandsBlockProtectionModule());
+        }
+
+        if (pm.isPluginEnabled("NoBuildPlus")) {
+            ProtectorAPI.register(new NoBuildPlusBlockProtectionModule());
         }
     }
 }

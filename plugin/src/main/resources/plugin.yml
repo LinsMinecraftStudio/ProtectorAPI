@@ -4,6 +4,7 @@ version: ${project.version}
 authors: [mmmjjkx]
 api-version: 1.17
 description: A simple API for protection plugins
+folia-supported: true
 softdepend:
   - WorldGuard
   - Residence
@@ -23,6 +24,7 @@ softdepend:
   - Lands
   - LockettePro
   - LWC
+  - NoBuildPlus
   - QuickShop-Reremake
   - QuickShop-Hikari
   - ShopChest

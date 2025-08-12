@@ -14,7 +14,7 @@
     <url>https://github.com/LinsMinecraftStudio/ProtectorAPI</url>
 
     <properties>
-        <revision>1.0.6</revision>
+        <revision>1.0.7</revision>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -123,6 +123,7 @@
                         <artifact>protectorapi-block-lands</artifact>
                         <artifact>protectorapi-block-lockettepro</artifact>
                         <artifact>protectorapi-block-lwcx</artifact>
+                        <artifact>protectorapi-block-nobuildplus</artifact>
                         <artifact>protectorapi-block-quickshop</artifact>
                         <artifact>protectorapi-block-shopchest</artifact>
                         <artifact>protectorapi-block-towny</artifact>
@@ -177,6 +178,7 @@
         <module>block-implementations/lands</module> <!--move to block implementation due to location-required methods-->
         <module>block-implementations/lockettepro</module>
         <module>block-implementations/lwcx</module>
+        <module>block-implementations/nobuildplus</module>
         <module>block-implementations/quickshop</module>
         <module>block-implementations/shopchest</module>
         <module>block-implementations/towny</module>
