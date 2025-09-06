@@ -1,9 +1,9 @@
 ![](icon.png)
-<div style="text-align: center;font-size: 30px;font-weight: bold;">ProtectorAPI</div>
+# ProtectorAPI
 
-[![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/plugin/protectorapi)
+[![](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/plugin/protectorapi)
 [![](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/spigot_vector.svg)](https://www.spigotmc.org/resources/protectorapi.126828/)
-[![gitbook](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/gitbook_vector.svg)](https://lijinhong11.gitbook.io/protectotapi/)  
+[![](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/gitbook_vector.svg)](https://lijinhong11.gitbook.io/protectotapi/)  
 An API used to docking almost all protection plugins.  
 Intended to provide a more standardized universal API.
 
