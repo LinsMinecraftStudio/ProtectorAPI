@@ -86,7 +86,7 @@ public class RedProtectProtectionModule implements IProtectionModule {
                     if (value instanceof Boolean b) {
                         return FlagState.fromNullableBoolean(b);
                     } else {
-                        return FlagState.of(FlagState.FlagType.OBJECT, value);
+                        return FlagState.of(value);
                     }
                 } catch (IllegalAccessException ignored) {
                 }

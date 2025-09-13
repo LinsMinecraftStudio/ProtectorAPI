@@ -29,8 +29,7 @@ public class HuskClaimsClaimInfo implements ProtectionRangeInfo {
         for (OperationType type : OperationType.getRegistered()) {
             map.put(
                     type.asMinimalString(),
-                    FlagState.of(
-                            FlagState.FlagType.BOOLEAN, claim.getDefaultFlags().contains(type)));
+                    FlagState.fromBoolean(claim.getDefaultFlags().contains(type)));
         }
 
         return map;

@@ -29,7 +29,7 @@ public class WorldGuardProtectedRegionInfo implements ProtectionRangeInfo {
             if (flag.getDefault() instanceof Boolean b) {
                 flagMap.put(flag.getName(), FlagState.fromNullableBoolean(b));
             } else {
-                flagMap.put(entry.getKey().getName(), FlagState.of(FlagState.FlagType.OBJECT, entry.getValue()));
+                flagMap.put(entry.getKey().getName(), FlagState.of(entry.getValue()));
             }
         }
 

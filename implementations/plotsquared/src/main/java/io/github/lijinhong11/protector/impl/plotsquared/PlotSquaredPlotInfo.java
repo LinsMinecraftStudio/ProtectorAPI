@@ -26,7 +26,7 @@ public class PlotSquaredPlotInfo implements ProtectionRangeInfo {
     public @NotNull Map<String, IFlagState<?>> getFlags() {
         FlagMap flagMap = new FlagMap();
         for (PlotFlag<?, ?> flag : plot.getFlags()) {
-            flagMap.put(flag.getName(), FlagState.of(FlagState.FlagType.OBJECT, flag.getValue()));
+            flagMap.put(flag.getName(), FlagState.of(flag.getValue()));
         }
         return Collections.unmodifiableMap(flagMap);
     }

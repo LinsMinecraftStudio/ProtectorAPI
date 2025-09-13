@@ -28,7 +28,7 @@ public class RedProtectRegionInfo implements ProtectionRangeInfo {
             if (o instanceof Boolean b) {
                 return FlagState.fromNullableBoolean(b);
             } else {
-                return FlagState.of(FlagState.FlagType.OBJECT, o);
+                return FlagState.of(o);
             }
         }));
     }
