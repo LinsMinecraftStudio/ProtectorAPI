@@ -1,10 +1,12 @@
 package io.github.lijinhong11.protector.api.flag;
 
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * The custom flag object
+ * @param plugin the plugin
  * @param namespace the namespace for verify
  * @param id the flag ID
  * @param defaultValue the default value
@@ -12,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
  * @param description the description about the flag (optional)
  */
 public record CustomFlag(
+        @NotNull Plugin plugin,
         @NotNull String namespace,
         @NotNull String id,
         boolean defaultValue,

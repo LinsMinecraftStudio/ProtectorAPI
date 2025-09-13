@@ -1,7 +1,17 @@
 package io.github.lijinhong11.protector.api.flag;
 
 public interface IFlagState<T> {
-    FlagState.FlagType<T> getFlagType();
+    T value();
 
-    T getValue();
+    default boolean isBooleanValue() {
+        return value() instanceof Boolean;
+    }
+
+    default boolean toBooleanIfPossible() {
+        if (isBooleanValue()) {
+            return (Boolean) value();
+        }
+
+        throw new RuntimeException(new ClassCastException());
+    }
 }

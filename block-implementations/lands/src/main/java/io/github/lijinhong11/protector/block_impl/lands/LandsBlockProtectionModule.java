@@ -2,6 +2,8 @@ package io.github.lijinhong11.protector.block_impl.lands;
 
 import io.github.lijinhong11.protector.api.ProtectorAPI;
 import io.github.lijinhong11.protector.api.block.IBlockProtectionModule;
+import io.github.lijinhong11.protector.api.flag.CustomFlag;
+import io.github.lijinhong11.protector.api.flag.FlagRegisterable;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.flags.type.Flags;
 import me.angeschossen.lands.api.flags.type.RoleFlag;
@@ -12,7 +14,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 // terrible condition check
-public class LandsBlockProtectionModule implements IBlockProtectionModule {
+public class LandsBlockProtectionModule implements IBlockProtectionModule, FlagRegisterable {
     private final LandsIntegration api;
 
     public LandsBlockProtectionModule() {
@@ -75,5 +77,10 @@ public class LandsBlockProtectionModule implements IBlockProtectionModule {
 
     private LandWorld getLandWorld(Location loc) {
         return api.getWorld(loc.getWorld());
+    }
+
+    @Override
+    public void registerFlag(CustomFlag flag) {
+        api.getFlagRegistry().register(new ProtectorAPIManagedFlag(flag));
     }
 }

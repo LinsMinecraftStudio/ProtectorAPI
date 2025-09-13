@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import io.github.lijinhong11.protector.api.block.IBlockProtectionModule;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
 import io.github.lijinhong11.protector.api.flag.CustomFlag;
+import io.github.lijinhong11.protector.api.flag.FlagRegisterable;
 import io.github.lijinhong11.protector.api.protection.FakeEventMaker;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
 import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
@@ -105,6 +106,12 @@ public class ProtectorAPI {
             } catch (UnsupportedOperationException ignored) {
             }
         }
+
+        for (IBlockProtectionModule module : blockModules) {
+            if (module instanceof FlagRegisterable fr) {
+                fr.registerFlag(flag);
+            }
+        }
     }
 
     /**
@@ -178,7 +185,7 @@ public class ProtectorAPI {
                 if (m2.isSupportGlobalFlags()) {
                     return (boolean) Objects.requireNonNull(m2.getGlobalFlag(
                                     CommonFlags.BREAK, location.getWorld().getName()))
-                            .getValue();
+                            .value();
                 }
             }
 
@@ -190,7 +197,7 @@ public class ProtectorAPI {
             return true;
         }
 
-        return (boolean) info.getFlagState(CommonFlags.BREAK, player).getValue();
+        return (boolean) info.getFlagState(CommonFlags.BREAK, player).value();
     }
 
     /**
@@ -227,7 +234,7 @@ public class ProtectorAPI {
                 if (m2.isSupportGlobalFlags()) {
                     return (boolean) Objects.requireNonNull(m2.getGlobalFlag(
                                     CommonFlags.PLACE, location.getWorld().getName()))
-                            .getValue();
+                            .value();
                 }
             }
 
@@ -239,7 +246,7 @@ public class ProtectorAPI {
             return true;
         }
 
-        return (boolean) info.getFlagState(CommonFlags.PLACE, player).getValue();
+        return (boolean) info.getFlagState(CommonFlags.PLACE, player).value();
     }
 
     /**
@@ -276,7 +283,7 @@ public class ProtectorAPI {
                 if (m2.isSupportGlobalFlags()) {
                     return (boolean) Objects.requireNonNull(m2.getGlobalFlag(
                                     CommonFlags.INTERACT, location.getWorld().getName()))
-                            .getValue();
+                            .value();
                 }
             }
 
@@ -288,7 +295,7 @@ public class ProtectorAPI {
             return true;
         }
 
-        return (boolean) info.getFlagState(CommonFlags.INTERACT, player).getValue();
+        return (boolean) info.getFlagState(CommonFlags.INTERACT, player).value();
     }
 
     /**
