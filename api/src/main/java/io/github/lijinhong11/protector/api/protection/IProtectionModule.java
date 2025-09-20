@@ -1,7 +1,6 @@
 package io.github.lijinhong11.protector.api.protection;
 
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.FlagRegisterable;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
 import java.util.List;
 import org.bukkit.Location;
@@ -10,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IProtectionModule extends FlagRegisterable {
+public interface IProtectionModule {
     /**
      * Get the name of the corresponding plugin
      *

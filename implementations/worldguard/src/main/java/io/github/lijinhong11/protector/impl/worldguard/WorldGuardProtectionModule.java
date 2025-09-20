@@ -8,10 +8,7 @@ import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.CustomFlag;
-import io.github.lijinhong11.protector.api.flag.FlagState;
-import io.github.lijinhong11.protector.api.flag.IFlagState;
+import io.github.lijinhong11.protector.api.flag.*;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
 import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
 import java.util.ArrayList;
@@ -25,7 +22,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class WorldGuardProtectionModule implements IProtectionModule {
+public class WorldGuardProtectionModule implements IProtectionModule, FlagRegisterable {
     private final RegionContainer api;
     private final ConfigurationManager globalFlags;
 

@@ -56,11 +56,6 @@ public class BentoBoxProtectionModule implements IProtectionModule {
     }
 
     @Override
-    public void registerFlag(CustomFlag flag) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public boolean isSupportGlobalFlags() {
         return false;
     }

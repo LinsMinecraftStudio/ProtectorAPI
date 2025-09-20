@@ -4,10 +4,7 @@ import br.net.fabiozumbi12.RedProtect.Bukkit.API.RedProtectAPI;
 import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import br.net.fabiozumbi12.RedProtect.Core.config.Category.GlobalFlagsCategory;
-import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.CustomFlag;
-import io.github.lijinhong11.protector.api.flag.FlagState;
-import io.github.lijinhong11.protector.api.flag.IFlagState;
+import io.github.lijinhong11.protector.api.flag.*;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
 import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
 import java.lang.reflect.Field;
@@ -18,7 +15,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class RedProtectProtectionModule implements IProtectionModule {
+public class RedProtectProtectionModule implements IProtectionModule, FlagRegisterable {
     private final RedProtectAPI api;
 
     public RedProtectProtectionModule() {

@@ -6,6 +6,7 @@ import cn.lunadeer.dominion.api.dtos.flag.Flags;
 import cn.lunadeer.dominion.api.dtos.flag.PriFlag;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
 import io.github.lijinhong11.protector.api.flag.CustomFlag;
+import io.github.lijinhong11.protector.api.flag.FlagRegisterable;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
 import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
@@ -15,7 +16,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class DominionProtectionModule implements IProtectionModule {
+public class DominionProtectionModule implements IProtectionModule, FlagRegisterable {
     private final DominionAPI api;
 
     public DominionProtectionModule() {

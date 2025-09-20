@@ -4,10 +4,7 @@ import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.api.ResidenceApi;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
-import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.CustomFlag;
-import io.github.lijinhong11.protector.api.flag.FlagState;
-import io.github.lijinhong11.protector.api.flag.IFlagState;
+import io.github.lijinhong11.protector.api.flag.*;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
 import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
 import java.util.List;
@@ -17,7 +14,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ResidenceProtectionModule implements IProtectionModule {
+public class ResidenceProtectionModule implements IProtectionModule, FlagRegisterable {
     @Override
     public @NotNull String getPluginName() {
         return "Residence";

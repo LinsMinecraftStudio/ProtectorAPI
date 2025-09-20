@@ -101,9 +101,8 @@ public class ProtectorAPI {
      */
     public static void registerFlag(CustomFlag flag) {
         for (IProtectionModule module : modules) {
-            try {
-                module.registerFlag(flag);
-            } catch (UnsupportedOperationException ignored) {
+            if (module instanceof FlagRegisterable fr) {
+                fr.registerFlag(flag);
             }
         }
 

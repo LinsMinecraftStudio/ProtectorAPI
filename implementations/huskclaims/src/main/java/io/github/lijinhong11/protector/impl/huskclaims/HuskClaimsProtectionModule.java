@@ -1,9 +1,6 @@
 package io.github.lijinhong11.protector.impl.huskclaims;
 
-import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.CustomFlag;
-import io.github.lijinhong11.protector.api.flag.FlagState;
-import io.github.lijinhong11.protector.api.flag.IFlagState;
+import io.github.lijinhong11.protector.api.flag.*;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
 import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
 import java.util.*;
@@ -22,7 +19,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class HuskClaimsProtectionModule implements IProtectionModule {
+public class HuskClaimsProtectionModule implements IProtectionModule, FlagRegisterable {
     private static final BukkitHuskClaimsAPI api = BukkitHuskClaimsAPI.getInstance();
 
     @Override
