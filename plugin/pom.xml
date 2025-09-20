@@ -9,7 +9,7 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>plugin</artifactId>
+    <artifactId>protectorapi-plugin</artifactId>
     <version>${revision}</version>
 
     <properties>
