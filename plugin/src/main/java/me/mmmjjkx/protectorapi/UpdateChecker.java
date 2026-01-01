@@ -14,6 +14,12 @@ public class UpdateChecker {
     private static final HttpClient client = HttpClient.newHttpClient();
 
     public static void check() {
+        ProtectionAPIPlugin plugin = ProtectorAPI.getPluginHost();
+        String ver = plugin.getDescription().getVersion();
+        if (ver.contains("-SNAPSHOT")) {
+            return;
+        }
+
         try {
             HttpRequest get = HttpRequest.newBuilder()
                     .uri(new URI("https://api.spiget.org/v2/resources/126828/versions/latest"))
@@ -24,10 +30,11 @@ public class UpdateChecker {
             response.thenAcceptAsync(res -> {
                 CheckResult result = new Gson().fromJson(res.body(), CheckResult.class);
                 if (result != null) {
-                    ProtectionAPIPlugin plugin = ProtectorAPI.getPluginHost();
-                    plugin.getLogger()
-                            .warning("There is a new version of ProtectorAPI available! (Current: "
-                                    + plugin.getDescription().getVersion() + ", New: " + result.name + ")");
+                    if (!ver.equals(result.name)) {
+                        plugin.getLogger()
+                                .warning("There is a new version of ProtectorAPI available! (Current: "
+                                        + ver + ", New: " + result.name + ")");
+                    }
                 }
             });
         } catch (URISyntaxException ignored) {
