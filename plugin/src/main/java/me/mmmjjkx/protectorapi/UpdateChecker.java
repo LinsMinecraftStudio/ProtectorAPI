@@ -37,7 +37,6 @@ public class UpdateChecker {
     public static class CheckResult {
         public int downloads;
         public String name;
-        public Rating rating;
         public long releaseDate;
         public int resource;
         public String uuid;
@@ -46,19 +45,13 @@ public class UpdateChecker {
         public CheckResult() {}
 
         public CheckResult(
-                int downloads, String name, Rating rating, long releaseDate, int resource, String uuid, int id) {
+                int downloads, String name, long releaseDate, int resource, String uuid, int id) {
             this.downloads = downloads;
             this.name = name;
-            this.rating = rating;
             this.releaseDate = releaseDate;
             this.resource = resource;
             this.uuid = uuid;
             this.id = id;
-        }
-
-        public static class Rating {
-            public int count;
-            public int average;
         }
     }
 }
