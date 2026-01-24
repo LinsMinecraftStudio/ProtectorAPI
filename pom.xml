@@ -14,7 +14,7 @@
     <url>https://github.com/LinsMinecraftStudio/ProtectorAPI</url>
 
     <properties>
-        <revision>1.0.10</revision>
+        <revision>1.1.0</revision>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -105,7 +105,6 @@
                         <artifact>protectorapi-bentobox</artifact>
                         <artifact>protectorapi-dominion</artifact>
                         <artifact>protectorapi-huskclaims</artifact>
-                        <artifact>protectorapi-nobuildplus</artifact>
                         <artifact>protectorapi-plotsquared</artifact>
                         <artifact>protectorapi-redprotect</artifact>
                         <artifact>protectorapi-residence</artifact>
@@ -115,6 +114,7 @@
                         <artifact>protectorapi-block-bolt</artifact>
                         <artifact>protectorapi-block-chestprotection</artifact>
                         <artifact>protectorapi-block-chestshop</artifact>
+                        <artifact>protectorapi-block-excellentclaims</artifact>
                         <artifact>protectorapi-block-factionsuuid</artifact>
                         <artifact>protectorapi-block-funnyguilds</artifact>
                         <artifact>protectorapi-block-griefprevention</artifact>
@@ -172,8 +172,9 @@
         <module>block-implementations/chestshop</module>
         <module>block-implementations/factionsuuid</module>
         <module>block-implementations/funnyguilds</module>
-        <module>block-implementations/griefprevention</module>
-        <module>block-implementations/husktowns</module>
+        <module>block-implementations/excellentclaims</module> <!--move to block implementation due to location-required methods-->
+        <module>block-implementations/griefprevention</module> <!--move to block implementation due to few APIs-->
+        <module>block-implementations/husktowns</module> <!--move to block implementation due to location-required methods-->
         <module>block-implementations/lands</module> <!--move to block implementation due to location-required methods-->
         <module>block-implementations/lockettepro</module>
         <module>block-implementations/lwcx</module>
@@ -184,6 +185,14 @@
     </modules>
 
     <repositories>
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>nightexpress-releases</id>
+            <url>https://repo.nightexpressdev.com/releases</url>
+        </repository>
         <repository>
             <id>william278.net</id>
             <url>https://repo.william278.net/releases</url>
@@ -203,10 +212,6 @@
         <repository>
             <id>chestshop-repo</id>
             <url>https://repo.minebench.de/</url>
-        </repository>
-        <repository>
-            <id>codemc-repo</id>
-            <url>https://repo.codemc.org/repository/maven-public/</url>
         </repository>
         <repository>
             <id>shopchest-repo</id>

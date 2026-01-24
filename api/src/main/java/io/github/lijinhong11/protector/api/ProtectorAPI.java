@@ -7,7 +7,7 @@ import io.github.lijinhong11.protector.api.flag.CustomFlag;
 import io.github.lijinhong11.protector.api.flag.FlagRegisterable;
 import io.github.lijinhong11.protector.api.protection.FakeEventMaker;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
-import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
+import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
@@ -191,7 +191,7 @@ public class ProtectorAPI {
             return true;
         }
 
-        ProtectionRangeInfo info = module.getProtectionRangeInfo(player);
+        IProtectionRangeInfo info = module.getProtectionRangeInfo(player);
         if (info == null) {
             return true;
         }
@@ -240,7 +240,7 @@ public class ProtectorAPI {
             return true;
         }
 
-        ProtectionRangeInfo info = module.getProtectionRangeInfo(player);
+        IProtectionRangeInfo info = module.getProtectionRangeInfo(player);
         if (info == null) {
             return true;
         }
@@ -289,7 +289,7 @@ public class ProtectorAPI {
             return true;
         }
 
-        ProtectionRangeInfo info = module.getProtectionRangeInfo(player);
+        IProtectionRangeInfo info = module.getProtectionRangeInfo(player);
         if (info == null) {
             return true;
         }

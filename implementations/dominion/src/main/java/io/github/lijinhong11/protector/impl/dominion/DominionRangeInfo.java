@@ -10,14 +10,14 @@ import io.github.lijinhong11.protector.api.convertions.FlagMap;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
 import io.github.lijinhong11.protector.api.flag.FlagState;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
-import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
+import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
 import java.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class DominionRangeInfo implements ProtectionRangeInfo {
+public class DominionRangeInfo implements IProtectionRangeInfo {
     private final DominionDTO dominion;
 
     public DominionRangeInfo(DominionDTO dominion) {

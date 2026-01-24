@@ -1,10 +1,9 @@
 package io.github.lijinhong11.protector.impl.bentobox;
 
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.CustomFlag;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
 import io.github.lijinhong11.protector.api.protection.IProtectionModule;
-import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
+import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +28,7 @@ public class BentoBoxProtectionModule implements IProtectionModule {
     }
 
     @Override
-    public List<? extends ProtectionRangeInfo> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
+    public List<? extends IProtectionRangeInfo> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
         Collection<Island> islands = bentoBox.getIslands().getIslands();
         if (islands.isEmpty()) {
             return List.of();
@@ -50,7 +49,7 @@ public class BentoBoxProtectionModule implements IProtectionModule {
     }
 
     @Override
-    public @Nullable ProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location) {
+    public @Nullable IProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location) {
         Optional<Island> island = bentoBox.getIslands().getIslandAt(location);
         return island.map(BentoBoxIslandInfo::new).orElse(null);
     }

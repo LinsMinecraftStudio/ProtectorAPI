@@ -8,7 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface ProtectionRangeInfo {
+public interface IProtectionRangeInfo {
     /**
      * Get all flags
      *

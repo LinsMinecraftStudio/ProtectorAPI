@@ -33,7 +33,7 @@ public interface IProtectionModule {
      * @param player the player
      * @return the protection range info
      */
-    default @Nullable ProtectionRangeInfo getProtectionRangeInfo(@NotNull Player player) {
+    default @Nullable IProtectionRangeInfo getProtectionRangeInfo(@NotNull Player player) {
         return getProtectionRangeInfo(player.getLocation());
     }
 
@@ -43,7 +43,7 @@ public interface IProtectionModule {
      * @param player the player
      * @return the protection range info
      */
-    List<? extends ProtectionRangeInfo> getProtectionRangeInfos(@NotNull OfflinePlayer player);
+    List<? extends IProtectionRangeInfo> getProtectionRangeInfos(@NotNull OfflinePlayer player);
 
     /**
      * Check if the location is in the protection range
@@ -59,7 +59,7 @@ public interface IProtectionModule {
      * @param location the location
      * @return the protection range info (if the location is not in the protection range, return null)
      */
-    @Nullable ProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location);
+    @Nullable IProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location);
 
     /**
      * Whether the module supports global flags

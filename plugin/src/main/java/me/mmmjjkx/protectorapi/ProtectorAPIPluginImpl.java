@@ -20,6 +20,7 @@ import io.github.lijinhong11.protector.block_impl.shopchest.ShopChestBlockProtec
 import io.github.lijinhong11.protector.block_impl.towny.TownyBlockProtectionModule;
 import io.github.lijinhong11.protector.impl.bentobox.BentoBoxProtectionModule;
 import io.github.lijinhong11.protector.impl.dominion.DominionProtectionModule;
+import io.github.lijinhong11.protector.impl.excellentclaims.ExcellentClaimsBlockProtectionModule;
 import io.github.lijinhong11.protector.impl.huskclaims.HuskClaimsProtectionModule;
 import io.github.lijinhong11.protector.impl.plotsquared.PlotSquaredProtectionModule;
 import io.github.lijinhong11.protector.impl.redprotect.RedProtectProtectionModule;
@@ -104,6 +105,10 @@ public class ProtectorAPIPluginImpl extends ProtectionAPIPlugin {
 
         if (pm.isPluginEnabled("ChestShop")) {
             ProtectorAPI.register(new ChestShopBlockProtectionModule());
+        }
+
+        if (pm.isPluginEnabled("ExcellentClaims")) {
+            ProtectorAPI.register(new ExcellentClaimsBlockProtectionModule());
         }
 
         if (pm.isPluginEnabled("FactionsUUID")) {

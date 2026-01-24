@@ -4,7 +4,7 @@ import io.github.lijinhong11.protector.api.convertions.FlagMap;
 import io.github.lijinhong11.protector.api.flag.CommonFlags;
 import io.github.lijinhong11.protector.api.flag.FlagState;
 import io.github.lijinhong11.protector.api.flag.IFlagState;
-import io.github.lijinhong11.protector.api.protection.ProtectionRangeInfo;
+import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +20,7 @@ import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.managers.FlagsManager;
 import world.bentobox.bentobox.managers.RanksManager;
 
-public class BentoBoxIslandInfo implements ProtectionRangeInfo {
+public class BentoBoxIslandInfo implements IProtectionRangeInfo {
     private final Island island;
 
     public BentoBoxIslandInfo(Island island) {

@@ -11,7 +11,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>protectorapi-block-blocklocker</artifactId>
+    <artifactId>protectorapi-block-excellentclaims</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -38,15 +38,15 @@
             <artifactId>paper-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>nl.rutgerkok</groupId>
-            <artifactId>blocklocker</artifactId>
-            <version>1.13</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-api</artifactId>
             <version>${revision}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>su.nightexpress.excellentclaims</groupId>
+            <artifactId>ExcellentClaims</artifactId>
+            <version>1.5.2</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
