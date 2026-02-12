@@ -44,6 +44,8 @@ public class ProtectorAPIPluginImpl extends ProtectionAPIPlugin {
 
         new Metrics(this, 26519);
 
+        getCommand("protectorapi-debug").setExecutor(new DebugCommand(this));
+
         getLogger().info("Successfully loaded ProtectorAPI!");
 
         if (getConfig().getBoolean("update-check")) {

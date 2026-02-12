@@ -5,6 +5,9 @@ authors: [mmmjjkx]
 api-version: 1.17
 description: A simple API for protection plugins
 folia-supported: true
+commands:
+  protectorapi-debug:
+    permission-message: "You have no permission to do that."
 softdepend:
   - WorldGuard
   - Residence

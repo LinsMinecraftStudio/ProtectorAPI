@@ -122,6 +122,14 @@ public class ProtectorAPI {
     }
 
     /**
+     * Get all available block protection modules.
+     * @return a list contains all available protection modules.
+     */
+    public static Collection<IBlockProtectionModule> getAllAvailableBlockProtectionModules() {
+        return blockModules;
+    }
+
+    /**
      * Find the protection module that protects the protection range
      * @param location the location in the protection range
      * @return the protection module
