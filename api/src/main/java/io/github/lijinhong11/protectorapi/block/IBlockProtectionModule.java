@@ -1,4 +1,4 @@
-package io.github.lijinhong11.protector.api.block;
+package io.github.lijinhong11.protectorapi.block;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;

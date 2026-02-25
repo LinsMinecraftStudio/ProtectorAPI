@@ -2,11 +2,11 @@ package io.github.lijinhong11.protector.impl.worldguard;
 
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import io.github.lijinhong11.protector.api.convertions.FlagMap;
-import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.FlagState;
-import io.github.lijinhong11.protector.api.flag.IFlagState;
-import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.convertions.FlagMap;
+import io.github.lijinhong11.protectorapi.flag.CommonFlags;
+import io.github.lijinhong11.protectorapi.flag.FlagState;
+import io.github.lijinhong11.protectorapi.flag.FlagStates;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.List;
 import java.util.Map;
 import org.bukkit.Bukkit;
@@ -22,14 +22,14 @@ public class WorldGuardProtectedRegionInfo implements IProtectionRangeInfo {
     }
 
     @Override
-    public @NotNull Map<String, IFlagState<?>> getFlags() {
-        Map<String, IFlagState<?>> flagMap = new FlagMap();
+    public @NotNull Map<String, FlagState<?>> getFlags() {
+        Map<String, FlagState<?>> flagMap = new FlagMap();
         for (Map.Entry<Flag<?>, Object> entry : protectedRegion.getFlags().entrySet()) {
             Flag<?> flag = entry.getKey();
             if (flag.getDefault() instanceof Boolean b) {
-                flagMap.put(flag.getName(), FlagState.fromNullableBoolean(b));
+                flagMap.put(flag.getName(), FlagStates.fromNullableBoolean(b));
             } else {
-                flagMap.put(entry.getKey().getName(), FlagState.of(entry.getValue()));
+                flagMap.put(entry.getKey().getName(), FlagStates.of(entry.getValue()));
             }
         }
 
@@ -37,24 +37,24 @@ public class WorldGuardProtectedRegionInfo implements IProtectionRangeInfo {
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull String flag) {
+    public FlagState<?> getFlagState(@NotNull String flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
+    public FlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
         return getFlags().get(flag);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull CommonFlags flag) {
+    public FlagState<?> getFlagState(@NotNull CommonFlags flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
+    public FlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
         if (flag.getForWorldGuard() == null) {
-            return FlagState.UNSUPPORTED;
+            return FlagStates.UNSUPPORTED;
         }
 
         return getFlagState(flag.getForWorldGuard());

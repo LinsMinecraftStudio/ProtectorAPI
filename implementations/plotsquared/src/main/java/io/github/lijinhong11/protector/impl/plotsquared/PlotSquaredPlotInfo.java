@@ -2,11 +2,11 @@ package io.github.lijinhong11.protector.impl.plotsquared;
 
 import com.plotsquared.core.plot.Plot;
 import com.plotsquared.core.plot.flag.PlotFlag;
-import io.github.lijinhong11.protector.api.convertions.FlagMap;
-import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.FlagState;
-import io.github.lijinhong11.protector.api.flag.IFlagState;
-import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.convertions.FlagMap;
+import io.github.lijinhong11.protectorapi.flag.CommonFlags;
+import io.github.lijinhong11.protectorapi.flag.FlagState;
+import io.github.lijinhong11.protectorapi.flag.FlagStates;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -23,33 +23,33 @@ public class PlotSquaredPlotInfo implements IProtectionRangeInfo {
     }
 
     @Override
-    public @NotNull Map<String, IFlagState<?>> getFlags() {
+    public @NotNull Map<String, FlagState<?>> getFlags() {
         FlagMap flagMap = new FlagMap();
         for (PlotFlag<?, ?> flag : plot.getFlags()) {
-            flagMap.put(flag.getName(), FlagState.of(flag.getValue()));
+            flagMap.put(flag.getName(), FlagStates.of(flag.getValue()));
         }
         return Collections.unmodifiableMap(flagMap);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull String flag) {
+    public FlagState<?> getFlagState(@NotNull String flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
+    public FlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
         return getFlags().get(flag);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull CommonFlags flag) {
+    public FlagState<?> getFlagState(@NotNull CommonFlags flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
+    public FlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
         if (flag.getForPlotSquared() == null) {
-            return FlagState.UNSUPPORTED;
+            return FlagStates.UNSUPPORTED;
         }
 
         return getFlagState(flag.getForPlotSquared(), null);

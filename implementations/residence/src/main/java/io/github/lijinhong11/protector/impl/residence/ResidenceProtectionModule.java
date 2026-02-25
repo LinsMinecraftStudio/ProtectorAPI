@@ -4,9 +4,9 @@ import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.api.ResidenceApi;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
-import io.github.lijinhong11.protector.api.flag.*;
-import io.github.lijinhong11.protector.api.protection.IProtectionModule;
-import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.flag.*;
+import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.List;
 import java.util.Map;
 import org.bukkit.Location;
@@ -61,14 +61,14 @@ public class ResidenceProtectionModule implements IProtectionModule, FlagRegiste
     }
 
     @Override
-    public IFlagState<?> getGlobalFlag(@NotNull String flag, @NotNull String world) {
+    public FlagState<?> getGlobalFlag(@NotNull String flag, @NotNull String world) {
         Map<String, Boolean> flags =
                 Residence.getInstance().wmanager.getPerms(world).getFlags();
-        return FlagState.fromNullableBoolean(flags.get(flag));
+        return FlagStates.fromNullableBoolean(flags.get(flag));
     }
 
     @Override
-    public IFlagState<?> getGlobalFlag(@NotNull CommonFlags flag, @NotNull String world) {
+    public FlagState<?> getGlobalFlag(@NotNull CommonFlags flag, @NotNull String world) {
         return getGlobalFlag(flag.getForResidence(), world);
     }
 

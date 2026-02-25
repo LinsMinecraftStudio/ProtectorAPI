@@ -1,10 +1,10 @@
 package io.github.lijinhong11.protector.impl.bentobox;
 
-import io.github.lijinhong11.protector.api.convertions.FlagMap;
-import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.FlagState;
-import io.github.lijinhong11.protector.api.flag.IFlagState;
-import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.convertions.FlagMap;
+import io.github.lijinhong11.protectorapi.flag.CommonFlags;
+import io.github.lijinhong11.protectorapi.flag.FlagState;
+import io.github.lijinhong11.protectorapi.flag.FlagStates;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,43 +28,43 @@ public class BentoBoxIslandInfo implements IProtectionRangeInfo {
     }
 
     @Override
-    public @NotNull Map<String, IFlagState<?>> getFlags() {
-        FlagMap flagMap = new FlagMap(island.getFlags(), i -> FlagState.fromBoolean(i >= 0));
+    public @NotNull Map<String, FlagState<?>> getFlags() {
+        FlagMap flagMap = new FlagMap(island.getFlags(), i -> FlagStates.fromBoolean(i >= 0));
         return Collections.unmodifiableMap(flagMap);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull String flag) {
+    public FlagState<?> getFlagState(@NotNull String flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
+    public FlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
         FlagsManager manager = BentoBox.getInstance().getFlagsManager();
         Optional<Flag> theFlagOptional = manager.getFlag(flag);
         if (theFlagOptional.isEmpty()) {
-            return FlagState.UNSUPPORTED;
+            return FlagStates.UNSUPPORTED;
         }
 
         Flag theFlag = theFlagOptional.get();
 
         if (player == null) {
-            return FlagState.fromBoolean(island.isAllowed(theFlag));
+            return FlagStates.fromBoolean(island.isAllowed(theFlag));
         }
 
         User user = BentoBox.getInstance().getPlayers().getUser(player.getUniqueId());
-        return FlagState.fromBoolean(island.isAllowed(user, theFlag));
+        return FlagStates.fromBoolean(island.isAllowed(user, theFlag));
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull CommonFlags flag) {
+    public FlagState<?> getFlagState(@NotNull CommonFlags flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
+    public FlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
         if (flag.getForBentoBox() == null) {
-            return FlagState.UNSUPPORTED;
+            return FlagStates.UNSUPPORTED;
         }
 
         return getFlagState(flag.getForBentoBox(), player);

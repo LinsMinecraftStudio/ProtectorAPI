@@ -1,7 +1,5 @@
 package me.mmmjjkx.protectorapi;
 
-import io.github.lijinhong11.protector.api.ProtectionAPIPlugin;
-import io.github.lijinhong11.protector.api.ProtectorAPI;
 import io.github.lijinhong11.protector.block_impl.blocklocker.BlockLockerBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.bolt.BoltBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.chestprotection.ChestProtectionBlockProtectionModule;
@@ -26,9 +24,11 @@ import io.github.lijinhong11.protector.impl.plotsquared.PlotSquaredProtectionMod
 import io.github.lijinhong11.protector.impl.redprotect.RedProtectProtectionModule;
 import io.github.lijinhong11.protector.impl.residence.ResidenceProtectionModule;
 import io.github.lijinhong11.protector.impl.worldguard.WorldGuardProtectionModule;
+import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public class ProtectorAPIPluginImpl extends ProtectionAPIPlugin {
+public class ProtectorAPIPluginImpl extends JavaPlugin {
     @Override
     public void onLoad() {
         ProtectorAPI.setPluginHost(this);
@@ -44,7 +44,7 @@ public class ProtectorAPIPluginImpl extends ProtectionAPIPlugin {
 
         new Metrics(this, 26519);
 
-        getCommand("protectorapi-debug").setExecutor(new DebugCommand(this));
+        getCommand("protectorapi-debug").setExecutor(new DebugCommand());
 
         getLogger().info("Successfully loaded ProtectorAPI!");
 

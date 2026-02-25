@@ -1,10 +1,10 @@
 package io.github.lijinhong11.protector.impl.huskclaims;
 
-import io.github.lijinhong11.protector.api.convertions.FlagMap;
-import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.FlagState;
-import io.github.lijinhong11.protector.api.flag.IFlagState;
-import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.convertions.FlagMap;
+import io.github.lijinhong11.protectorapi.flag.CommonFlags;
+import io.github.lijinhong11.protectorapi.flag.FlagState;
+import io.github.lijinhong11.protectorapi.flag.FlagStates;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,41 +24,41 @@ public class HuskClaimsClaimInfo implements IProtectionRangeInfo {
     }
 
     @Override
-    public @NotNull Map<String, IFlagState<?>> getFlags() {
+    public @NotNull Map<String, FlagState<?>> getFlags() {
         FlagMap map = new FlagMap();
         for (OperationType type : OperationType.getRegistered()) {
             map.put(
                     type.asMinimalString(),
-                    FlagState.fromBoolean(claim.getDefaultFlags().contains(type)));
+                    FlagStates.fromBoolean(claim.getDefaultFlags().contains(type)));
         }
 
         return map;
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull String flag) {
+    public FlagState<?> getFlagState(@NotNull String flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
+    public FlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
         Optional<OperationType> type = OperationType.get(flag);
         if (type.isEmpty()) {
-            return FlagState.UNSUPPORTED;
+            return FlagStates.UNSUPPORTED;
         }
 
-        return FlagState.fromBoolean(claim.getDefaultFlags().contains(type.get()));
+        return FlagStates.fromBoolean(claim.getDefaultFlags().contains(type.get()));
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull CommonFlags flag) {
+    public FlagState<?> getFlagState(@NotNull CommonFlags flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
+    public FlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
         if (flag.getForHuskClaims() == null) {
-            return FlagState.UNSUPPORTED;
+            return FlagStates.UNSUPPORTED;
         }
 
         return getFlagState(flag.getForHuskClaims(), player);

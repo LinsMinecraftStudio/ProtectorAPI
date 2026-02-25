@@ -4,9 +4,9 @@ import br.net.fabiozumbi12.RedProtect.Bukkit.API.RedProtectAPI;
 import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import br.net.fabiozumbi12.RedProtect.Core.config.Category.GlobalFlagsCategory;
-import io.github.lijinhong11.protector.api.flag.*;
-import io.github.lijinhong11.protector.api.protection.IProtectionModule;
-import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.flag.*;
+import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,13 +66,13 @@ public class RedProtectProtectionModule implements IProtectionModule, FlagRegist
     }
 
     @Override
-    public IFlagState<?> getGlobalFlag(@NotNull String flag, @NotNull String world) {
+    public FlagState<?> getGlobalFlag(@NotNull String flag, @NotNull String world) {
         GlobalFlagsCategory category = RedProtect.get().getConfigManager().globalFlagsRoot();
         GlobalFlagsCategory.WorldProperties properties = category.worlds.get(world);
         if (flag.equals(CommonFlags.PLACE.getForRedProtect())
                 || flag.equals(CommonFlags.BREAK.getForRedProtect())
                 || flag.equals(CommonFlags.BUILD.getForRedProtect())) {
-            return FlagState.fromBoolean(properties.build);
+            return FlagStates.fromBoolean(properties.build);
         }
 
         Field[] field = GlobalFlagsCategory.WorldProperties.class.getDeclaredFields();
@@ -81,22 +81,22 @@ public class RedProtectProtectionModule implements IProtectionModule, FlagRegist
                 try {
                     Object value = f.get(properties);
                     if (value instanceof Boolean b) {
-                        return FlagState.fromNullableBoolean(b);
+                        return FlagStates.fromNullableBoolean(b);
                     } else {
-                        return FlagState.of(value);
+                        return FlagStates.of(value);
                     }
                 } catch (IllegalAccessException ignored) {
                 }
             }
         }
 
-        return FlagState.UNSUPPORTED;
+        return FlagStates.UNSUPPORTED;
     }
 
     @Override
-    public IFlagState<?> getGlobalFlag(@NotNull CommonFlags flag, @NotNull String world) {
+    public FlagState<?> getGlobalFlag(@NotNull CommonFlags flag, @NotNull String world) {
         if (flag.getForRedProtect() == null) {
-            return FlagState.UNSUPPORTED;
+            return FlagStates.UNSUPPORTED;
         }
 
         return getGlobalFlag(flag.getForRedProtect(), world);

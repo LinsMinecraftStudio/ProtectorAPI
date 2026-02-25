@@ -3,12 +3,12 @@ package io.github.lijinhong11.protector.impl.plotsquared;
 import com.plotsquared.core.PlotAPI;
 import com.plotsquared.core.player.PlotPlayer;
 import com.plotsquared.core.plot.flag.GlobalFlagContainer;
-import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.CustomFlag;
-import io.github.lijinhong11.protector.api.flag.FlagRegisterable;
-import io.github.lijinhong11.protector.api.flag.IFlagState;
-import io.github.lijinhong11.protector.api.protection.IProtectionModule;
-import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.flag.CommonFlags;
+import io.github.lijinhong11.protectorapi.flag.CustomFlag;
+import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
+import io.github.lijinhong11.protectorapi.flag.FlagState;
+import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -61,12 +61,12 @@ public class PlotSquaredProtectionModule implements IProtectionModule, FlagRegis
     }
 
     @Override
-    public IFlagState<?> getGlobalFlag(@NotNull String flag, @NotNull String world) {
+    public FlagState<?> getGlobalFlag(@NotNull String flag, @NotNull String world) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public IFlagState<?> getGlobalFlag(@NotNull CommonFlags flag, @NotNull String world) {
+    public FlagState<?> getGlobalFlag(@NotNull CommonFlags flag, @NotNull String world) {
         throw new UnsupportedOperationException();
     }
 

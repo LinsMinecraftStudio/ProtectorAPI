@@ -1,8 +1,8 @@
 package io.github.lijinhong11.protector.impl.huskclaims;
 
-import io.github.lijinhong11.protector.api.flag.*;
-import io.github.lijinhong11.protector.api.protection.IProtectionModule;
-import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.flag.*;
+import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.*;
 import net.kyori.adventure.key.Key;
 import net.william278.huskclaims.api.BukkitHuskClaimsAPI;
@@ -68,24 +68,24 @@ public class HuskClaimsProtectionModule implements IProtectionModule, FlagRegist
     }
 
     @Override
-    public IFlagState<?> getGlobalFlag(@NotNull String flag, @NotNull String world) {
+    public FlagState<?> getGlobalFlag(@NotNull String flag, @NotNull String world) {
         Optional<OperationType> operationType = OperationType.get(flag);
         if (operationType.isEmpty()) {
-            return FlagState.UNSUPPORTED;
+            return FlagStates.UNSUPPORTED;
         }
 
         Optional<ClaimWorld> cw = api.getClaimWorld(wrapWorld(Bukkit.getWorld(world)));
         if (cw.isEmpty()) {
-            return FlagState.WORLD_NOT_FOUND;
+            return FlagStates.WORLD_NOT_FOUND;
         }
 
-        return FlagState.fromBoolean(cw.get().getWildernessFlags().contains(operationType.get()));
+        return FlagStates.fromBoolean(cw.get().getWildernessFlags().contains(operationType.get()));
     }
 
     @Override
-    public IFlagState<?> getGlobalFlag(@NotNull CommonFlags flag, @NotNull String world) {
+    public FlagState<?> getGlobalFlag(@NotNull CommonFlags flag, @NotNull String world) {
         if (flag.getForHuskClaims() == null) {
-            return FlagState.UNSUPPORTED;
+            return FlagStates.UNSUPPORTED;
         }
 
         return getGlobalFlag(flag.getForHuskClaims(), world);

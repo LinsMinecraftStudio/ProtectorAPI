@@ -2,7 +2,7 @@ package io.github.lijinhong11.protector.impl.plotsquared;
 
 import com.plotsquared.core.configuration.caption.StaticCaption;
 import com.plotsquared.core.plot.flag.types.BooleanFlag;
-import io.github.lijinhong11.protector.api.flag.CustomFlag;
+import io.github.lijinhong11.protectorapi.flag.CustomFlag;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class PSCustomFlag extends BooleanFlag<PSCustomFlag> {

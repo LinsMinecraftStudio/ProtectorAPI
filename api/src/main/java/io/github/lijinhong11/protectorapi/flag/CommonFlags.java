@@ -1,4 +1,4 @@
-package io.github.lijinhong11.protector.api.flag;
+package io.github.lijinhong11.protectorapi.flag;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -6,8 +6,8 @@ import org.jetbrains.annotations.Nullable;
  * The enum class to store common flags
  */
 public enum CommonFlags {
-    BUILD("build", "place", "build", "build", "place-blocks", "PLACE_BLOCKS", "block_place"),
-    PVP("pvp", "player_damage", "pvp", "pvp", "pvp", "PVP_OVERWORLD", "player_damage_player"),
+    BUILD("build", "place", "build", "build", "place-blocks", "PLACE_BLOCKS", "block_place", "BLOCK_PLACE"),
+    PVP("pvp", "player_damage", "pvp", "pvp", "pvp", "PVP_OVERWORLD", "player_damage_player", null),
     ANIMAL_SPAWN(
             "animal_spawn",
             "animal_spawn",
@@ -15,20 +15,36 @@ public enum CommonFlags {
             "mob-spawning",
             "mob-spawn",
             "ANIMAL_SPAWNERS_SPAWN",
-            "passive_mob_spawn"),
-    FIRESPREAD("firespread", "fire_spread", "fire", "fire-spread", "fire-spread", "FIRE_SPREAD", "fire_spread"),
-    FLY("fly", "fly", "allow-fly", "fly", "fly", "ISLAND_FLY_PROTECTION", null),
-    CONTAINER("container", "container", "chest", "chest-access", "container-access", "CHEST", "container_open"),
+            "passive_mob_spawn",
+            null),
+    FIRESPREAD("firespread", "fire_spread", "fire", "fire-spread", "fire-spread", "FIRE_SPREAD", "fire_spread", null),
+    FLY("fly", "fly", "allow-fly", "fly", "fly", "ISLAND_FLY_PROTECTION", null, null),
+    CONTAINER(
+            "container",
+            "container",
+            "chest",
+            "chest-access",
+            "container-access",
+            "CHEST",
+            "container_open",
+            "OPEN_CONTAINERS"),
     ENDERPEARL(
-            "enderpearl", "ender_pearl", "teleport", "enderpearl", "enderpearl", "ENDER_PEARL", "ender_pearl_teleport"),
-    TNT("tnt", "tnt_explode", "block-transform", "tnt", "tnt", "TNT_PRIMING", "explosion_damage_terrain"),
-    ITEM_DROP("itemdrop", "can-drop", "can-drop", "item-drop", "item-drop", "ITEM_DROP", null),
-    ITEM_PICKUP("itempickup", "can-pickup", "can-pickup", "item-pickup", "item-pickup", "ITEM_PICKUP", null),
-    INTERACT("use", "place", "build", "use", "use", "REDSTONE", "block_interact"),
-    KEEP_INV("keepinv", "keep-inventory", "keep-inventory", "keep-inventory", "keep-inventory", null, null),
-    KEEP_EXP("keepexp", "keep-levels", "keep-levels", "keep-exp", "keep-exp", null, null),
-    CREEPER("creeper", "creeper_explode", "mob-loot", "creeper-explosion", "creeper-explosion", null, null),
-    MOB_ITEM_DROP("mobitemdrop", "mob_drop_item", "mob-loot", "exp-drops", "exp-drop", null, null),
+            "enderpearl",
+            "ender_pearl",
+            "teleport",
+            "enderpearl",
+            "enderpearl",
+            "ENDER_PEARL",
+            "ender_pearl_teleport",
+            null),
+    TNT("tnt", "tnt_explode", "block-transform", "tnt", "tnt", "TNT_PRIMING", "explosion_damage_terrain", null),
+    ITEM_DROP("itemdrop", "can-drop", "can-drop", "item-drop", "item-drop", "ITEM_DROP", null, null),
+    ITEM_PICKUP("itempickup", "can-pickup", "can-pickup", "item-pickup", "item-pickup", "ITEM_PICKUP", null, null),
+    INTERACT("use", "place", "build", "use", "use", null, "block_interact", "INTERACT"),
+    KEEP_INV("keepinv", "keep-inventory", "keep-inventory", "keep-inventory", "keep-inventory", null, null, null),
+    KEEP_EXP("keepexp", "keep-levels", "keep-levels", "keep-exp", "keep-exp", null, null, null),
+    CREEPER("creeper", "creeper_explode", "mob-loot", "creeper-explosion", "creeper-explosion", null, null, null),
+    MOB_ITEM_DROP("mobitemdrop", "mob_drop_item", "mob-loot", "exp-drops", "exp-drop", null, null, null),
     MONSTER_SPAWN(
             "monsters",
             "monster_spawn",
@@ -36,10 +52,11 @@ public enum CommonFlags {
             "mob-spawning",
             "mob-spawn",
             "MONSTER_SPAWNERS_SPAWN",
-            "monster_spawn"),
-    MOVE("move", "move", "can-move", "entry", "entry", "MOVE_BOX", null),
-    BREAK("break", "break", "allow-break", "block-break", "break-blocks", "BREAK_BLOCKS", "block_break"),
-    PLACE("place", "place", "allow-place", "block-place", "place-blocks", "PLACE_BLOCKS", "block_place");
+            "monster_spawn",
+            null),
+    MOVE("move", "move", "can-move", "entry", "entry", "MOVE_BOX", null, null),
+    BREAK("break", "break", "allow-break", "block-break", "break-blocks", "BREAK_BLOCKS", "block_break", "BLOCK_BREAK"),
+    PLACE("place", "place", "allow-place", "block-place", "place-blocks", "PLACE_BLOCKS", "block_place", "BLOCK_PLACE");
 
     private final String residence;
     private final @Nullable String dominion;
@@ -48,6 +65,7 @@ public enum CommonFlags {
     private final @Nullable String plotSquared;
     private final @Nullable String bentoBox;
     private final @Nullable String huskClaims;
+    private final @Nullable String iridiumSkyblock;
 
     CommonFlags(
             String residence,
@@ -56,7 +74,8 @@ public enum CommonFlags {
             @Nullable String worldGuard,
             @Nullable String plotSquared,
             @Nullable String bentoBox,
-            @Nullable String huskClaims) {
+            @Nullable String huskClaims,
+            @Nullable String iridiumSkyblock) {
         this.residence = residence;
         this.dominion = dominion;
         this.redProtect = redProtect;
@@ -64,12 +83,14 @@ public enum CommonFlags {
         this.plotSquared = plotSquared;
         this.bentoBox = bentoBox;
         this.huskClaims = huskClaims;
+        this.iridiumSkyblock = iridiumSkyblock;
     }
 
     public static CommonFlags fromResidence(String flag) {
         for (CommonFlags cf : values()) {
             if (cf.residence.equalsIgnoreCase(flag)) return cf;
         }
+
         return null;
     }
 
@@ -77,6 +98,7 @@ public enum CommonFlags {
         for (CommonFlags cf : values()) {
             if (cf.dominion != null && cf.dominion.equalsIgnoreCase(flag)) return cf;
         }
+
         return null;
     }
 
@@ -84,6 +106,7 @@ public enum CommonFlags {
         for (CommonFlags cf : values()) {
             if (cf.redProtect != null && cf.redProtect.equalsIgnoreCase(flag)) return cf;
         }
+
         return null;
     }
 
@@ -91,6 +114,7 @@ public enum CommonFlags {
         for (CommonFlags cf : values()) {
             if (cf.worldGuard != null && cf.worldGuard.equalsIgnoreCase(flag)) return cf;
         }
+
         return null;
     }
 
@@ -98,6 +122,7 @@ public enum CommonFlags {
         for (CommonFlags cf : values()) {
             if (cf.plotSquared != null && cf.plotSquared.equalsIgnoreCase(flag)) return cf;
         }
+
         return null;
     }
 
@@ -105,6 +130,7 @@ public enum CommonFlags {
         for (CommonFlags cf : values()) {
             if (cf.bentoBox != null && cf.bentoBox.equalsIgnoreCase(flag)) return cf;
         }
+
         return null;
     }
 
@@ -112,6 +138,15 @@ public enum CommonFlags {
         for (CommonFlags cf : values()) {
             if (cf.huskClaims != null && cf.huskClaims.equalsIgnoreCase(flag)) return cf;
         }
+
+        return null;
+    }
+
+    public static CommonFlags fromIridiumSkyblock(String flag) {
+        for (CommonFlags cf : values()) {
+            if (cf.iridiumSkyblock != null && cf.iridiumSkyblock.equalsIgnoreCase(flag)) return cf;
+        }
+
         return null;
     }
 
@@ -124,6 +159,7 @@ public enum CommonFlags {
             if (cf.redProtect != null && cf.redProtect.equalsIgnoreCase(flag)) return cf;
             if (cf.worldGuard != null && cf.worldGuard.equalsIgnoreCase(flag)) return cf;
             if (cf.huskClaims != null && cf.huskClaims.equalsIgnoreCase(flag)) return cf;
+            if (cf.iridiumSkyblock != null && cf.iridiumSkyblock.equalsIgnoreCase(flag)) return cf;
         }
 
         return null;
@@ -155,5 +191,9 @@ public enum CommonFlags {
 
     public @Nullable String getForHuskClaims() {
         return huskClaims;
+    }
+
+    public @Nullable String getForIridiumSkyblock() {
+        return iridiumSkyblock;
     }
 }

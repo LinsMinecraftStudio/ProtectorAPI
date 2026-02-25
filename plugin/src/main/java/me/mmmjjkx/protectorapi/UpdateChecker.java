@@ -1,20 +1,20 @@
 package me.mmmjjkx.protectorapi;
 
 import com.google.gson.Gson;
-import io.github.lijinhong11.protector.api.ProtectionAPIPlugin;
-import io.github.lijinhong11.protector.api.ProtectorAPI;
+import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public class UpdateChecker {
+class UpdateChecker {
     private static final HttpClient client = HttpClient.newHttpClient();
 
     public static void check() {
-        ProtectionAPIPlugin plugin = ProtectorAPI.getPluginHost();
+        JavaPlugin plugin = ProtectorAPI.getPluginHost();
         String ver = plugin.getDescription().getVersion();
         if (ver.contains("-SNAPSHOT")) {
             return;
@@ -32,8 +32,11 @@ public class UpdateChecker {
                 if (result != null) {
                     if (!ver.equals(result.name)) {
                         plugin.getLogger()
-                                .warning("There is a new version of ProtectorAPI available! (Current: "
-                                        + ver + ", New: " + result.name + ")");
+                                .warning("There is a new version of ProtectorAPI available! (Current: %s, Latest: %s)"
+                                        .formatted(ver, result.name));
+                        plugin.getLogger()
+                                .warning("Download it here: https://modrinth.com/plugin/protectorapi/versions/"
+                                        + result.name);
                     }
                 }
             });
@@ -51,8 +54,7 @@ public class UpdateChecker {
 
         public CheckResult() {}
 
-        public CheckResult(
-                int downloads, String name, long releaseDate, int resource, String uuid, int id) {
+        public CheckResult(int downloads, String name, long releaseDate, int resource, String uuid, int id) {
             this.downloads = downloads;
             this.name = name;
             this.releaseDate = releaseDate;

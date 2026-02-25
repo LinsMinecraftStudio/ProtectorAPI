@@ -1,9 +1,9 @@
 package io.github.lijinhong11.protector.block_impl.lands;
 
-import io.github.lijinhong11.protector.api.ProtectorAPI;
-import io.github.lijinhong11.protector.api.block.IBlockProtectionModule;
-import io.github.lijinhong11.protector.api.flag.CustomFlag;
-import io.github.lijinhong11.protector.api.flag.FlagRegisterable;
+import io.github.lijinhong11.protectorapi.ProtectorAPI;
+import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.flag.CustomFlag;
+import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.flags.type.Flags;
 import me.angeschossen.lands.api.flags.type.RoleFlag;

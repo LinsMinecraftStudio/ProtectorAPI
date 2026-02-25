@@ -1,7 +1,7 @@
-package io.github.lijinhong11.protector.api.protection;
+package io.github.lijinhong11.protectorapi.protection;
 
-import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.IFlagState;
+import io.github.lijinhong11.protectorapi.flag.CommonFlags;
+import io.github.lijinhong11.protectorapi.flag.FlagState;
 import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -75,7 +75,7 @@ public interface IProtectionModule {
      * @return the global flag
      * @throws UnsupportedOperationException if the module does not support global flags
      */
-    IFlagState<?> getGlobalFlag(@NotNull String flag, @NotNull String world);
+    FlagState<?> getGlobalFlag(@NotNull String flag, @NotNull String world);
 
     /**
      * Get the global flag
@@ -85,7 +85,7 @@ public interface IProtectionModule {
      * @return the global flag
      * @throws UnsupportedOperationException if the module does not support global flags
      */
-    IFlagState<?> getGlobalFlag(@NotNull CommonFlags flag, @NotNull String world);
+    FlagState<?> getGlobalFlag(@NotNull CommonFlags flag, @NotNull String world);
 
     /**
      * Set the global flag

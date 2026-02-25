@@ -1,6 +1,6 @@
 package io.github.lijinhong11.protector.block_impl.chestprotection;
 
-import io.github.lijinhong11.protector.api.block.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
 import me.angeschossen.chestprotect.api.ChestProtectAPI;
 import me.angeschossen.chestprotect.api.protection.ProtectionManager;
 import me.angeschossen.chestprotect.api.protection.block.BlockProtection;

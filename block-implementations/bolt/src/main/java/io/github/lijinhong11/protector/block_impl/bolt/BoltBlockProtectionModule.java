@@ -1,6 +1,6 @@
 package io.github.lijinhong11.protector.block_impl.bolt;
 
-import io.github.lijinhong11.protector.api.block.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

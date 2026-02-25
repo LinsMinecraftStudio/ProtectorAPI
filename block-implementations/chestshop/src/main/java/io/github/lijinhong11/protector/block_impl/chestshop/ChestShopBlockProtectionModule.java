@@ -4,7 +4,7 @@ import com.Acrobot.ChestShop.Permission;
 import com.Acrobot.ChestShop.Security;
 import com.Acrobot.ChestShop.Signs.ChestShopSign;
 import com.Acrobot.ChestShop.Utils.uBlock;
-import io.github.lijinhong11.protector.api.block.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;

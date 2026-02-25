@@ -1,6 +1,6 @@
 package io.github.lijinhong11.protector.block_impl.griefprevention;
 
-import io.github.lijinhong11.protector.api.block.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;

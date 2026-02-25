@@ -1,7 +1,7 @@
-package io.github.lijinhong11.protector.api.protection;
+package io.github.lijinhong11.protectorapi.protection;
 
-import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.IFlagState;
+import io.github.lijinhong11.protectorapi.flag.CommonFlags;
+import io.github.lijinhong11.protectorapi.flag.FlagState;
 import java.util.List;
 import java.util.Map;
 import org.bukkit.OfflinePlayer;
@@ -14,14 +14,14 @@ public interface IProtectionRangeInfo {
      *
      * @return all flags (the map is not modifiable)
      */
-    @NotNull Map<String, IFlagState<?>> getFlags();
+    @NotNull Map<String, FlagState<?>> getFlags();
 
     /**
      * Get flag state
      * @param flag flag name
      * @return flag state
      */
-    IFlagState<?> getFlagState(@NotNull String flag);
+    FlagState<?> getFlagState(@NotNull String flag);
 
     /**
      * Get flag state
@@ -29,14 +29,14 @@ public interface IProtectionRangeInfo {
      * @param player player
      * @return flag state
      */
-    IFlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player);
+    FlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player);
 
     /**
      * Get flag state
      * @param flag flag
      * @return flag state
      */
-    IFlagState<?> getFlagState(@NotNull CommonFlags flag);
+    FlagState<?> getFlagState(@NotNull CommonFlags flag);
 
     /**
      * Get flag state
@@ -44,7 +44,7 @@ public interface IProtectionRangeInfo {
      * @param player player
      * @return flag state
      */
-    IFlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player);
+    FlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player);
 
     /**
      * Get all admins

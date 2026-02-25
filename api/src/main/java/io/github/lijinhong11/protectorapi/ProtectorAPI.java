@@ -1,29 +1,28 @@
-package io.github.lijinhong11.protector.api;
+package io.github.lijinhong11.protectorapi;
 
 import com.google.common.base.Preconditions;
-import io.github.lijinhong11.protector.api.block.IBlockProtectionModule;
-import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.CustomFlag;
-import io.github.lijinhong11.protector.api.flag.FlagRegisterable;
-import io.github.lijinhong11.protector.api.protection.FakeEventMaker;
-import io.github.lijinhong11.protector.api.protection.IProtectionModule;
-import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.flag.*;
+import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 public class ProtectorAPI {
     private static final Set<IProtectionModule> modules;
     private static final Set<IBlockProtectionModule> blockModules;
 
-    private static ProtectionAPIPlugin pluginHost;
+    private static JavaPlugin pluginHost;
 
     static {
         modules = new CopyOnWriteArraySet<>();
@@ -53,12 +52,10 @@ public class ProtectorAPI {
     }
 
     /**
-     * Set the plugin instance
-     * @param plugin the plugin instance
-     * @apiNote this is not for you
+     * @apiNote internal api, do not use
      */
     @ApiStatus.Internal
-    public static void setPluginHost(ProtectionAPIPlugin plugin) {
+    public static void setPluginHost(JavaPlugin plugin) {
         Preconditions.checkNotNull(plugin, "plugin cannot be null");
         Preconditions.checkArgument(pluginHost == null, "plugin host already set");
 
@@ -66,10 +63,10 @@ public class ProtectorAPI {
     }
 
     /**
-     * Get the plugin instance
+     * Get ProtectorAPI's plugin instance
      * @return the plugin instance
      */
-    public static ProtectionAPIPlugin getPluginHost() {
+    public static JavaPlugin getPluginHost() {
         return pluginHost;
     }
 
@@ -117,16 +114,16 @@ public class ProtectorAPI {
      * Get all available protection modules.
      * @return a list contains all available protection modules.
      */
-    public static Collection<IProtectionModule> getAllAvailableProtectionModules() {
-        return modules;
+    public static @Unmodifiable @NotNull Collection<IProtectionModule> getAllAvailableProtectionModules() {
+        return Collections.unmodifiableCollection(modules);
     }
 
     /**
      * Get all available block protection modules.
      * @return a list contains all available protection modules.
      */
-    public static Collection<IBlockProtectionModule> getAllAvailableBlockProtectionModules() {
-        return blockModules;
+    public static @Unmodifiable @NotNull Collection<IBlockProtectionModule> getAllAvailableBlockProtectionModules() {
+        return Collections.unmodifiableCollection(blockModules);
     }
 
     /**
@@ -161,32 +158,14 @@ public class ProtectorAPI {
     }
 
     /**
-     * Check the event is fake
-     * @param event the event
-     * @return true if the event is fake, false otherwise
-     */
-    public static boolean isEventFake(@NotNull Event event) {
-        boolean fake = false;
-        for (IBlockProtectionModule module : blockModules) {
-            if (module instanceof FakeEventMaker fem) {
-                fake = fem.isEventFake(event);
-                if (fake) {
-                    return true;
-                }
-            }
-        }
-
-        return fake;
-    }
-
-    /**
      * Check if the player can break a block
+     *
      * @param player the player
      * @return true if the player can break a block, false otherwise
      */
     public static boolean allowBreak(Player player) {
         Location location = player.getLocation();
-        IProtectionModule module = findModule(location); // proved protection range isn't null
+        IProtectionModule module = findModule(location);
         if (module == null) {
             for (IProtectionModule m2 : modules) {
                 if (m2.isSupportGlobalFlags()) {
@@ -204,7 +183,12 @@ public class ProtectorAPI {
             return true;
         }
 
-        return (boolean) info.getFlagState(CommonFlags.BREAK, player).value();
+        FlagState<?> flagState = info.getFlagState(CommonFlags.BREAK, player);
+        if (flagState instanceof FlagStates.UnsupportedFlagState) {
+            return true;
+        }
+
+        return (boolean) flagState.value();
     }
 
     /**
@@ -220,9 +204,7 @@ public class ProtectorAPI {
                 return true;
             }
 
-            if (!module.allowBreak(player, block)) {
-                return false;
-            }
+            return module.allowBreak(player, block);
         }
 
         return false;
@@ -253,7 +235,12 @@ public class ProtectorAPI {
             return true;
         }
 
-        return (boolean) info.getFlagState(CommonFlags.PLACE, player).value();
+        FlagState<?> flagState = info.getFlagState(CommonFlags.PLACE, player);
+        if (flagState instanceof FlagStates.UnsupportedFlagState) {
+            return true;
+        }
+
+        return (boolean) flagState.value();
     }
 
     /**
@@ -269,9 +256,7 @@ public class ProtectorAPI {
                 return true;
             }
 
-            if (!module.allowPlace(player, block)) {
-                return false;
-            }
+            return module.allowPlace(player, block);
         }
 
         return false;
@@ -302,7 +287,12 @@ public class ProtectorAPI {
             return true;
         }
 
-        return (boolean) info.getFlagState(CommonFlags.INTERACT, player).value();
+        FlagState<?> flagState = info.getFlagState(CommonFlags.INTERACT, player);
+        if (flagState instanceof FlagStates.UnsupportedFlagState) {
+            return true;
+        }
+
+        return (boolean) flagState.value();
     }
 
     /**
@@ -318,9 +308,7 @@ public class ProtectorAPI {
                 return true;
             }
 
-            if (!module.allowInteract(player, block)) {
-                return false;
-            }
+            return module.allowInteract(player, block);
         }
 
         return false;

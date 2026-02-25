@@ -8,9 +8,9 @@ import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import io.github.lijinhong11.protector.api.flag.*;
-import io.github.lijinhong11.protector.api.protection.IProtectionModule;
-import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.flag.*;
+import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -73,25 +73,25 @@ public class WorldGuardProtectionModule implements IProtectionModule, FlagRegist
     }
 
     @Override
-    public IFlagState<?> getGlobalFlag(@NotNull String flag, @NotNull String world) {
+    public FlagState<?> getGlobalFlag(@NotNull String flag, @NotNull String world) {
         World w = Bukkit.getWorld(world);
         if (w == null) {
-            return FlagState.UNSUPPORTED;
+            return FlagStates.UNSUPPORTED;
         }
 
         BukkitWorldConfiguration bwc = (BukkitWorldConfiguration) globalFlags.get(BukkitAdapter.adapt(w));
         Object o = bwc.getProperty(flag);
         if (o instanceof Boolean b) {
-            return FlagState.fromNullableBoolean(b);
+            return FlagStates.fromNullableBoolean(b);
         } else {
-            return FlagState.of(o);
+            return FlagStates.of(o);
         }
     }
 
     @Override
-    public IFlagState<?> getGlobalFlag(@NotNull CommonFlags flag, @NotNull String world) {
+    public FlagState<?> getGlobalFlag(@NotNull CommonFlags flag, @NotNull String world) {
         if (flag.getForWorldGuard() == null) {
-            return FlagState.UNSUPPORTED;
+            return FlagStates.UNSUPPORTED;
         }
 
         return getGlobalFlag(flag.getForWorldGuard(), world);

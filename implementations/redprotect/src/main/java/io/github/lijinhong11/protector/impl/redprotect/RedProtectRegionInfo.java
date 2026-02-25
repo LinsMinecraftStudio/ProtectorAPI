@@ -1,11 +1,12 @@
 package io.github.lijinhong11.protector.impl.redprotect;
 
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
-import io.github.lijinhong11.protector.api.convertions.FlagMap;
-import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.FlagState;
-import io.github.lijinhong11.protector.api.flag.IFlagState;
-import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
+import com.google.common.base.Preconditions;
+import io.github.lijinhong11.protectorapi.convertions.FlagMap;
+import io.github.lijinhong11.protectorapi.flag.CommonFlags;
+import io.github.lijinhong11.protectorapi.flag.FlagState;
+import io.github.lijinhong11.protectorapi.flag.FlagStates;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -23,33 +24,35 @@ public class RedProtectRegionInfo implements IProtectionRangeInfo {
     }
 
     @Override
-    public @NotNull Map<String, IFlagState<?>> getFlags() {
+    public @NotNull Map<String, FlagState<?>> getFlags() {
         return Collections.unmodifiableMap(new FlagMap(region.getFlags(), o -> {
             if (o instanceof Boolean b) {
-                return FlagState.fromNullableBoolean(b);
+                return FlagStates.fromNullableBoolean(b);
             } else {
-                return FlagState.of(o);
+                return FlagStates.of(o);
             }
         }));
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull String flag) {
+    public FlagState<?> getFlagState(@NotNull String flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
-        return Objects.requireNonNullElse(getFlags().get(flag), FlagState.UNSUPPORTED);
+    public FlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
+        Preconditions.checkNotNull(flag, "flag cannot be null");
+
+        return Objects.requireNonNullElse(getFlags().get(flag), FlagStates.UNSUPPORTED);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull CommonFlags flag) {
-        return getFlagState(flag.getForRedProtect(), null);
+    public FlagState<?> getFlagState(@NotNull CommonFlags flag) {
+        return getFlagState(flag, null);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
+    public FlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
         return getFlagState(flag.getForRedProtect(), player);
     }
 

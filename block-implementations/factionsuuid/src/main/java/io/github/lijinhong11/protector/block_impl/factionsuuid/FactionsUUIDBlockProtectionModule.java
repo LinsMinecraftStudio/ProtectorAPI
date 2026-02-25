@@ -4,7 +4,7 @@ import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
-import io.github.lijinhong11.protector.api.block.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

@@ -6,11 +6,11 @@ import cn.lunadeer.dominion.api.dtos.flag.EnvFlag;
 import cn.lunadeer.dominion.api.dtos.flag.Flag;
 import cn.lunadeer.dominion.api.dtos.flag.Flags;
 import cn.lunadeer.dominion.api.dtos.flag.PriFlag;
-import io.github.lijinhong11.protector.api.convertions.FlagMap;
-import io.github.lijinhong11.protector.api.flag.CommonFlags;
-import io.github.lijinhong11.protector.api.flag.FlagState;
-import io.github.lijinhong11.protector.api.flag.IFlagState;
-import io.github.lijinhong11.protector.api.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.convertions.FlagMap;
+import io.github.lijinhong11.protectorapi.flag.CommonFlags;
+import io.github.lijinhong11.protectorapi.flag.FlagState;
+import io.github.lijinhong11.protectorapi.flag.FlagStates;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -25,35 +25,36 @@ public class DominionRangeInfo implements IProtectionRangeInfo {
     }
 
     @Override
-    public @NotNull Map<String, IFlagState<?>> getFlags() {
+    public @NotNull Map<String, FlagState<?>> getFlags() {
         FlagMap flagMap = new FlagMap();
-        dominion.getEnvironmentFlagValue().forEach((f, b) -> flagMap.put(f.getFlagName(), FlagState.fromBoolean(b)));
-        dominion.getGuestPrivilegeFlagValue().forEach((f, b) -> flagMap.put(f.getFlagName(), FlagState.fromBoolean(b)));
+        dominion.getEnvironmentFlagValue().forEach((f, b) -> flagMap.put(f.getFlagName(), FlagStates.fromBoolean(b)));
+        dominion.getGuestPrivilegeFlagValue()
+                .forEach((f, b) -> flagMap.put(f.getFlagName(), FlagStates.fromBoolean(b)));
         return Collections.unmodifiableMap(flagMap);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull String flag) {
+    public FlagState<?> getFlagState(@NotNull String flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
+    public FlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
         Flag dominionFlag = Flags.getFlag(flag);
         if (dominionFlag == null) {
-            return FlagState.UNSUPPORTED;
+            return FlagStates.UNSUPPORTED;
         }
 
         if (dominionFlag instanceof EnvFlag ef) {
-            return FlagState.fromNullableBoolean(dominion.getEnvFlagValue(ef));
+            return FlagStates.fromNullableBoolean(dominion.getEnvFlagValue(ef));
         }
 
         if (dominionFlag instanceof PriFlag pf) {
             if (player == null) {
-                return FlagState.fromNullableBoolean(dominion.getGuestFlagValue(pf));
+                return FlagStates.fromNullableBoolean(dominion.getGuestFlagValue(pf));
             } else {
                 if (player.getUniqueId() == dominion.getOwner()) {
-                    return FlagState.fromNullableBoolean(dominion.getGuestFlagValue(pf));
+                    return FlagStates.fromNullableBoolean(dominion.getGuestFlagValue(pf));
                 }
 
                 Optional<MemberDTO> memberDTO = dominion.getMembers().stream()
@@ -61,23 +62,23 @@ public class DominionRangeInfo implements IProtectionRangeInfo {
                         .findFirst();
 
                 if (memberDTO.isEmpty()) {
-                    return FlagState.fromNullableBoolean(dominion.getGuestFlagValue(pf));
+                    return FlagStates.fromNullableBoolean(dominion.getGuestFlagValue(pf));
                 }
 
-                return FlagState.fromNullableBoolean(memberDTO.get().getFlagValue(pf));
+                return FlagStates.fromNullableBoolean(memberDTO.get().getFlagValue(pf));
             }
         }
 
-        return FlagState.UNSUPPORTED;
+        return FlagStates.UNSUPPORTED;
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull CommonFlags flag) {
+    public FlagState<?> getFlagState(@NotNull CommonFlags flag) {
         return getFlagState(flag.getForDominion());
     }
 
     @Override
-    public IFlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
+    public FlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
         return getFlagState(flag.getForDominion(), player);
     }
 

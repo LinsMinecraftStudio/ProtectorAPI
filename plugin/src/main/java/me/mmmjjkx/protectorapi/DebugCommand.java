@@ -1,8 +1,15 @@
 package me.mmmjjkx.protectorapi;
 
-import io.github.lijinhong11.protector.api.ProtectorAPI;
-import io.github.lijinhong11.protector.api.block.IBlockProtectionModule;
-import io.github.lijinhong11.protector.api.protection.IProtectionModule;
+import io.github.lijinhong11.protectorapi.ProtectorAPI;
+import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.flag.CommonFlags;
+import io.github.lijinhong11.protectorapi.flag.FlagState;
+import io.github.lijinhong11.protectorapi.flag.FlagStates;
+import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,70 +19,139 @@ import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 class DebugCommand implements TabExecutor {
-    private final ProtectorAPIPluginImpl plugin;
-
-    public DebugCommand(ProtectorAPIPluginImpl plugin) {
-        this.plugin = plugin;
-    }
+    DebugCommand() {}
 
     @Override
-    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if (commandSender.isOp()) {
-            if (args.length == 0) {
-                commandSender.sendMessage("ProtectorAPI version: " + plugin.getDescription().getVersion());
-                commandSender.sendMessage("Usage: /protectorapi-debug <check | checkAllows | listProtectionModules | listBlockProtectionModules>");
-                return false;
-            } else if (args.length == 1) {
-                if (args[0].equalsIgnoreCase("check")) {
-                    if (!(commandSender instanceof Player p)) {
-                        commandSender.sendMessage("You must be a player to do that.");
-                        return false;
-                    }
+    public boolean onCommand(
+            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-                    Location loc = p.getLocation();
-
-                    String protectionModule = "None";
-                    boolean hasRange = false;
-                    IProtectionModule module = ProtectorAPI.findModule(loc);
-                    if (module != null) {
-                        protectionModule = module.getPluginName();
-                        hasRange = module.getProtectionRangeInfo(loc) != null;
-                    }
-
-                    commandSender.sendMessage("Protection Module: " + protectionModule);
-                    commandSender.sendMessage("Has Protection Range: " + hasRange);
-                } else if (args[0].equalsIgnoreCase("checkAllows")) {
-                    if (!(commandSender instanceof Player p)) {
-                        commandSender.sendMessage("You must be a player to do that.");
-                        return false;
-                    }
-
-                    commandSender.sendMessage("Allow Place: " + ProtectorAPI.allowPlace(p));
-                    commandSender.sendMessage("Allow Break: " + ProtectorAPI.allowBreak(p));
-                    commandSender.sendMessage("Allow Interact: " + ProtectorAPI.allowInteract(p));
-                } else if (args[0].equalsIgnoreCase("listProtectionModules")) {
-                    List<String> plugins = ProtectorAPI.getAllAvailableProtectionModules().stream().map(IProtectionModule::getPluginName).toList();
-                    commandSender.sendMessage("All Protection Modules: " + String.join(",", plugins));
-                } else if (args[0].equalsIgnoreCase("listBlockProtectionModules")) {
-                    List<String> plugins = ProtectorAPI.getAllAvailableBlockProtectionModules().stream().map(IBlockProtectionModule::getPluginName).toList();
-                    commandSender.sendMessage("All Block Protection Modules: " + String.join(",", plugins));
-                }
-            }
-        } else {
-            commandSender.sendMessage("You don't have permission to do that.");
+        if (!sender.isOp()) {
+            sender.sendMessage("§cYou don't have permission to use this command.");
+            return true;
         }
 
-        return false;
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("§cYou must be a player to use this command.");
+            return true;
+        }
+
+        if (args.length == 0 || args[0].equalsIgnoreCase("here")) {
+            debugHere(player);
+            return true;
+        }
+
+        if (args[0].equalsIgnoreCase("modules")) {
+            debugModules(sender);
+            return true;
+        }
+
+        sender.sendMessage("§7Usage: /protectorapi-debug <here | modules>");
+        return true;
+    }
+
+    /* ========================================= */
+
+    private void debugHere(Player player) {
+        Location loc = player.getLocation();
+
+        player.sendMessage("§8==============================");
+        player.sendMessage("§6[ProtectorAPI Debug]");
+        player.sendMessage("§7Location: §f" + loc.getWorld().getName()
+                + " (" + loc.getBlockX()
+                + ", " + loc.getBlockY()
+                + ", " + loc.getBlockZ()
+                + ")");
+
+        IProtectionModule module = ProtectorAPI.findModule(loc);
+
+        if (module == null) {
+            player.sendMessage("§7Protection Module: §cNone");
+        } else {
+            player.sendMessage("§7Protection Module: §a" + module.getPluginName());
+
+            boolean inRange = module.isInProtectionRange(loc);
+            player.sendMessage("§7In Protection Range: §f" + inRange);
+
+            IProtectionRangeInfo info = module.getProtectionRangeInfo(player);
+
+            if (info != null) {
+                player.sendMessage("§7Flags:");
+
+                printFlag(player, info, CommonFlags.BREAK);
+                printFlag(player, info, CommonFlags.PLACE);
+                printFlag(player, info, CommonFlags.INTERACT);
+            }
+        }
+
+        IBlockProtectionModule blockModule = ProtectorAPI.findBlockModule(player, loc);
+
+        if (blockModule == null) {
+            player.sendMessage("§7Block Module: §cNone");
+        } else {
+            player.sendMessage("§7Block Module: §a" + blockModule.getPluginName());
+
+            player.sendMessage("  §fallowBreak: " + formatBool(blockModule.allowBreak(player, loc)));
+            player.sendMessage("  §fallowPlace: " + formatBool(blockModule.allowPlace(player, loc)));
+            player.sendMessage("  §fallowInteract: " + formatBool(blockModule.allowInteract(player, loc)));
+        }
+
+        player.sendMessage("§7Final Decision (Protection Module + Block Module):");
+        player.sendMessage("  §fallowBreak(): " + formatBool(ProtectorAPI.allowBreak(player, loc)));
+        player.sendMessage("  §fallowPlace(): " + formatBool(ProtectorAPI.allowPlace(player, loc)));
+        player.sendMessage("  §fallowInteract(): " + formatBool(ProtectorAPI.allowInteract(player, loc)));
+
+        player.sendMessage("§8==============================");
+    }
+
+    private void debugModules(CommandSender sender) {
+        sender.sendMessage("§8==============================");
+        sender.sendMessage("§6[ProtectorAPI Modules]");
+
+        ProtectorAPI.getAllAvailableProtectionModules()
+                .forEach(m -> sender.sendMessage("§a- " + m.getPluginName() + " §7(GlobalFlags: "
+                        + (m.isSupportGlobalFlags() ? "SUPPORTED" : "UNSUPPORTED")
+                        + ")"));
+
+        ProtectorAPI.getAllAvailableBlockProtectionModules()
+                .forEach(m -> sender.sendMessage("§b- " + m.getPluginName() + " §7(Block Protection)"));
+
+        sender.sendMessage("§8==============================");
+    }
+
+    private String formatBool(boolean value) {
+        return value ? "§aALLOW" : "§cDENY";
+    }
+
+    private void printFlag(Player player, IProtectionRangeInfo info, CommonFlags flag) {
+        try {
+            FlagState<?> state = info.getFlagState(flag, player);
+
+            if (state == null || state instanceof FlagStates.UnsupportedFlagState) {
+                player.sendMessage("  §f" + flag.name() + ": §7UNSUPPORTED (Module or API is unsupported)");
+                return;
+            }
+
+            Object value = info.getFlagState(flag, player).value();
+
+            if (!(value instanceof Boolean bool)) {
+                player.sendMessage("  §f" + flag.name() + ": §7NON-BOOLEAN (" + value.toString() + ")");
+                return;
+            }
+
+            player.sendMessage("  §f" + flag.name() + ": " + formatBool(bool));
+        } catch (Exception e) {
+            player.sendMessage("  §f" + flag.name() + ": §cERROR (See console for details)");
+            ProtectorAPI.getPluginHost().getLogger().log(Level.SEVERE, "Failed to get flag state: ", e);
+        }
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        if (strings.length == 1) {
-            return StringUtil.copyPartialMatches(strings[0], List.of("check", "checkAllows", "listProtectionModules", "listBlockProtectionModules"), new ArrayList<>());
+    public @Nullable List<String> onTabComplete(
+            @NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+
+        if (args.length == 1) {
+            return StringUtil.copyPartialMatches(args[0], List.of("here", "modules"), new ArrayList<>());
         }
 
         return List.of();

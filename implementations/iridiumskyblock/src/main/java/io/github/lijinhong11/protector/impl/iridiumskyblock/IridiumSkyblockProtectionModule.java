@@ -1,12 +1,8 @@
-package io.github.lijinhong11.protector.impl.dominion;
+package io.github.lijinhong11.protector.impl.iridiumskyblock;
 
-import cn.lunadeer.dominion.api.DominionAPI;
-import cn.lunadeer.dominion.api.dtos.DominionDTO;
-import cn.lunadeer.dominion.api.dtos.flag.Flags;
-import cn.lunadeer.dominion.api.dtos.flag.PriFlag;
+import com.iridium.iridiumskyblock.api.IridiumSkyblockAPI;
+import com.iridium.iridiumskyblock.database.User;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
-import io.github.lijinhong11.protectorapi.flag.CustomFlag;
-import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
@@ -16,45 +12,32 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class DominionProtectionModule implements IProtectionModule, FlagRegisterable {
-    private final DominionAPI api;
-
-    public DominionProtectionModule() {
-        api = DominionAPI.getInstance();
-    }
+public class IridiumSkyblockProtectionModule implements IProtectionModule {
+    private final IridiumSkyblockAPI api = IridiumSkyblockAPI.getInstance();
 
     @Override
     public @NotNull String getPluginName() {
-        return "Dominion";
+        return "IridiumSkyblock";
     }
 
     @Override
     public List<? extends IProtectionRangeInfo> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
-        List<DominionDTO> list = api.getPlayerAdminDominionDTOs(player.getUniqueId());
-        return list.stream().map(DominionRangeInfo::new).toList();
+        User user = api.getUser(player);
+        return user.getIsland()
+                .map(i -> List.of(new IridiumSkyblockIslandInfo(i)))
+                .orElse(List.of());
     }
 
     @Override
     public boolean isInProtectionRange(@NotNull Location location) {
-        return api.getDominion(location) != null;
+        return api.getIslandViaLocation(location).isPresent();
     }
 
     @Override
     public @Nullable IProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location) {
-        DominionDTO dominion = api.getDominion(location);
-        if (dominion == null) {
-            return null;
-        }
-
-        return new DominionRangeInfo(dominion);
-    }
-
-    @Override
-    public void registerFlag(CustomFlag flag) {
-        String displayName = flag.displayName() == null ? flag.id() : flag.displayName();
-        String description = flag.description() == null ? "" : flag.description();
-        PriFlag flag1 = new PriFlag(flag.id(), displayName, description, flag.defaultValue(), true);
-        Flags.getAllPriFlags().add(flag1); // is that a great way?
+        return api.getIslandViaLocation(location)
+                .map(IridiumSkyblockIslandInfo::new)
+                .orElse(null);
     }
 
     @Override

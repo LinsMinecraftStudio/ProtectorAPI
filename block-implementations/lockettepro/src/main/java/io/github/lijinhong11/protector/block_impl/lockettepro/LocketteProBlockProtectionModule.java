@@ -1,6 +1,6 @@
 package io.github.lijinhong11.protector.block_impl.lockettepro;
 
-import io.github.lijinhong11.protector.api.block.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
 import me.crafter.mc.lockettepro.LocketteProAPI;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

@@ -1,4 +1,4 @@
-package io.github.lijinhong11.protector.api.flag;
+package io.github.lijinhong11.protectorapi.flag;
 
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
