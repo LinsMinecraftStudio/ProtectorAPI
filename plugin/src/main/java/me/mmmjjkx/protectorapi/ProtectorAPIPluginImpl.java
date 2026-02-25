@@ -20,6 +20,7 @@ import io.github.lijinhong11.protector.impl.bentobox.BentoBoxProtectionModule;
 import io.github.lijinhong11.protector.impl.dominion.DominionProtectionModule;
 import io.github.lijinhong11.protector.impl.excellentclaims.ExcellentClaimsBlockProtectionModule;
 import io.github.lijinhong11.protector.impl.huskclaims.HuskClaimsProtectionModule;
+import io.github.lijinhong11.protector.impl.iridiumskyblock.IridiumSkyblockProtectionModule;
 import io.github.lijinhong11.protector.impl.plotsquared.PlotSquaredProtectionModule;
 import io.github.lijinhong11.protector.impl.redprotect.RedProtectProtectionModule;
 import io.github.lijinhong11.protector.impl.residence.ResidenceProtectionModule;
@@ -71,6 +72,10 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
 
         if (pm.isPluginEnabled("HuskClaims")) {
             ProtectorAPI.register(new HuskClaimsProtectionModule());
+        }
+
+        if (pm.isPluginEnabled("IridiumSkyblock")) {
+            ProtectorAPI.register(new IridiumSkyblockProtectionModule());
         }
 
         if (pm.isPluginEnabled("RedProtect")) {

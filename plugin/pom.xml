@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>protectorapi-plugin</artifactId>
-    <version>${revision}</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -68,6 +67,12 @@
         <dependency>
             <groupId>io.github.lijinhong11</groupId>
             <artifactId>protectorapi-huskclaims</artifactId>
+            <version>${revision}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.lijinhong11</groupId>
+            <artifactId>protectorapi-iridiumskyblock</artifactId>
             <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
