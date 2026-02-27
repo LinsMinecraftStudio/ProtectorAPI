@@ -9,6 +9,8 @@ import io.github.lijinhong11.protectorapi.flag.FlagStates;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +28,8 @@ public class WorldGuardProtectedRegionInfo implements IProtectionRangeInfo {
         Map<String, FlagState<?>> flagMap = new FlagMap();
         for (Map.Entry<Flag<?>, Object> entry : protectedRegion.getFlags().entrySet()) {
             Flag<?> flag = entry.getKey();
-            if (flag.getDefault() instanceof Boolean b) {
+            if (flag.getDefault() instanceof Boolean) {
+                Boolean b = (Boolean) flag.getDefault();
                 flagMap.put(flag.getName(), FlagStates.fromNullableBoolean(b));
             } else {
                 flagMap.put(entry.getKey().getName(), FlagStates.of(entry.getValue()));
@@ -64,14 +67,14 @@ public class WorldGuardProtectedRegionInfo implements IProtectionRangeInfo {
     public List<OfflinePlayer> getAdmins() {
         return protectedRegion.getOwners().getPlayers().stream()
                 .map(Bukkit::getOfflinePlayer)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<OfflinePlayer> getMembers() {
         return protectedRegion.getMembers().getPlayers().stream()
                 .map(Bukkit::getOfflinePlayer)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override

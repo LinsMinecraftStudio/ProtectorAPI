@@ -10,7 +10,8 @@ import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +27,8 @@ public class RedProtectRegionInfo implements IProtectionRangeInfo {
     @Override
     public @NotNull Map<String, FlagState<?>> getFlags() {
         return Collections.unmodifiableMap(new FlagMap(region.getFlags(), o -> {
-            if (o instanceof Boolean b) {
+            if (o instanceof Boolean) {
+                Boolean b = (Boolean) o;
                 return FlagStates.fromNullableBoolean(b);
             } else {
                 return FlagStates.of(o);
@@ -35,15 +37,17 @@ public class RedProtectRegionInfo implements IProtectionRangeInfo {
     }
 
     @Override
-    public FlagState<?> getFlagState(@NotNull String flag) {
+    public FlagState<?> getFlagState(@Nullable String flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public FlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
-        Preconditions.checkNotNull(flag, "flag cannot be null");
+    public FlagState<?> getFlagState(@Nullable String flag, OfflinePlayer player) {
+        if (flag == null) {
+            return FlagStates.UNSUPPORTED;
+        }
 
-        return Objects.requireNonNullElse(getFlags().get(flag), FlagStates.UNSUPPORTED);
+        return getFlags().get(flag) == null ? FlagStates.UNSUPPORTED : getFlags().get(flag);
     }
 
     @Override
@@ -60,14 +64,14 @@ public class RedProtectRegionInfo implements IProtectionRangeInfo {
     public List<OfflinePlayer> getAdmins() {
         return region.getAdmins().stream()
                 .map(r -> Bukkit.getOfflinePlayer(r.getUUID()))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<OfflinePlayer> getMembers() {
         return region.getMembers().stream()
                 .map(r -> Bukkit.getOfflinePlayer(r.getUUID()))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override

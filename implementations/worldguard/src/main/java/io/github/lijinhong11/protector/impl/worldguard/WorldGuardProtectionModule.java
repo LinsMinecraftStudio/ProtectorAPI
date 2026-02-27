@@ -54,7 +54,7 @@ public class WorldGuardProtectionModule implements IProtectionModule, FlagRegist
         ProtectedRegion[] regions = api.createQuery()
                 .getApplicableRegions(toWELocation(location))
                 .getRegions()
-                .toArray(ProtectedRegion[]::new);
+                .toArray(new ProtectedRegion[]{});
         if (regions.length > 0) {
             return new WorldGuardProtectedRegionInfo(regions[0]);
         } else {
@@ -81,7 +81,8 @@ public class WorldGuardProtectionModule implements IProtectionModule, FlagRegist
 
         BukkitWorldConfiguration bwc = (BukkitWorldConfiguration) globalFlags.get(BukkitAdapter.adapt(w));
         Object o = bwc.getProperty(flag);
-        if (o instanceof Boolean b) {
+        if (o instanceof Boolean) {
+            Boolean b = (Boolean) o;
             return FlagStates.fromNullableBoolean(b);
         } else {
             return FlagStates.of(o);

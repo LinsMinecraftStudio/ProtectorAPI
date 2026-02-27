@@ -80,7 +80,8 @@ public class RedProtectProtectionModule implements IProtectionModule, FlagRegist
             if (f.getName().equals(flag)) {
                 try {
                     Object value = f.get(properties);
-                    if (value instanceof Boolean b) {
+                    if (value instanceof Boolean) {
+                        Boolean b = (Boolean) value;
                         return FlagStates.fromNullableBoolean(b);
                     } else {
                         return FlagStates.of(value);

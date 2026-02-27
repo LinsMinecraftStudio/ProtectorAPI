@@ -9,6 +9,8 @@ import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +28,7 @@ public class ResidenceProtectionModule implements IProtectionModule, FlagRegiste
         return list.stream()
                 .map(ResidenceApi.getResidenceManager()::getByName)
                 .map(ResidenceInfo::new)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -74,7 +76,8 @@ public class ResidenceProtectionModule implements IProtectionModule, FlagRegiste
 
     @Override
     public void setGlobalFlag(@NotNull String world, @NotNull String flag, Object value) {
-        if (value instanceof Boolean b) {
+        if (value instanceof Boolean) {
+            Boolean b = (Boolean) value;
             Residence.getInstance().wmanager.getPerms(world).getFlags().put(flag, b);
         } else {
             throw new IllegalArgumentException("value must be a boolean in Residence");

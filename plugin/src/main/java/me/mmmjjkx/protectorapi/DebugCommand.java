@@ -8,6 +8,7 @@ import io.github.lijinhong11.protectorapi.flag.FlagStates;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import org.bukkit.Location;
@@ -16,25 +17,24 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 class DebugCommand implements TabExecutor {
     DebugCommand() {}
 
     @Override
-    public boolean onCommand(
-            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (!sender.isOp()) {
             sender.sendMessage("§cYou don't have permission to use this command.");
             return true;
         }
 
-        if (!(sender instanceof Player player)) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage("§cYou must be a player to use this command.");
             return true;
         }
+
+        Player player = (Player) sender;
 
         if (args.length == 0 || args[0].equalsIgnoreCase("here")) {
             debugHere(player);
@@ -134,10 +134,12 @@ class DebugCommand implements TabExecutor {
 
             Object value = info.getFlagState(flag, player).value();
 
-            if (!(value instanceof Boolean bool)) {
+            if (!(value instanceof Boolean)) {
                 player.sendMessage("  §f" + flag.name() + ": §7NON-BOOLEAN (" + value.toString() + ")");
                 return;
             }
+
+            Boolean bool = (Boolean) value;
 
             player.sendMessage("  §f" + flag.name() + ": " + formatBool(bool));
         } catch (Exception e) {
@@ -147,13 +149,13 @@ class DebugCommand implements TabExecutor {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(
-            @NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+    public List<String> onTabComplete(
+            CommandSender sender, Command command, String alias, String[] args) {
 
         if (args.length == 1) {
-            return StringUtil.copyPartialMatches(args[0], List.of("here", "modules"), new ArrayList<>());
+            return StringUtil.copyPartialMatches(args[0], Arrays.asList("here", "modules"), new ArrayList<>());
         }
 
-        return List.of();
+        return new ArrayList<>();
     }
 }

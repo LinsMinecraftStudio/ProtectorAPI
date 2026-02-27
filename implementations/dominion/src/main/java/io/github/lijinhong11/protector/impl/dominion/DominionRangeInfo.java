@@ -34,22 +34,28 @@ public class DominionRangeInfo implements IProtectionRangeInfo {
     }
 
     @Override
-    public FlagState<?> getFlagState(@NotNull String flag) {
+    public FlagState<?> getFlagState(@Nullable String flag) {
         return getFlagState(flag, null);
     }
 
     @Override
-    public FlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
+    public FlagState<?> getFlagState(@Nullable String flag, OfflinePlayer player) {
+        if (flag == null) {
+            return FlagStates.UNSUPPORTED;
+        }
+
         Flag dominionFlag = Flags.getFlag(flag);
         if (dominionFlag == null) {
             return FlagStates.UNSUPPORTED;
         }
 
-        if (dominionFlag instanceof EnvFlag ef) {
+        if (dominionFlag instanceof EnvFlag) {
+            EnvFlag ef = (EnvFlag) dominionFlag;
             return FlagStates.fromNullableBoolean(dominion.getEnvFlagValue(ef));
         }
 
-        if (dominionFlag instanceof PriFlag pf) {
+        if (dominionFlag instanceof PriFlag) {
+            PriFlag pf = (PriFlag) dominionFlag;
             if (player == null) {
                 return FlagStates.fromNullableBoolean(dominion.getGuestFlagValue(pf));
             } else {
@@ -61,7 +67,7 @@ public class DominionRangeInfo implements IProtectionRangeInfo {
                         .filter(m -> m.getPlayerUUID().equals(player.getUniqueId()))
                         .findFirst();
 
-                if (memberDTO.isEmpty()) {
+                if (!memberDTO.isPresent()) {
                     return FlagStates.fromNullableBoolean(dominion.getGuestFlagValue(pf));
                 }
 

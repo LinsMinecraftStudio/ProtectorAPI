@@ -30,7 +30,18 @@ public class FlagStates {
         return new SimpleFlagState<>(value);
     }
 
-    record SimpleFlagState<T>(T value) implements FlagState<T> {}
+    private static class SimpleFlagState<T> implements FlagState<T> {
+        private final T value;
+
+        public SimpleFlagState(T value) {
+            this.value = value;
+        }
+
+        @Override
+        public T value() {
+            return value;
+        }
+    }
 
     public static class UnsupportedFlagState implements FlagState<Object> {
         UnsupportedFlagState() {}

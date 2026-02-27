@@ -10,7 +10,7 @@ public class ProtectorAPIManagedFlag extends DefaultStateFlag<ProtectorAPIManage
     private final CustomFlag object;
 
     public ProtectorAPIManagedFlag(CustomFlag flag) {
-        super(flag.plugin(), Target.PLAYER, Objects.requireNonNullElse(flag.displayName(), flag.id()), true, true);
+        super(flag.plugin(), Target.PLAYER, flag.displayName() == null ? flag.id() : flag.displayName(), true, true);
 
         object = flag;
     }

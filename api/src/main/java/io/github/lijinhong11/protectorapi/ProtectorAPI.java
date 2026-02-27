@@ -98,13 +98,15 @@ public class ProtectorAPI {
      */
     public static void registerFlag(CustomFlag flag) {
         for (IProtectionModule module : modules) {
-            if (module instanceof FlagRegisterable fr) {
+            if (module instanceof FlagRegisterable) {
+                FlagRegisterable fr = (FlagRegisterable) module;
                 fr.registerFlag(flag);
             }
         }
 
         for (IBlockProtectionModule module : blockModules) {
-            if (module instanceof FlagRegisterable fr) {
+            if (module instanceof FlagRegisterable) {
+                FlagRegisterable fr = (FlagRegisterable) module;
                 fr.registerFlag(flag);
             }
         }

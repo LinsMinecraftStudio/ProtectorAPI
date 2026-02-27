@@ -11,6 +11,8 @@ import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -55,14 +57,14 @@ public class ResidenceInfo implements IProtectionRangeInfo {
     public List<OfflinePlayer> getAdmins() {
         return getMembers().stream()
                 .filter(r -> permissions.playerHas(r.getName(), Flags.admin, false))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<OfflinePlayer> getMembers() {
         return residence.getTrustedPlayers().stream()
                 .map(r -> Bukkit.getOfflinePlayer(r.getUniqueId()))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -15,8 +15,8 @@
 
     <properties>
         <revision>2.0.1-SNAPSHOT</revision>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -188,6 +188,10 @@
 
     <repositories>
         <repository>
+            <id>spigotmc</id>
+            <url>https://hub.spigotmc.org/nexus/repository/public/</url>
+        </repository>
+        <repository>
             <id>iridiumdevelopment</id>
             <url>https://nexus.iridiumdevelopment.net/repository/maven-releases/</url>
         </repository>
@@ -247,6 +251,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.spigotmc</groupId>
+                <artifactId>spigot-api</artifactId>
+                <version>1.12.2-R0.1-20180712.012057-156</version>
+                <scope>provided</scope>
+            </dependency>
             <dependency>
                 <groupId>io.papermc.paper</groupId>
                 <artifactId>paper-api</artifactId>
