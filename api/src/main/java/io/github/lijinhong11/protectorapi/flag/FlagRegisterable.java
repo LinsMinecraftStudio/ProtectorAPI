@@ -9,7 +9,7 @@ public interface FlagRegisterable {
      * Register a flag
      *
      * @param flag the flag
-     * @throws UnsupportedOperationException if the module doesn't support
+     * @throws UnsupportedOperationException if the module doesn't support registering flags
      */
     void registerFlag(CustomFlag flag);
 }

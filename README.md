@@ -36,8 +36,9 @@ Then run
 `mvn clean package`
 
 ## Roadmap
-1. Protection range event handlers
-2. More plugin supports
+1. Get protection range through `org.bukkit.Location`
+2. Event handlers
+3. More plugin supports
 
 ## Develop Examples
 ### Check whether a player can place

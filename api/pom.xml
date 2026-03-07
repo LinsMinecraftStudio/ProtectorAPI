@@ -67,6 +67,9 @@
                     <nohelp>true</nohelp>
                     <encoding>UTF-8</encoding>
                     <charset>UTF-8</charset>
+                    <links>
+                        <link>https://hub.spigotmc.org/javadocs/spigot/</link>
+                    </links>
                 </configuration>
             </plugin>
             <plugin>

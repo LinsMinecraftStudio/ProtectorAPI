@@ -50,7 +50,7 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         getLogger().info("Successfully loaded ProtectorAPI!");
 
         if (getConfig().getBoolean("update-check")) {
-            UpdateChecker.check();
+            new ModrinthUpdateChecker(this, "protectorapi").check();
         }
     }
 
