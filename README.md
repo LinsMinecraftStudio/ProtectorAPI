@@ -2,21 +2,10 @@
   <img alt="icon" src="icon.png">
   <h1>ProtectorAPI</h1>
 
-  <a href="https://modrinth.com/plugin/protectorapi">
-    <img alt="Modrinth" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg">
-  </a>
-
-  <a href="https://www.spigotmc.org/resources/protectorapi.126828/">
-    <img alt="Spigot" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/spigot_vector.svg">
-  </a>
-
-  <a href="https://hangar.papermc.io/lijinhong11/ProtectorAPI/">
-    <img alt="hangar" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/hangar_vector.svg">
-  </a>
-
-  <a href="https://lijinhong11.gitbook.io/protectotapi/">
-    <img alt="Documentation" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/gitbook_vector.svg">
-  </a>
+  <a href="https://modrinth.com/plugin/protectorapi"><img alt="Modrinth" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg"></a>
+  <a href="https://www.spigotmc.org/resources/protectorapi.126828/"><img alt="Spigot" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/spigot_vector.svg"></a>
+  <a href="https://hangar.papermc.io/lijinhong11/ProtectorAPI/"><img alt="hangar" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/hangar_vector.svg"></a>
+  <a href="https://lijinhong11.gitbook.io/protectotapi/"><img alt="Documentation" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/gitbook_vector.svg"></a>
 
   <p>
     An API used to docking almost all protection plugins.<br>
