@@ -21,7 +21,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ModrinthUpdateChecker {
-
     private final JavaPlugin plugin;
     private final String projectId;
     private final Gson gson = new Gson();
