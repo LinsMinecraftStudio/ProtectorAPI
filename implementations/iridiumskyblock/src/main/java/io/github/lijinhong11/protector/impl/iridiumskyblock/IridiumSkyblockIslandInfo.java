@@ -6,7 +6,7 @@ import com.iridium.iridiumskyblock.dependencies.iridiumteams.PermissionType;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
-import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +15,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class IridiumSkyblockIslandInfo implements IProtectionRangeInfo {
+public class IridiumSkyblockIslandInfo implements IProtectionRange {
     private final IridiumSkyblockAPI api = IridiumSkyblockAPI.getInstance();
     private final Island island;
 

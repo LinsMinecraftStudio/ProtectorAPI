@@ -6,7 +6,7 @@ import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import br.net.fabiozumbi12.RedProtect.Core.config.Category.GlobalFlagsCategory;
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
-import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class RedProtectProtectionModule implements IProtectionModule, FlagRegist
     }
 
     @Override
-    public List<? extends IProtectionRangeInfo> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
+    public List<? extends IProtectionRange> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
         List<RedProtectRegionInfo> protectionRangeInfos = new ArrayList<>();
         for (Region region : api.getPlayerRegions(String.valueOf(player.getUniqueId()))) {
             protectionRangeInfos.add(new RedProtectRegionInfo(region));
@@ -43,7 +43,7 @@ public class RedProtectProtectionModule implements IProtectionModule, FlagRegist
     }
 
     @Override
-    public @Nullable IProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location) {
+    public @Nullable IProtectionRange getProtectionRangeInfo(@NotNull Location location) {
         Region region = api.getRegion(location);
         if (region == null) {
             return null;

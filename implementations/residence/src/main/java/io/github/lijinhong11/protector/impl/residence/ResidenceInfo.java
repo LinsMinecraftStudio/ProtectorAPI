@@ -7,7 +7,7 @@ import io.github.lijinhong11.protectorapi.convertions.FlagMap;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
-import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +18,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ResidenceInfo implements IProtectionRangeInfo {
+public class ResidenceInfo implements IProtectionRange {
     private final ClaimedResidence residence;
     private final ResidencePermissions permissions;
 

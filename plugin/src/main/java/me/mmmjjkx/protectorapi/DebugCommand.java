@@ -6,7 +6,7 @@ import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
-import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,7 +73,7 @@ class DebugCommand implements TabExecutor {
             boolean inRange = module.isInProtectionRange(loc);
             player.sendMessage("§7In Protection Range: §f" + inRange);
 
-            IProtectionRangeInfo info = module.getProtectionRangeInfo(player);
+            IProtectionRange info = module.getProtectionRangeInfo(player);
 
             if (info != null) {
                 player.sendMessage("§7Flags:");
@@ -123,7 +123,7 @@ class DebugCommand implements TabExecutor {
         return value ? "§aALLOW" : "§cDENY";
     }
 
-    private void printFlag(Player player, IProtectionRangeInfo info, CommonFlags flag) {
+    private void printFlag(Player player, IProtectionRange info, CommonFlags flag) {
         try {
             FlagState<?> state = info.getFlagState(flag, player);
 

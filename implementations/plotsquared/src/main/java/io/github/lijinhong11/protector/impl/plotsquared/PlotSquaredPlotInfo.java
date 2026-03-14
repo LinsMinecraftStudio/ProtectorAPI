@@ -6,7 +6,7 @@ import io.github.lijinhong11.protectorapi.convertions.FlagMap;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
-import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +15,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PlotSquaredPlotInfo implements IProtectionRangeInfo {
+public class PlotSquaredPlotInfo implements IProtectionRange {
     private final Plot plot;
 
     public PlotSquaredPlotInfo(Plot plot) {

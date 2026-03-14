@@ -2,7 +2,7 @@ package io.github.lijinhong11.protector.impl.huskclaims;
 
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
-import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.*;
 import net.kyori.adventure.key.Key;
 import net.william278.huskclaims.api.BukkitHuskClaimsAPI;
@@ -28,7 +28,7 @@ public class HuskClaimsProtectionModule implements IProtectionModule, FlagRegist
     }
 
     @Override
-    public List<? extends IProtectionRangeInfo> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
+    public List<? extends IProtectionRange> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
         Map<ClaimWorld, List<Claim>> claims = api.getUserClaims(OnlineUser.of(player.getUniqueId(), player.getName()));
         List<HuskClaimsClaimInfo> list = new ArrayList<>();
         for (List<Claim> claims1 : claims.values()) {
@@ -46,7 +46,7 @@ public class HuskClaimsProtectionModule implements IProtectionModule, FlagRegist
     }
 
     @Override
-    public @Nullable IProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location) {
+    public @Nullable IProtectionRange getProtectionRangeInfo(@NotNull Location location) {
         if (!api.isWorldClaimable(wrapWorld(location.getWorld()))) {
             return null;
         }

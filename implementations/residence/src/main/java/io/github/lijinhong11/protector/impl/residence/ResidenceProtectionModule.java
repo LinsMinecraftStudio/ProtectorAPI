@@ -6,7 +6,7 @@ import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
-import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,7 +23,7 @@ public class ResidenceProtectionModule implements IProtectionModule, FlagRegiste
     }
 
     @Override
-    public List<? extends IProtectionRangeInfo> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
+    public List<? extends IProtectionRange> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
         List<String> list = ResidenceApi.getPlayerManager().getResidenceList(player.getName(), true);
         return list.stream()
                 .map(ResidenceApi.getResidenceManager()::getByName)
@@ -37,7 +37,7 @@ public class ResidenceProtectionModule implements IProtectionModule, FlagRegiste
     }
 
     @Override
-    public @Nullable IProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location) {
+    public @Nullable IProtectionRange getProtectionRangeInfo(@NotNull Location location) {
         ClaimedResidence res = ResidenceApi.getResidenceManager().getByLoc(location);
         if (res == null) {
             return null;

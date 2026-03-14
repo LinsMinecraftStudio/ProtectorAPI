@@ -9,7 +9,7 @@ import io.github.lijinhong11.protectorapi.flag.CustomFlag;
 import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
-import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -29,7 +29,7 @@ public class DominionProtectionModule implements IProtectionModule, FlagRegister
     }
 
     @Override
-    public List<? extends IProtectionRangeInfo> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
+    public List<? extends IProtectionRange> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
         List<DominionDTO> list = api.getPlayerAdminDominionDTOs(player.getUniqueId());
         return list.stream().map(DominionRangeInfo::new).toList();
     }
@@ -40,7 +40,7 @@ public class DominionProtectionModule implements IProtectionModule, FlagRegister
     }
 
     @Override
-    public @Nullable IProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location) {
+    public @Nullable IProtectionRange getProtectionRangeInfo(@NotNull Location location) {
         DominionDTO dominion = api.getDominion(location);
         if (dominion == null) {
             return null;

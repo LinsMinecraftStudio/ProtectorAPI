@@ -8,7 +8,7 @@ import io.github.lijinhong11.protectorapi.flag.CustomFlag;
 import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
-import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -28,7 +28,7 @@ public class PlotSquaredProtectionModule implements IProtectionModule, FlagRegis
     }
 
     @Override
-    public List<? extends IProtectionRangeInfo> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
+    public List<? extends IProtectionRange> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
         return plotAPI.getPlayerPlots(getPlotPlayer(player)).stream()
                 .map(PlotSquaredPlotInfo::new)
                 .toList();
@@ -41,7 +41,7 @@ public class PlotSquaredProtectionModule implements IProtectionModule, FlagRegis
     }
 
     @Override
-    public @Nullable IProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location) {
+    public @Nullable IProtectionRange getProtectionRangeInfo(@NotNull Location location) {
         com.plotsquared.core.location.Location loc = wrapLocation(location);
         if (loc.getPlot() == null) {
             return null;

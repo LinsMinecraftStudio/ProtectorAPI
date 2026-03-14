@@ -10,7 +10,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
-import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +37,7 @@ public class WorldGuardProtectionModule implements IProtectionModule, FlagRegist
     }
 
     @Override
-    public List<? extends IProtectionRangeInfo> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
+    public List<? extends IProtectionRange> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
         return new ArrayList<>(); // it is not supported
     }
 
@@ -50,7 +50,7 @@ public class WorldGuardProtectionModule implements IProtectionModule, FlagRegist
     }
 
     @Override
-    public @Nullable IProtectionRangeInfo getProtectionRangeInfo(@NotNull Location location) {
+    public @Nullable IProtectionRange getProtectionRangeInfo(@NotNull Location location) {
         ProtectedRegion[] regions = api.createQuery()
                 .getApplicableRegions(toWELocation(location))
                 .getRegions()

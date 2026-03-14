@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
-import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
@@ -180,7 +180,7 @@ public class ProtectorAPI {
             return true;
         }
 
-        IProtectionRangeInfo info = module.getProtectionRangeInfo(player);
+        IProtectionRange info = module.getProtectionRangeInfo(player);
         if (info == null) {
             return true;
         }
@@ -232,7 +232,7 @@ public class ProtectorAPI {
             return true;
         }
 
-        IProtectionRangeInfo info = module.getProtectionRangeInfo(player);
+        IProtectionRange info = module.getProtectionRangeInfo(player);
         if (info == null) {
             return true;
         }
@@ -284,7 +284,7 @@ public class ProtectorAPI {
             return true;
         }
 
-        IProtectionRangeInfo info = module.getProtectionRangeInfo(player);
+        IProtectionRange info = module.getProtectionRangeInfo(player);
         if (info == null) {
             return true;
         }

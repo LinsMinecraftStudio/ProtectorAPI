@@ -6,7 +6,7 @@ import io.github.lijinhong11.protectorapi.convertions.FlagMap;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
-import io.github.lijinhong11.protectorapi.protection.IProtectionRangeInfo;
+import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,7 +16,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class WorldGuardProtectedRegionInfo implements IProtectionRangeInfo {
+public class WorldGuardProtectedRegionInfo implements IProtectionRange {
     private final ProtectedRegion protectedRegion;
 
     public WorldGuardProtectedRegionInfo(ProtectedRegion protectedRegion) {
