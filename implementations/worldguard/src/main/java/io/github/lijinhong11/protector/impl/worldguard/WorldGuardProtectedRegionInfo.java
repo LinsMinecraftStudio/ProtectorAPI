@@ -7,20 +7,30 @@ import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class WorldGuardProtectedRegionInfo implements IProtectionRange {
     private final ProtectedRegion protectedRegion;
 
     public WorldGuardProtectedRegionInfo(ProtectedRegion protectedRegion) {
         this.protectedRegion = protectedRegion;
+    }
+
+    @Override
+    public @NotNull String getId() {
+        return protectedRegion.getId();
+    }
+
+    @Override
+    public @NotNull String getDisplayName() {
+        return protectedRegion.getId();
     }
 
     @Override

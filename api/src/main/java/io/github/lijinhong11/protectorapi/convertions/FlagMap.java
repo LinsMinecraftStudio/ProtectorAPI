@@ -1,6 +1,7 @@
 package io.github.lijinhong11.protectorapi.convertions;
 
 import io.github.lijinhong11.protectorapi.flag.FlagState;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;

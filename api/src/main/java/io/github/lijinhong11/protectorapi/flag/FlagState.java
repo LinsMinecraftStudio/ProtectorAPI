@@ -9,6 +9,7 @@ public interface FlagState<T> {
 
     /**
      * Converts the value to boolean.
+     *
      * @return the boolean value
      * @throws ClassCastException if failed to convert
      */

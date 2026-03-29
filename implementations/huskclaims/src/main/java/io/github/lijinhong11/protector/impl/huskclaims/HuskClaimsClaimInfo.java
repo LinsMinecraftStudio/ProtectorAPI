@@ -5,10 +5,6 @@ import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import net.william278.huskclaims.claim.Claim;
 import net.william278.huskclaims.libraries.cloplib.operation.OperationType;
 import org.bukkit.Bukkit;
@@ -16,11 +12,27 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 public class HuskClaimsClaimInfo implements IProtectionRange {
     private final Claim claim;
 
     public HuskClaimsClaimInfo(@NotNull Claim claim) {
         this.claim = claim;
+    }
+
+    @Override
+    public @NotNull String getId() {
+        return "";
+    }
+
+    @Override
+    public @NotNull String getDisplayName() {
+        return "";
     }
 
     @Override
@@ -43,7 +55,7 @@ public class HuskClaimsClaimInfo implements IProtectionRange {
     @Override
     public FlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
         Optional<OperationType> type = OperationType.get(flag);
-        if (type.isEmpty()) {
+        if (!type.isPresent()) {
             return FlagStates.UNSUPPORTED;
         }
 
@@ -73,7 +85,7 @@ public class HuskClaimsClaimInfo implements IProtectionRange {
     public List<OfflinePlayer> getMembers() {
         return claim.getTrustedUsers().keySet().stream()
                 .map(Bukkit::getOfflinePlayer)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -6,11 +6,15 @@ import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
-import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class IridiumSkyblockProtectionModule implements IProtectionModule {
     private final IridiumSkyblockAPI api = IridiumSkyblockAPI.getInstance();
@@ -24,8 +28,8 @@ public class IridiumSkyblockProtectionModule implements IProtectionModule {
     public List<? extends IProtectionRange> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
         User user = api.getUser(player);
         return user.getIsland()
-                .map(i -> List.of(new IridiumSkyblockIslandInfo(i)))
-                .orElse(List.of());
+                .map(i -> Collections.singletonList(new IridiumSkyblockIslandInfo(i)))
+                .orElse(new ArrayList<>());
     }
 
     @Override

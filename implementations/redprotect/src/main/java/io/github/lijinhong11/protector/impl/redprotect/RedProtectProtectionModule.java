@@ -7,13 +7,14 @@ import br.net.fabiozumbi12.RedProtect.Core.config.Category.GlobalFlagsCategory;
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RedProtectProtectionModule implements IProtectionModule, FlagRegisterable {
     private final RedProtectAPI api;

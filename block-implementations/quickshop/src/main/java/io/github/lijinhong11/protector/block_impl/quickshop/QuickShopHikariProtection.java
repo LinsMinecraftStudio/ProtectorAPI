@@ -11,13 +11,13 @@ import org.jetbrains.annotations.NotNull;
 public class QuickShopHikariProtection implements IBlockProtectionModule {
     private final QuickShopAPI api;
 
+    public QuickShopHikariProtection() {
+        api = QuickShopAPI.getInstance();
+    }
+
     @Override
     public @NotNull String getPluginName() {
         return "QuickShop-Hikari";
-    }
-
-    public QuickShopHikariProtection() {
-        api = QuickShopAPI.getInstance();
     }
 
     @Override

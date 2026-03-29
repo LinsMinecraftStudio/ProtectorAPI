@@ -8,15 +8,15 @@ import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ResidenceInfo implements IProtectionRange {
     private final ClaimedResidence residence;
@@ -25,6 +25,16 @@ public class ResidenceInfo implements IProtectionRange {
     public ResidenceInfo(ClaimedResidence residence) {
         this.residence = residence;
         this.permissions = residence.getPermissions();
+    }
+
+    @Override
+    public @NotNull String getId() {
+        return residence.getName();
+    }
+
+    @Override
+    public @NotNull String getDisplayName() {
+        return residence.getResidenceName();
     }
 
     @Override

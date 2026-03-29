@@ -1,7 +1,6 @@
 package io.github.lijinhong11.protector.block_impl.lands;
 
 import io.github.lijinhong11.protectorapi.flag.CustomFlag;
-import java.util.Objects;
 import me.angeschossen.lands.api.flags.DefaultStateFlag;
 import me.angeschossen.lands.api.flags.enums.FlagModule;
 import org.jetbrains.annotations.NotNull;

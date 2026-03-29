@@ -3,7 +3,6 @@ package io.github.lijinhong11.protector.impl.huskclaims;
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
-import java.util.*;
 import net.kyori.adventure.key.Key;
 import net.william278.huskclaims.api.BukkitHuskClaimsAPI;
 import net.william278.huskclaims.claim.Claim;
@@ -19,8 +18,21 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 public class HuskClaimsProtectionModule implements IProtectionModule, FlagRegisterable {
     private static final BukkitHuskClaimsAPI api = BukkitHuskClaimsAPI.getInstance();
+
+    static World wrapWorld(org.bukkit.World world) {
+        return api.getWorld(world);
+    }
+
+    static Position wrapLocation(Location location) {
+        return api.getPosition(location);
+    }
 
     @Override
     public @NotNull String getPluginName() {
@@ -70,12 +82,12 @@ public class HuskClaimsProtectionModule implements IProtectionModule, FlagRegist
     @Override
     public FlagState<?> getGlobalFlag(@NotNull String flag, @NotNull String world) {
         Optional<OperationType> operationType = OperationType.get(flag);
-        if (operationType.isEmpty()) {
+        if (!operationType.isPresent()) {
             return FlagStates.UNSUPPORTED;
         }
 
         Optional<ClaimWorld> cw = api.getClaimWorld(wrapWorld(Bukkit.getWorld(world)));
-        if (cw.isEmpty()) {
+        if (!cw.isPresent()) {
             return FlagStates.WORLD_NOT_FOUND;
         }
 
@@ -120,13 +132,5 @@ public class HuskClaimsProtectionModule implements IProtectionModule, FlagRegist
         }
 
         setGlobalFlag(world, flag.getForHuskClaims(), value);
-    }
-
-    static World wrapWorld(org.bukkit.World world) {
-        return api.getWorld(world);
-    }
-
-    static Position wrapLocation(Location location) {
-        return api.getPosition(location);
     }
 }

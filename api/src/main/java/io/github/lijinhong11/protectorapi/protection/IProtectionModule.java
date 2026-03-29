@@ -2,12 +2,13 @@ package io.github.lijinhong11.protectorapi.protection;
 
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
-import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public interface IProtectionModule {
     /**
@@ -63,6 +64,7 @@ public interface IProtectionModule {
 
     /**
      * Whether the module supports global flags
+     *
      * @return true if the module supports global flags
      */
     boolean isSupportGlobalFlags();
@@ -80,7 +82,7 @@ public interface IProtectionModule {
     /**
      * Get the global flag
      *
-     * @param flag the flag
+     * @param flag  the flag
      * @param world the world
      * @return the global flag
      * @throws UnsupportedOperationException if the module does not support global flags
@@ -99,7 +101,7 @@ public interface IProtectionModule {
      * Set the global flag
      *
      * @param world the world
-     * @param flag the flag
+     * @param flag  the flag
      * @throws UnsupportedOperationException if the module does not support global flags
      */
     void setGlobalFlag(@NotNull String world, @NotNull CommonFlags flag, Object value);

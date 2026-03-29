@@ -17,12 +17,13 @@ public class CustomFlag {
 
     /**
      * The custom flag object
-     * @param plugin the plugin
-     * @param namespace the namespace for verify
-     * @param id the flag ID
+     *
+     * @param plugin       the plugin
+     * @param namespace    the namespace for verify
+     * @param id           the flag ID
      * @param defaultValue the default value
-     * @param displayName the display name of the flag (optional)
-     * @param description the description about the flag (optional)
+     * @param displayName  the display name of the flag (optional)
+     * @param description  the description about the flag (optional)
      */
     public CustomFlag(@NotNull Plugin plugin, @NotNull String namespace, @NotNull String id, boolean defaultValue, @Nullable String displayName, @Nullable String description) {
         this.plugin = plugin;
@@ -33,6 +34,11 @@ public class CustomFlag {
         this.description = description;
     }
 
+    /**
+     * Gets the plugin
+     *
+     * @return the plugin
+     */
     public Plugin plugin() {
         return plugin;
     }

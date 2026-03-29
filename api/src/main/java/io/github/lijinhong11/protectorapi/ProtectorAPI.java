@@ -3,13 +3,9 @@ package io.github.lijinhong11.protectorapi;
 import com.google.common.base.Preconditions;
 import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
 import io.github.lijinhong11.protectorapi.flag.*;
+import io.github.lijinhong11.protectorapi.handlers.AHandler;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,19 +14,28 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
+
+@SuppressWarnings({"unchecked", "unused"})
 public class ProtectorAPI {
     private static final Set<IProtectionModule> modules;
     private static final Set<IBlockProtectionModule> blockModules;
+
+    private static final List<AHandler> handlers;
 
     private static JavaPlugin pluginHost;
 
     static {
         modules = new CopyOnWriteArraySet<>();
         blockModules = new CopyOnWriteArraySet<>();
+        handlers = new ArrayList<>();
     }
 
     /**
      * Register the protection module
+     *
      * @param module the protection module
      */
     public static void register(IProtectionModule module) {
@@ -42,6 +47,7 @@ public class ProtectorAPI {
 
     /**
      * Register the block protection module
+     *
      * @param module the block protection module
      */
     public static void register(IBlockProtectionModule module) {
@@ -49,6 +55,21 @@ public class ProtectorAPI {
         Preconditions.checkArgument(!blockModules.contains(module), "block module already registered");
 
         blockModules.add(module);
+    }
+
+    public static void registerHandler(AHandler handler) {
+        Preconditions.checkNotNull(handler, "handler cannot be null");
+
+        handlers.add(handler);
+    }
+
+    /**
+     * Get ProtectorAPI's plugin instance
+     *
+     * @return the plugin instance
+     */
+    public static JavaPlugin getPluginHost() {
+        return pluginHost;
     }
 
     /**
@@ -63,27 +84,23 @@ public class ProtectorAPI {
     }
 
     /**
-     * Get ProtectorAPI's plugin instance
-     * @return the plugin instance
-     */
-    public static JavaPlugin getPluginHost() {
-        return pluginHost;
-    }
-
-    /**
      * Get the first available protection module
+     *
      * @return the first available protection module
      */
-    @Nullable public static IProtectionModule getFirstAvailableModule() {
-        return modules.toArray(IProtectionModule[]::new)[0];
+    @Nullable
+    public static IProtectionModule getFirstAvailableModule() {
+        return (IProtectionModule) modules.toArray()[0];
     }
 
     /**
      * Find the protection module by plugin name
+     *
      * @param pluginName the plugin name
      * @return the protection module
      */
-    @Nullable public static IProtectionModule getModuleByPluginName(String pluginName) {
+    @Nullable
+    public static IProtectionModule getModuleByPluginName(String pluginName) {
         for (IProtectionModule module : modules) {
             if (module.getPluginName().equalsIgnoreCase(pluginName)) {
                 return module;
@@ -114,26 +131,30 @@ public class ProtectorAPI {
 
     /**
      * Get all available protection modules.
+     *
      * @return a list contains all available protection modules.
      */
-    public static @Unmodifiable @NotNull Collection<IProtectionModule> getAllAvailableProtectionModules() {
-        return Collections.unmodifiableCollection(modules);
+    public static @Unmodifiable @NotNull Set<IProtectionModule> getAllAvailableProtectionModules() {
+        return Collections.unmodifiableSet(modules);
     }
 
     /**
      * Get all available block protection modules.
+     *
      * @return a list contains all available protection modules.
      */
-    public static @Unmodifiable @NotNull Collection<IBlockProtectionModule> getAllAvailableBlockProtectionModules() {
-        return Collections.unmodifiableCollection(blockModules);
+    public static @Unmodifiable @NotNull Set<IBlockProtectionModule> getAllAvailableBlockProtectionModules() {
+        return Collections.unmodifiableSet(blockModules);
     }
 
     /**
      * Find the protection module that protects the protection range
+     *
      * @param location the location in the protection range
      * @return the protection module
      */
-    @Nullable public static IProtectionModule findModule(Location location) {
+    @Nullable
+    public static IProtectionModule findModule(Location location) {
         for (IProtectionModule module : modules) {
             if (module.isInProtectionRange(location)) {
                 return module;
@@ -145,11 +166,13 @@ public class ProtectorAPI {
 
     /**
      * Find the block protection module that protects the block
-     * @param p the player
+     *
+     * @param p     the player
      * @param block the block
      * @return the block protection module
      */
-    @Nullable public static IBlockProtectionModule findBlockModule(Player p, Location block) {
+    @Nullable
+    public static IBlockProtectionModule findBlockModule(Player p, Location block) {
         for (IBlockProtectionModule module : blockModules) {
             if (module.isProtected(p, block)) {
                 return module;
@@ -171,9 +194,9 @@ public class ProtectorAPI {
         if (module == null) {
             for (IProtectionModule m2 : modules) {
                 if (m2.isSupportGlobalFlags()) {
-                    return (boolean) Objects.requireNonNull(m2.getGlobalFlag(
+                    return Objects.requireNonNull(m2.getGlobalFlag(
                                     CommonFlags.BREAK, location.getWorld().getName()))
-                            .value();
+                            .toBooleanOrThrow();
                 }
             }
 
@@ -190,13 +213,14 @@ public class ProtectorAPI {
             return true;
         }
 
-        return (boolean) flagState.value();
+        return flagState.toBooleanOrThrow();
     }
 
     /**
      * Check if the player can break a block
+     *
      * @param player the player
-     * @param block the block
+     * @param block  the block
      * @return true if the player can break a block, false otherwise
      */
     public static boolean allowBreak(Player player, Location block) {
@@ -214,6 +238,7 @@ public class ProtectorAPI {
 
     /**
      * Check if the player can place a block
+     *
      * @param player the player
      * @return true if the player can place a block, false otherwise
      */
@@ -223,9 +248,9 @@ public class ProtectorAPI {
         if (module == null) {
             for (IProtectionModule m2 : modules) {
                 if (m2.isSupportGlobalFlags()) {
-                    return (boolean) Objects.requireNonNull(m2.getGlobalFlag(
+                    return Objects.requireNonNull(m2.getGlobalFlag(
                                     CommonFlags.PLACE, location.getWorld().getName()))
-                            .value();
+                            .toBooleanOrThrow();
                 }
             }
 
@@ -242,13 +267,14 @@ public class ProtectorAPI {
             return true;
         }
 
-        return (boolean) flagState.value();
+        return flagState.toBooleanOrThrow();
     }
 
     /**
      * Check if the player can place a block
+     *
      * @param player the player
-     * @param block the block
+     * @param block  the block
      * @return true if the player can place a block, false otherwise
      */
     public static boolean allowPlace(Player player, Location block) {
@@ -266,6 +292,7 @@ public class ProtectorAPI {
 
     /**
      * Check if the player can interact with a block
+     *
      * @param player the player
      * @return true if the player can interact with a block
      */
@@ -275,9 +302,9 @@ public class ProtectorAPI {
         if (module == null) {
             for (IProtectionModule m2 : modules) {
                 if (m2.isSupportGlobalFlags()) {
-                    return (boolean) Objects.requireNonNull(m2.getGlobalFlag(
+                    return Objects.requireNonNull(m2.getGlobalFlag(
                                     CommonFlags.INTERACT, location.getWorld().getName()))
-                            .value();
+                            .toBooleanOrThrow();
                 }
             }
 
@@ -294,11 +321,12 @@ public class ProtectorAPI {
             return true;
         }
 
-        return (boolean) flagState.value();
+        return flagState.toBooleanOrThrow();
     }
 
     /**
      * Check if the player can interact with the block
+     *
      * @param player the player
      * @param block  the block
      * @return true if the player can interact with the block
@@ -314,5 +342,17 @@ public class ProtectorAPI {
         }
 
         return false;
+    }
+
+    /**
+     * Get handlers by specific class
+     *
+     * @return handlers
+     */
+    public static <T extends AHandler> List<T> getHandlers(Class<T> handlerClass) {
+        return handlers.stream()
+                .filter(h -> h.getClass().isAssignableFrom(handlerClass))
+                .map(t -> (T) t)
+                .collect(Collectors.toList());
     }
 }

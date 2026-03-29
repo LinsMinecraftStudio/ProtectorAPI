@@ -9,11 +9,13 @@ import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
-import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PlotSquaredProtectionModule implements IProtectionModule, FlagRegisterable {
     private final PlotAPI plotAPI;
@@ -31,7 +33,7 @@ public class PlotSquaredProtectionModule implements IProtectionModule, FlagRegis
     public List<? extends IProtectionRange> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
         return plotAPI.getPlayerPlots(getPlotPlayer(player)).stream()
                 .map(PlotSquaredPlotInfo::new)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override

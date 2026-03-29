@@ -7,13 +7,15 @@ import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class IridiumSkyblockIslandInfo implements IProtectionRange {
     private final IridiumSkyblockAPI api = IridiumSkyblockAPI.getInstance();
@@ -21,6 +23,16 @@ public class IridiumSkyblockIslandInfo implements IProtectionRange {
 
     public IridiumSkyblockIslandInfo(Island island) {
         this.island = island;
+    }
+
+    @Override
+    public @NotNull String getId() {
+        return String.valueOf(island.getId());
+    }
+
+    @Override
+    public @NotNull String getDisplayName() {
+        return island.getName();
     }
 
     @Override
@@ -50,7 +62,7 @@ public class IridiumSkyblockIslandInfo implements IProtectionRange {
 
     @Override
     public FlagState<?> getFlagState(@NotNull CommonFlags flag, OfflinePlayer player) {
-        PermissionType type = getPermissionType(flag.toString());
+        PermissionType type = getPermissionType(flag.getForIridiumSkyblock());
         if (type == null) {
             return FlagStates.UNSUPPORTED;
         }
@@ -63,14 +75,14 @@ public class IridiumSkyblockIslandInfo implements IProtectionRange {
         return island.getMembers().stream()
                 .filter(u -> api.getIslandPermission(island, u, PermissionType.CHANGE_PERMISSIONS))
                 .map(u -> Bukkit.getOfflinePlayer(u.getUuid()))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<OfflinePlayer> getMembers() {
         return island.getMembers().stream()
                 .map(u -> Bukkit.getOfflinePlayer(u.getUuid()))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -79,6 +91,10 @@ public class IridiumSkyblockIslandInfo implements IProtectionRange {
     }
 
     private PermissionType getPermissionType(String s) {
+        if (s == null) {
+            return null;
+        }
+
         try {
             return PermissionType.valueOf(s.toUpperCase());
         } catch (Exception e) {

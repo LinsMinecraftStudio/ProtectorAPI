@@ -1,7 +1,7 @@
 name: ProtectorAPI
 main: me.mmmjjkx.protectorapi.ProtectorAPIPluginImpl
 version: ${project.version}
-authors: [mmmjjkx]
+authors: [ mmmjjkx ]
 description: A simple API for protection plugins
 folia-supported: true
 commands:

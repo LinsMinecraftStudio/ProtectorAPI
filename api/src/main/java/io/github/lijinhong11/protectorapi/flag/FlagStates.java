@@ -15,7 +15,8 @@ public class FlagStates {
      */
     public static final FlagState<Object> WORLD_NOT_FOUND = new WorldNotFoundFlagState();
 
-    private FlagStates() {}
+    private FlagStates() {
+    }
 
     public static FlagState<Boolean> fromBoolean(boolean value) {
         return value ? ALLOW : DENY;
@@ -44,7 +45,8 @@ public class FlagStates {
     }
 
     public static class UnsupportedFlagState implements FlagState<Object> {
-        UnsupportedFlagState() {}
+        UnsupportedFlagState() {
+        }
 
         public Object value() {
             throw new UnsupportedOperationException();
@@ -57,6 +59,7 @@ public class FlagStates {
     }
 
     public static class WorldNotFoundFlagState extends UnsupportedFlagState {
-        WorldNotFoundFlagState() {}
+        WorldNotFoundFlagState() {
+        }
     }
 }

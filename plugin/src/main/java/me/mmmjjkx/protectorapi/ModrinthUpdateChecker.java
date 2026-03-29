@@ -61,7 +61,8 @@ public class ModrinthUpdateChecker {
                 }
                 reader.close();
 
-                Type listType = new TypeToken<List<ModrinthVersion>>() {}.getType();
+                Type listType = new TypeToken<List<ModrinthVersion>>() {
+                }.getType();
                 List<ModrinthVersion> versions =
                         gson.fromJson(response.toString(), listType);
 

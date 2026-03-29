@@ -1,25 +1,33 @@
 package io.github.lijinhong11.protector.impl.bentobox;
 
+import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
+import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
+import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.api.events.island.IslandCreatedEvent;
+import world.bentobox.bentobox.api.events.island.IslandDeletedEvent;
 import world.bentobox.bentobox.database.objects.Island;
+
+import java.util.*;
 
 public class BentoBoxProtectionModule implements IProtectionModule {
     private final BentoBox bentoBox;
 
     public BentoBoxProtectionModule() {
         this.bentoBox = BentoBox.getInstance();
+
+        Bukkit.getPluginManager().registerEvents(new TheListener(), ProtectorAPI.getPluginHost());
     }
 
     @Override
@@ -31,7 +39,7 @@ public class BentoBoxProtectionModule implements IProtectionModule {
     public List<? extends IProtectionRange> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
         Collection<Island> islands = bentoBox.getIslands().getIslands();
         if (islands.isEmpty()) {
-            return List.of();
+            return Collections.emptyList();
         }
 
         for (Island island : islands) {
@@ -77,5 +85,21 @@ public class BentoBoxProtectionModule implements IProtectionModule {
     @Override
     public void setGlobalFlag(@NotNull String world, @NotNull CommonFlags flag, Object value) {
         throw new UnsupportedOperationException();
+    }
+
+    class TheListener implements Listener {
+        @EventHandler
+        public void onCreated(IslandCreatedEvent e) {
+            BentoBoxIslandInfo info = new BentoBoxIslandInfo(e.getIsland());
+
+            ProtectorAPI.getHandlers(RangeCreateHandler.class).forEach(a -> a.onCreate(BentoBoxProtectionModule.this, info));
+        }
+
+        @EventHandler
+        public void onDelete(IslandDeletedEvent e) {
+            BentoBoxIslandInfo info = new BentoBoxIslandInfo(e.getIsland());
+
+            ProtectorAPI.getHandlers(RangeDeleteHandler.class).forEach(a -> a.onDelete(BentoBoxProtectionModule.this, info));
+        }
     }
 }

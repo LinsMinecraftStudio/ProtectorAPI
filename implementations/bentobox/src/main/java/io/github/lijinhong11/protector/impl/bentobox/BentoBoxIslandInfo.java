@@ -5,10 +5,6 @@ import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -20,11 +16,31 @@ import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.managers.FlagsManager;
 import world.bentobox.bentobox.managers.RanksManager;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 public class BentoBoxIslandInfo implements IProtectionRange {
     private final Island island;
 
     public BentoBoxIslandInfo(Island island) {
         this.island = island;
+    }
+
+    @Override
+    public @NotNull String getId() {
+        return island.getUniqueId();
+    }
+
+    @Override
+    public @NotNull String getDisplayName() {
+        if (island.getName() == null) {
+            return "NAME_NULL";
+        }
+
+        return island.getName();
     }
 
     @Override
@@ -42,7 +58,7 @@ public class BentoBoxIslandInfo implements IProtectionRange {
     public FlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
         FlagsManager manager = BentoBox.getInstance().getFlagsManager();
         Optional<Flag> theFlagOptional = manager.getFlag(flag);
-        if (theFlagOptional.isEmpty()) {
+        if (!theFlagOptional.isPresent()) {
             return FlagStates.UNSUPPORTED;
         }
 
@@ -77,14 +93,14 @@ public class BentoBoxIslandInfo implements IProtectionRange {
                     User user = BentoBox.getInstance().getPlayers().getUser(m.getUniqueId());
                     return island.getRank(user) >= RanksManager.SUB_OWNER_RANK;
                 })
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<OfflinePlayer> getMembers() {
         return island.getMembers().keySet().stream()
                 .map(Bukkit::getOfflinePlayer)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override

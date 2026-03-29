@@ -7,14 +7,14 @@ import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ResidenceProtectionModule implements IProtectionModule, FlagRegisterable {
     @Override

@@ -4,23 +4,35 @@ import cn.lunadeer.dominion.api.DominionAPI;
 import cn.lunadeer.dominion.api.dtos.DominionDTO;
 import cn.lunadeer.dominion.api.dtos.flag.Flags;
 import cn.lunadeer.dominion.api.dtos.flag.PriFlag;
+import cn.lunadeer.dominion.events.dominion.DominionCreateEvent;
+import cn.lunadeer.dominion.events.dominion.DominionDeleteEvent;
+import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.CustomFlag;
 import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
+import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
+import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
-import java.util.List;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DominionProtectionModule implements IProtectionModule, FlagRegisterable {
     private final DominionAPI api;
 
     public DominionProtectionModule() {
         api = DominionAPI.getInstance();
+
+        Bukkit.getPluginManager().registerEvents(new TheListener(), ProtectorAPI.getPluginHost());
     }
 
     @Override
@@ -31,7 +43,7 @@ public class DominionProtectionModule implements IProtectionModule, FlagRegister
     @Override
     public List<? extends IProtectionRange> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
         List<DominionDTO> list = api.getPlayerAdminDominionDTOs(player.getUniqueId());
-        return list.stream().map(DominionRangeInfo::new).toList();
+        return list.stream().map(DominionRangeInfo::new).collect(Collectors.toList());
     }
 
     @Override
@@ -80,5 +92,21 @@ public class DominionProtectionModule implements IProtectionModule, FlagRegister
     @Override
     public void setGlobalFlag(@NotNull String world, @NotNull CommonFlags flag, Object value) {
         throw new UnsupportedOperationException();
+    }
+
+    class TheListener implements Listener {
+        @EventHandler
+        public void onCreated(DominionCreateEvent e) {
+            DominionRangeInfo info = new DominionRangeInfo(e.getDominion());
+
+            ProtectorAPI.getHandlers(RangeCreateHandler.class).forEach(a -> a.onCreate(DominionProtectionModule.this, info));
+        }
+
+        @EventHandler
+        public void onDelete(DominionDeleteEvent e) {
+            DominionRangeInfo info = new DominionRangeInfo(e.getDominion());
+
+            ProtectorAPI.getHandlers(RangeDeleteHandler.class).forEach(a -> a.onDelete(DominionProtectionModule.this, info));
+        }
     }
 }

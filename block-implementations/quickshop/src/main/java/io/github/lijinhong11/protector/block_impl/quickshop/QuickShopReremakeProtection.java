@@ -33,8 +33,8 @@ public class QuickShopReremakeProtection implements IBlockProtectionModule {
     public boolean allowPlace(Player player, Location block) {
         return api.getPermissionChecker().canBuild(player, block).isSuccess()
                 && api.getShopManager()
-                        .canBuildShop(
-                                player, block.getBlock(), player.getFacing().getOppositeFace());
+                .canBuildShop(
+                        player, block.getBlock(), player.getFacing().getOppositeFace());
     }
 
     @Override

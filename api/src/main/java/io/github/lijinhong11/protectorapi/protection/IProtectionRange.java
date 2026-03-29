@@ -2,13 +2,29 @@ package io.github.lijinhong11.protectorapi.protection;
 
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
-import java.util.List;
-import java.util.Map;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+import java.util.Map;
+
 public interface IProtectionRange {
+    /**
+     * Get id.
+     * Sometimes it can be an integer, or UUID, or empty (if the module doesn't support)
+     *
+     * @return id
+     */
+    @NotNull String getId();
+
+    /**
+     * Get display name or empty (if the module doesn't support)
+     *
+     * @return display name
+     */
+    @NotNull String getDisplayName();
+
     /**
      * Get all flags
      *
@@ -18,6 +34,7 @@ public interface IProtectionRange {
 
     /**
      * Get flag state
+     *
      * @param flag flag name
      * @return flag state
      */
@@ -25,7 +42,8 @@ public interface IProtectionRange {
 
     /**
      * Get flag state
-     * @param flag flag name
+     *
+     * @param flag   flag name
      * @param player player
      * @return flag state
      */
@@ -33,6 +51,7 @@ public interface IProtectionRange {
 
     /**
      * Get flag state
+     *
      * @param flag flag
      * @return flag state
      */
@@ -40,7 +59,8 @@ public interface IProtectionRange {
 
     /**
      * Get flag state
-     * @param flag flag
+     *
+     * @param flag   flag
      * @param player player
      * @return flag state
      */
@@ -48,18 +68,21 @@ public interface IProtectionRange {
 
     /**
      * Get all admins
+     *
      * @return all admins
      */
     List<OfflinePlayer> getAdmins();
 
     /**
      * Get all members
+     *
      * @return all members
      */
     List<OfflinePlayer> getMembers();
 
     /**
      * Get owner
+     *
      * @return owner
      */
     @Nullable OfflinePlayer getOwner();
