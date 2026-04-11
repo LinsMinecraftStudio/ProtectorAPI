@@ -1,7 +1,7 @@
 package me.mmmjjkx.protectorapi;
 
 import io.github.lijinhong11.protectorapi.ProtectorAPI;
-import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;

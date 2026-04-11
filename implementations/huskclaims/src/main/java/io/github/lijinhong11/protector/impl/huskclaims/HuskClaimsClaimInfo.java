@@ -1,12 +1,16 @@
 package io.github.lijinhong11.protector.impl.huskclaims;
 
-import io.github.lijinhong11.protectorapi.convertions.FlagMap;
+import io.github.lijinhong11.protectorapi.objects.FlagMap;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
+import io.github.lijinhong11.protectorapi.objects.WorldCollection;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
+import net.william278.huskclaims.api.HuskClaimsAPI;
 import net.william278.huskclaims.claim.Claim;
+import net.william278.huskclaims.claim.ClaimWorld;
 import net.william278.huskclaims.libraries.cloplib.operation.OperationType;
+import net.william278.huskclaims.position.ServerWorld;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -16,12 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class HuskClaimsClaimInfo implements IProtectionRange {
+    private final ClaimWorld world;
     private final Claim claim;
 
-    public HuskClaimsClaimInfo(@NotNull Claim claim) {
+    public HuskClaimsClaimInfo(@NotNull ClaimWorld world, Claim claim) {
+        this.world = world;
         this.claim = claim;
     }
 
@@ -33,6 +40,11 @@ public class HuskClaimsClaimInfo implements IProtectionRange {
     @Override
     public @NotNull String getDisplayName() {
         return "";
+    }
+
+    @Override
+    public @NotNull WorldCollection getWorld() {
+        return new WorldCollection(HuskClaimsProtectionModule.getBukkitWorldByClaimWorld(world));
     }
 
     @Override

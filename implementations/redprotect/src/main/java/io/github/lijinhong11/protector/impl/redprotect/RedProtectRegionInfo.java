@@ -1,10 +1,11 @@
 package io.github.lijinhong11.protector.impl.redprotect;
 
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
-import io.github.lijinhong11.protectorapi.convertions.FlagMap;
+import io.github.lijinhong11.protectorapi.objects.FlagMap;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
+import io.github.lijinhong11.protectorapi.objects.WorldCollection;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -31,6 +32,11 @@ public class RedProtectRegionInfo implements IProtectionRange {
     @Override
     public @NotNull String getDisplayName() {
         return region.getName();
+    }
+
+    @Override
+    public @NotNull WorldCollection getWorld() {
+        return new WorldCollection(region.getCenterLoc().getWorld());
     }
 
     @Override

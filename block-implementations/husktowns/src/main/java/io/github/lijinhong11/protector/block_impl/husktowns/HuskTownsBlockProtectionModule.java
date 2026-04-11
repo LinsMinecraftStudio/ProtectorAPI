@@ -1,6 +1,6 @@
 package io.github.lijinhong11.protector.block_impl.husktowns;
 
-import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import io.github.lijinhong11.protectorapi.flag.CustomFlag;
 import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
 import net.kyori.adventure.key.Key;

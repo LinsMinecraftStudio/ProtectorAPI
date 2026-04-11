@@ -21,13 +21,13 @@ import world.bentobox.bentobox.database.objects.Island;
 
 import java.util.*;
 
-public class BentoBoxProtectionModule implements IProtectionModule {
+public class BentoBoxProtectionModule implements IProtectionModule, Listener {
     private final BentoBox bentoBox;
 
     public BentoBoxProtectionModule() {
         this.bentoBox = BentoBox.getInstance();
 
-        Bukkit.getPluginManager().registerEvents(new TheListener(), ProtectorAPI.getPluginHost());
+        Bukkit.getPluginManager().registerEvents(this, ProtectorAPI.getPluginHost());
     }
 
     @Override
@@ -87,19 +87,17 @@ public class BentoBoxProtectionModule implements IProtectionModule {
         throw new UnsupportedOperationException();
     }
 
-    class TheListener implements Listener {
-        @EventHandler
-        public void onCreated(IslandCreatedEvent e) {
-            BentoBoxIslandInfo info = new BentoBoxIslandInfo(e.getIsland());
+    @EventHandler
+    public void onCreated(IslandCreatedEvent e) {
+        BentoBoxIslandInfo info = new BentoBoxIslandInfo(e.getIsland());
 
-            ProtectorAPI.getHandlers(RangeCreateHandler.class).forEach(a -> a.onCreate(BentoBoxProtectionModule.this, info));
-        }
+        ProtectorAPI.getHandlers(RangeCreateHandler.class).forEach(a -> a.onCreate(this, info));
+    }
 
-        @EventHandler
-        public void onDelete(IslandDeletedEvent e) {
-            BentoBoxIslandInfo info = new BentoBoxIslandInfo(e.getIsland());
+    @EventHandler
+    public void onDelete(IslandDeletedEvent e) {
+        BentoBoxIslandInfo info = new BentoBoxIslandInfo(e.getIsland());
 
-            ProtectorAPI.getHandlers(RangeDeleteHandler.class).forEach(a -> a.onDelete(BentoBoxProtectionModule.this, info));
-        }
+        ProtectorAPI.getHandlers(RangeDeleteHandler.class).forEach(a -> a.onDelete(this, info));
     }
 }

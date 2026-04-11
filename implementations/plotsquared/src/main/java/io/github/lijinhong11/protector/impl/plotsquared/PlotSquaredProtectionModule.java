@@ -1,12 +1,20 @@
 package io.github.lijinhong11.protector.impl.plotsquared;
 
+import com.google.common.eventbus.Subscribe;
 import com.plotsquared.core.PlotAPI;
+import com.plotsquared.core.events.PlayerAutoPlotEvent;
+import com.plotsquared.core.events.PlayerAutoPlotsChosenEvent;
+import com.plotsquared.core.events.PlayerClaimPlotEvent;
+import com.plotsquared.core.events.PlotDeleteEvent;
 import com.plotsquared.core.player.PlotPlayer;
 import com.plotsquared.core.plot.flag.GlobalFlagContainer;
+import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.CustomFlag;
 import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
+import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
+import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import org.bukkit.Location;
@@ -22,6 +30,8 @@ public class PlotSquaredProtectionModule implements IProtectionModule, FlagRegis
 
     public PlotSquaredProtectionModule() {
         plotAPI = new PlotAPI();
+
+        plotAPI.registerListener(this);
     }
 
     @Override
@@ -89,5 +99,33 @@ public class PlotSquaredProtectionModule implements IProtectionModule, FlagRegis
 
     private PlotPlayer<?> getPlotPlayer(OfflinePlayer player) {
         return plotAPI.wrapPlayer(player.getUniqueId());
+    }
+
+    @Subscribe
+    public void onCreated(PlayerAutoPlotEvent e) {
+        PlotSquaredPlotInfo info = new PlotSquaredPlotInfo(e.getPlot());
+
+        ProtectorAPI.getHandlers(RangeCreateHandler.class).forEach(a -> a.onCreate(this, info));
+    }
+
+    @Subscribe
+    public void onCreated(PlayerAutoPlotsChosenEvent e) {
+        PlotSquaredPlotInfo info = new PlotSquaredPlotInfo(e.getPlot());
+
+        ProtectorAPI.getHandlers(RangeCreateHandler.class).forEach(a -> a.onCreate(this, info));
+    }
+
+    @Subscribe
+    public void onCreated(PlayerClaimPlotEvent e) {
+        PlotSquaredPlotInfo info = new PlotSquaredPlotInfo(e.getPlot());
+
+        ProtectorAPI.getHandlers(RangeCreateHandler.class).forEach(a -> a.onCreate(this, info));
+    }
+
+    @Subscribe
+    public void onDelete(PlotDeleteEvent e) {
+        PlotSquaredPlotInfo info = new PlotSquaredPlotInfo(e.getPlot());
+
+        ProtectorAPI.getHandlers(RangeDeleteHandler.class).forEach(a -> a.onDelete(this, info));
     }
 }

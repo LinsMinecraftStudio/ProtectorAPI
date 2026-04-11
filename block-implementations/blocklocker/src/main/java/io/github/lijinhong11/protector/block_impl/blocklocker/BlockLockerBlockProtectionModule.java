@@ -1,6 +1,6 @@
 package io.github.lijinhong11.protector.block_impl.blocklocker;
 
-import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import nl.rutgerkok.blocklocker.BlockLockerAPIv2;
 import nl.rutgerkok.blocklocker.BlockLockerPlugin;
 import nl.rutgerkok.blocklocker.profile.Profile;

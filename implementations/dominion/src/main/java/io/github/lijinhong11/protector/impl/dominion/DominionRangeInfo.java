@@ -6,10 +6,11 @@ import cn.lunadeer.dominion.api.dtos.flag.EnvFlag;
 import cn.lunadeer.dominion.api.dtos.flag.Flag;
 import cn.lunadeer.dominion.api.dtos.flag.Flags;
 import cn.lunadeer.dominion.api.dtos.flag.PriFlag;
-import io.github.lijinhong11.protectorapi.convertions.FlagMap;
+import io.github.lijinhong11.protectorapi.objects.FlagMap;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
+import io.github.lijinhong11.protectorapi.objects.WorldCollection;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -33,6 +34,11 @@ public class DominionRangeInfo implements IProtectionRange {
     @Override
     public @NotNull String getDisplayName() {
         return dominion.getName();
+    }
+
+    @Override
+    public @NotNull WorldCollection getWorld() {
+        return new WorldCollection(dominion.getWorld());
     }
 
     @Override

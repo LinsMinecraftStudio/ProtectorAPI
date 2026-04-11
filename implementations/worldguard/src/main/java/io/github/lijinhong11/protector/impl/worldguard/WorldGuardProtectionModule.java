@@ -57,7 +57,7 @@ public class WorldGuardProtectionModule implements IProtectionModule, FlagRegist
                 .getRegions()
                 .toArray(new ProtectedRegion[]{});
         if (regions.length > 0) {
-            return new WorldGuardProtectedRegionInfo(regions[0]);
+            return new WorldGuardProtectedRegionInfo(location.getWorld(), regions[0]);
         } else {
             return null;
         }

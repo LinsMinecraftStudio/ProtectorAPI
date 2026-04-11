@@ -26,13 +26,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DominionProtectionModule implements IProtectionModule, FlagRegisterable {
+public class DominionProtectionModule implements IProtectionModule, FlagRegisterable, Listener {
     private final DominionAPI api;
 
     public DominionProtectionModule() {
         api = DominionAPI.getInstance();
 
-        Bukkit.getPluginManager().registerEvents(new TheListener(), ProtectorAPI.getPluginHost());
+        Bukkit.getPluginManager().registerEvents(this, ProtectorAPI.getPluginHost());
     }
 
     @Override
@@ -94,19 +94,17 @@ public class DominionProtectionModule implements IProtectionModule, FlagRegister
         throw new UnsupportedOperationException();
     }
 
-    class TheListener implements Listener {
-        @EventHandler
-        public void onCreated(DominionCreateEvent e) {
-            DominionRangeInfo info = new DominionRangeInfo(e.getDominion());
+    @EventHandler
+    public void onCreated(DominionCreateEvent e) {
+        DominionRangeInfo info = new DominionRangeInfo(e.getDominion());
 
-            ProtectorAPI.getHandlers(RangeCreateHandler.class).forEach(a -> a.onCreate(DominionProtectionModule.this, info));
-        }
+        ProtectorAPI.getHandlers(RangeCreateHandler.class).forEach(a -> a.onCreate(this, info));
+    }
 
-        @EventHandler
-        public void onDelete(DominionDeleteEvent e) {
-            DominionRangeInfo info = new DominionRangeInfo(e.getDominion());
+    @EventHandler
+    public void onDelete(DominionDeleteEvent e) {
+        DominionRangeInfo info = new DominionRangeInfo(e.getDominion());
 
-            ProtectorAPI.getHandlers(RangeDeleteHandler.class).forEach(a -> a.onDelete(DominionProtectionModule.this, info));
-        }
+        ProtectorAPI.getHandlers(RangeDeleteHandler.class).forEach(a -> a.onDelete(this, info));
     }
 }

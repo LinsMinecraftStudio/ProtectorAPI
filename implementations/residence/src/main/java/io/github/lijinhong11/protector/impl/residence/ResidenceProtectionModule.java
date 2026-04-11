@@ -2,13 +2,21 @@ package io.github.lijinhong11.protector.impl.residence;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.api.ResidenceApi;
+import com.bekvon.bukkit.residence.event.ResidenceCreationEvent;
+import com.bekvon.bukkit.residence.event.ResidenceDeleteEvent;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
+import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.flag.*;
+import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
+import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ResidenceProtectionModule implements IProtectionModule, FlagRegisterable {
+public class ResidenceProtectionModule implements IProtectionModule, FlagRegisterable, Listener {
+    public ResidenceProtectionModule() {
+        Bukkit.getPluginManager().registerEvents(this, ProtectorAPI.getPluginHost());
+    }
+
     @Override
     public @NotNull String getPluginName() {
         return "Residence";
@@ -87,5 +99,19 @@ public class ResidenceProtectionModule implements IProtectionModule, FlagRegiste
     @Override
     public void setGlobalFlag(@NotNull String world, @NotNull CommonFlags flag, Object value) {
         setGlobalFlag(world, flag.getForResidence(), value);
+    }
+
+    @EventHandler
+    public void onCreated(ResidenceCreationEvent e) {
+        ResidenceInfo info = new ResidenceInfo(e.getResidence());
+
+        ProtectorAPI.getHandlers(RangeCreateHandler.class).forEach(a -> a.onCreate(this, info));
+    }
+
+    @EventHandler
+    public void onDelete(ResidenceDeleteEvent e) {
+        ResidenceInfo info = new ResidenceInfo(e.getResidence());
+
+        ProtectorAPI.getHandlers(RangeDeleteHandler.class).forEach(a -> a.onDelete(this, info));
     }
 }

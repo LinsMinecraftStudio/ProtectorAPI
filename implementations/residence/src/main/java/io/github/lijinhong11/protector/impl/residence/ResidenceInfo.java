@@ -3,13 +3,15 @@ package io.github.lijinhong11.protector.impl.residence;
 import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.ResidencePermissions;
-import io.github.lijinhong11.protectorapi.convertions.FlagMap;
+import io.github.lijinhong11.protectorapi.objects.FlagMap;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
+import io.github.lijinhong11.protectorapi.objects.WorldCollection;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,6 +37,13 @@ public class ResidenceInfo implements IProtectionRange {
     @Override
     public @NotNull String getDisplayName() {
         return residence.getResidenceName();
+    }
+
+    @Override
+    public @NotNull WorldCollection getWorld() {
+        World w = residence.getWorldName() != null ? Bukkit.getWorld(residence.getWorldName()) : null;
+
+        return new WorldCollection(w);
     }
 
     @Override

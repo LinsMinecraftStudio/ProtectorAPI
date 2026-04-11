@@ -1,14 +1,22 @@
 package io.github.lijinhong11.protector.impl.redprotect;
 
 import br.net.fabiozumbi12.RedProtect.Bukkit.API.RedProtectAPI;
+import br.net.fabiozumbi12.RedProtect.Bukkit.API.events.CreateRegionEvent;
+import br.net.fabiozumbi12.RedProtect.Bukkit.API.events.DeleteRegionEvent;
 import br.net.fabiozumbi12.RedProtect.Bukkit.RedProtect;
 import br.net.fabiozumbi12.RedProtect.Bukkit.Region;
 import br.net.fabiozumbi12.RedProtect.Core.config.Category.GlobalFlagsCategory;
+import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.flag.*;
+import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
+import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,11 +24,13 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedProtectProtectionModule implements IProtectionModule, FlagRegisterable {
+public class RedProtectProtectionModule implements IProtectionModule, FlagRegisterable, Listener {
     private final RedProtectAPI api;
 
     public RedProtectProtectionModule() {
         api = RedProtect.get().getAPI();
+
+        Bukkit.getPluginManager().registerEvents(this, ProtectorAPI.getPluginHost());
     }
 
     @Override
@@ -131,4 +141,18 @@ public class RedProtectProtectionModule implements IProtectionModule, FlagRegist
 
         setGlobalFlag(world, flag.getForRedProtect(), value);
     }
+
+    @EventHandler
+    public void onCreated(CreateRegionEvent e) {
+        RedProtectRegionInfo info = new RedProtectRegionInfo(e.getRegion());
+
+        ProtectorAPI.getHandlers(RangeCreateHandler.class).forEach(a -> a.onCreate(this, info));
+    }
+
+    @EventHandler
+    public void onDelete(DeleteRegionEvent e) {
+        RedProtectRegionInfo info = new RedProtectRegionInfo(e.getRegion());
+
+        ProtectorAPI.getHandlers(RangeDeleteHandler.class).forEach(a -> a.onDelete(this, info));
+    }    
 }

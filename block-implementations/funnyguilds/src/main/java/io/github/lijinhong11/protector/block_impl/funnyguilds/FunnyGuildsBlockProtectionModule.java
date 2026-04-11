@@ -1,6 +1,6 @@
 package io.github.lijinhong11.protector.block_impl.funnyguilds;
 
-import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import net.dzikoysk.funnyguilds.feature.protection.GuildProtectionPermission;
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
 import org.bukkit.Location;

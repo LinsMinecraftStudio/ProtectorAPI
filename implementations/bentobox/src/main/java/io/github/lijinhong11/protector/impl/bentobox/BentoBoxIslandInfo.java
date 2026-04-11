@@ -1,9 +1,10 @@
 package io.github.lijinhong11.protector.impl.bentobox;
 
-import io.github.lijinhong11.protectorapi.convertions.FlagMap;
+import io.github.lijinhong11.protectorapi.objects.FlagMap;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
+import io.github.lijinhong11.protectorapi.objects.WorldCollection;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -41,6 +42,11 @@ public class BentoBoxIslandInfo implements IProtectionRange {
         }
 
         return island.getName();
+    }
+
+    @Override
+    public @NotNull WorldCollection getWorld() {
+        return new WorldCollection(island.getWorld(), island.getNetherWorld(), island.getEndWorld());
     }
 
     @Override

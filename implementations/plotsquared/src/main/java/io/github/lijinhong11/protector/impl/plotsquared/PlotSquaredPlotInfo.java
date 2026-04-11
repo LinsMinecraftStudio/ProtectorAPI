@@ -2,13 +2,15 @@ package io.github.lijinhong11.protector.impl.plotsquared;
 
 import com.plotsquared.core.plot.Plot;
 import com.plotsquared.core.plot.flag.PlotFlag;
-import io.github.lijinhong11.protectorapi.convertions.FlagMap;
+import io.github.lijinhong11.protectorapi.objects.FlagMap;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
+import io.github.lijinhong11.protectorapi.objects.WorldCollection;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,6 +34,13 @@ public class PlotSquaredPlotInfo implements IProtectionRange {
     @Override
     public @NotNull String getDisplayName() {
         return plot.getAlias();
+    }
+
+    @Override
+    public @NotNull WorldCollection getWorld() {
+        World w = plot.getWorldName() != null ? Bukkit.getWorld(plot.getWorldName()) : null;
+
+        return new WorldCollection(w);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package io.github.lijinhong11.protectorapi.convertions;
+package io.github.lijinhong11.protectorapi.objects;
 
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 

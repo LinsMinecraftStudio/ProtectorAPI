@@ -1,6 +1,6 @@
 package io.github.lijinhong11.protector.block_impl.nobuildplus;
 
-import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

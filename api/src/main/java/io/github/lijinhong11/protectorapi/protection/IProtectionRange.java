@@ -2,6 +2,7 @@ package io.github.lijinhong11.protectorapi.protection;
 
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
+import io.github.lijinhong11.protectorapi.objects.WorldCollection;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +25,13 @@ public interface IProtectionRange {
      * @return display name
      */
     @NotNull String getDisplayName();
+
+    /**
+     * Get the world which the range exists
+     *
+     * @return world
+     */
+    @NotNull WorldCollection getWorld();
 
     /**
      * Get all flags

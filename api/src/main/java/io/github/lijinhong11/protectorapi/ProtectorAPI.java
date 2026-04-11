@@ -1,7 +1,7 @@
 package io.github.lijinhong11.protectorapi;
 
 import com.google.common.base.Preconditions;
-import io.github.lijinhong11.protectorapi.block.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.handlers.AHandler;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;

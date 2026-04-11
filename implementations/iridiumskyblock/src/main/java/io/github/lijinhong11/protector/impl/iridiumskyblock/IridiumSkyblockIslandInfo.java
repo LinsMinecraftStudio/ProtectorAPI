@@ -6,6 +6,7 @@ import com.iridium.iridiumskyblock.dependencies.iridiumteams.PermissionType;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
+import io.github.lijinhong11.protectorapi.objects.WorldCollection;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -33,6 +34,11 @@ public class IridiumSkyblockIslandInfo implements IProtectionRange {
     @Override
     public @NotNull String getDisplayName() {
         return island.getName();
+    }
+
+    @Override
+    public @NotNull WorldCollection getWorld() {
+        return new WorldCollection(island.getHome().getWorld());
     }
 
     @Override
