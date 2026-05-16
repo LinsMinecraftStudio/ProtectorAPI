@@ -19,6 +19,7 @@ import io.github.lijinhong11.protector.block_impl.towny.TownyBlockProtectionModu
 import io.github.lijinhong11.protector.impl.bentobox.BentoBoxProtectionModule;
 import io.github.lijinhong11.protector.impl.dominion.DominionProtectionModule;
 import io.github.lijinhong11.protector.impl.excellentclaims.ExcellentClaimsBlockProtectionModule;
+import io.github.lijinhong11.protector.impl.griefdefender.GriefDefenderProtectionModule;
 import io.github.lijinhong11.protector.impl.huskclaims.HuskClaimsProtectionModule;
 import io.github.lijinhong11.protector.impl.iridiumskyblock.IridiumSkyblockProtectionModule;
 import io.github.lijinhong11.protector.impl.plotsquared.PlotSquaredProtectionModule;
@@ -92,6 +93,10 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
 
         if (pm.isPluginEnabled("PlotSquared")) {
             ProtectorAPI.register(new PlotSquaredProtectionModule());
+        }
+
+        if (pm.isPluginEnabled("GriefDefender")) {
+            ProtectorAPI.register(new GriefDefenderProtectionModule());
         }
     }
 

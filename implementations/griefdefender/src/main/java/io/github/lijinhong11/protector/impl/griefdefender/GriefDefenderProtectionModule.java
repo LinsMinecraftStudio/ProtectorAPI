@@ -3,8 +3,13 @@ package io.github.lijinhong11.protector.impl.griefdefender;
 import com.griefdefender.api.Core;
 import com.griefdefender.api.GriefDefender;
 import com.griefdefender.api.claim.Claim;
+import com.griefdefender.api.event.CreateClaimEvent;
+import com.griefdefender.api.event.RemoveClaimEvent;
+import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
+import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
+import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import org.bukkit.Location;
@@ -17,6 +22,16 @@ import java.util.stream.Collectors;
 
 public class GriefDefenderProtectionModule implements IProtectionModule {
     private final Core api = GriefDefender.getCore();
+
+    public GriefDefenderProtectionModule() {
+        GriefDefender.getEventManager().getBus().subscribe(CreateClaimEvent.Post.class, event -> {
+            ProtectorAPI.getHandlers(RangeCreateHandler.class).forEach(h -> h.onCreate(this, new GriefDefenderClaimInfo(event.getClaim())));
+        });
+
+        GriefDefender.getEventManager().getBus().subscribe(RemoveClaimEvent.class, event -> {
+            ProtectorAPI.getHandlers(RangeDeleteHandler.class).forEach(h -> h.onDelete(this, new GriefDefenderClaimInfo(event.getClaim())));
+        });
+    }
 
     @Override
     public @NotNull String getPluginName() {
