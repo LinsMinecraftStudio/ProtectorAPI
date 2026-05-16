@@ -14,7 +14,7 @@
     <url>https://github.com/LinsMinecraftStudio/ProtectorAPI</url>
 
     <properties>
-        <revision>2.2.0</revision>
+        <revision>2.2.1</revision>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -104,6 +104,7 @@
 
                         <artifact>protectorapi-bentobox</artifact>
                         <artifact>protectorapi-dominion</artifact>
+                        <artifact>protectorapi-griefdefender</artifact>
                         <artifact>protectorapi-huskclaims</artifact>
                         <artifact>protectorapi-iridiumskyblock</artifact>
                         <artifact>protectorapi-plotsquared</artifact>
@@ -167,6 +168,7 @@
         <module>implementations/redprotect</module>
         <module>implementations/residence</module>
         <module>implementations/worldguard</module>
+        <module>implementations/griefdefender</module>
 
         <module>block-implementations/blocklocker</module>
         <module>block-implementations/bolt</module>
@@ -233,7 +235,7 @@
         </repository>
         <repository>
             <id>glaremasters-repo</id>
-            <url>https://repo.glaremasters.me/repository/towny/</url>
+            <url>https://repo.glaremasters.me/repository/maven-public/</url>
         </repository>
         <repository>
             <id>sk89q-repo</id>
