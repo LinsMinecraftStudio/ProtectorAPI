@@ -1,8 +1,8 @@
 package io.github.lijinhong11.protector.impl.iridiumskyblock;
 
+import com.iridium.iridiumskyblock.PermissionType;
 import com.iridium.iridiumskyblock.api.IridiumSkyblockAPI;
 import com.iridium.iridiumskyblock.database.Island;
-import com.iridium.iridiumskyblock.dependencies.iridiumteams.PermissionType;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
@@ -93,7 +93,7 @@ public class IridiumSkyblockIslandInfo implements IProtectionRange {
 
     @Override
     public @Nullable OfflinePlayer getOwner() {
-        return island.getOwner().map(u -> Bukkit.getOfflinePlayer(u.getUuid())).orElse(null);
+        return Bukkit.getOfflinePlayer(island.getOwner().getUuid());
     }
 
     private PermissionType getPermissionType(String s) {

@@ -16,6 +16,7 @@ import io.github.lijinhong11.protector.block_impl.quickshop.QuickShopHikariProte
 import io.github.lijinhong11.protector.block_impl.quickshop.QuickShopReremakeProtection;
 import io.github.lijinhong11.protector.block_impl.shopchest.ShopChestBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.towny.TownyBlockProtectionModule;
+import io.github.lijinhong11.protector.impl.askyblock.ASkyBlockProtectionModule;
 import io.github.lijinhong11.protector.impl.bentobox.BentoBoxProtectionModule;
 import io.github.lijinhong11.protector.impl.dominion.DominionProtectionModule;
 import io.github.lijinhong11.protector.impl.excellentclaims.ExcellentClaimsBlockProtectionModule;
@@ -27,8 +28,12 @@ import io.github.lijinhong11.protector.impl.redprotect.RedProtectProtectionModul
 import io.github.lijinhong11.protector.impl.residence.ResidenceProtectionModule;
 import io.github.lijinhong11.protector.impl.worldguard.WorldGuardProtectionModule;
 import io.github.lijinhong11.protectorapi.ProtectorAPI;
+import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.stream.Collectors;
 
 public class ProtectorAPIPluginImpl extends JavaPlugin {
     @Override
@@ -44,7 +49,15 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         registerModules();
         registerBlockModules();
 
-        new Metrics(this, 26519);
+        Metrics metrics = new Metrics(this, 26519);
+        metrics.addCustomChart(new Metrics.AdvancedPie("protection_plugins", () ->
+                ProtectionPluginMetrics.countPluginNames(
+                        ProtectorAPI.getAllAvailableProtectionModules().stream()
+                                .map(IProtectionModule::getPluginName)
+                                .collect(Collectors.toList()),
+                        ProtectorAPI.getAllAvailableBlockProtectionModules().stream()
+                                .map(IBlockProtectionModule::getPluginName)
+                                .collect(Collectors.toList()))));
 
         getCommand("protectorapi-debug").setExecutor(new DebugCommand());
 
@@ -97,6 +110,10 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
 
         if (pm.isPluginEnabled("GriefDefender")) {
             ProtectorAPI.register(new GriefDefenderProtectionModule());
+        }
+
+        if (pm.isPluginEnabled("ASkyBlock")) {
+            ProtectorAPI.register(new ASkyBlockProtectionModule());
         }
     }
 

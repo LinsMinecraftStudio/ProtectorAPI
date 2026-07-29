@@ -1,4 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.vanniktech.maven.publish.DeploymentValidation
+import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.javadoc.Javadoc
@@ -7,6 +9,7 @@ import org.gradle.jvm.tasks.Jar
 plugins {
     base
     id("com.gradleup.shadow") version "8.3.8" apply false
+    id("com.vanniktech.maven.publish") version "0.37.0" apply false
 }
 
 group = "io.github.lijinhong11"
@@ -19,6 +22,7 @@ allprojects {
     repositories {
         mavenCentral()
         maven("https://hub.spigotmc.org/nexus/repository/public/")
+        maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://nexus.iridiumdevelopment.net/repository/maven-releases/")
         maven("https://repo.codemc.org/repository/maven-public/")
         maven("https://repo.codemc.io/repository/bentoboxworld/")
@@ -30,7 +34,6 @@ allprojects {
         maven("https://maven.reposilite.com/snapshots")
         maven("https://repo.minebench.de/")
         maven("https://epicericee.github.io/ShopChest/maven/")
-        maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://repo.glaremasters.me/repository/maven-public/")
         maven("https://repo.glaremasters.me/repository/towny/")
         maven("https://maven.enginehub.org/repo/")
@@ -60,12 +63,14 @@ subprojects {
     }
 
     extensions.configure<JavaPluginExtension> {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_21
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(25))
+        }
     }
 
     tasks.withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
+        options.release.set(25)
     }
 
     tasks.withType<Javadoc>().configureEach {
@@ -82,34 +87,44 @@ subprojects {
 }
 
 project(":api") {
-    apply(plugin = "maven-publish")
+    apply(plugin = "com.vanniktech.maven.publish")
     apply(plugin = "signing")
 
-    extensions.configure<JavaPluginExtension> {
-        withSourcesJar()
-        withJavadocJar()
-    }
+    extensions.configure<MavenPublishBaseExtension> {
+        coordinates("io.github.lijinhong11", "protectorapi-api", project.version.toString())
+        publishToMavenCentral(true, DeploymentValidation.PUBLISHED)
+        signAllPublications()
 
-    extensions.configure<PublishingExtension> {
-        publications {
-            create<MavenPublication>("mavenJava") {
-                from(components["java"])
-                artifactId = "protectorapi-api"
-                pom {
-                    name.set("ProtectorAPI")
-                    description.set("An API used to docking almost all protection plugins")
-                    url.set("https://github.com/LinsMinecraftStudio/ProtectorAPI")
-                    licenses { license { name.set("GPL License 3.0"); url.set("https://www.gnu.org/licenses/gpl-3.0.en.html") } }
-                    developers { developer { name.set("lijinhong11"); email.set("tygfhk@outlook.com") } }
-                    scm { url.set("https://github.com/LinsMinecraftStudio/ProtectorAPI"); connection.set("scm:git:https://github.com/LinsMinecraftStudio/ProtectorAPI.git") }
+        pom {
+            name.set("ProtectorAPI")
+            description.set("An API used to docking almost all protection plugins")
+            inceptionYear.set("2024")
+            url.set("https://github.com/LinsMinecraftStudio/ProtectorAPI")
+            licenses {
+                license {
+                    name.set("GNU General Public License v3.0")
+                    url.set("https://www.gnu.org/licenses/gpl-3.0.html")
+                    distribution.set("repo")
                 }
+            }
+            developers {
+                developer {
+                    id.set("lijinhong11")
+                    name.set("lijinhong11")
+                    email.set("tygfhk@outlook.com")
+                    url.set("https://github.com/lijinhong11")
+                }
+            }
+            scm {
+                url.set("https://github.com/LinsMinecraftStudio/ProtectorAPI")
+                connection.set("scm:git:https://github.com/LinsMinecraftStudio/ProtectorAPI.git")
+                developerConnection.set("scm:git:ssh://git@github.com/LinsMinecraftStudio/ProtectorAPI.git")
             }
         }
     }
 
     extensions.configure<SigningExtension> {
-        val publishing = extensions.getByType<PublishingExtension>()
-        if (providers.environmentVariable("GPG_PASS").isPresent) sign(publishing.publications)
+        useGpgCmd()
     }
 }
 
