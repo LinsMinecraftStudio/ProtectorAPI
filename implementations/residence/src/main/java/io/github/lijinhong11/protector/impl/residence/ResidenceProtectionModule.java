@@ -77,7 +77,7 @@ public class ResidenceProtectionModule implements IProtectionModule, FlagRegiste
     @Override
     public FlagState<?> getGlobalFlag(@NotNull String flag, @NotNull String world) {
         Map<String, Boolean> flags =
-                Residence.getInstance().wmanager.getPerms(world).getFlags();
+                Residence.getInstance().getWorldFlags().getPerms(world).getFlags();
         return FlagStates.fromNullableBoolean(flags.get(flag));
     }
 
@@ -88,9 +88,8 @@ public class ResidenceProtectionModule implements IProtectionModule, FlagRegiste
 
     @Override
     public void setGlobalFlag(@NotNull String world, @NotNull String flag, Object value) {
-        if (value instanceof Boolean) {
-            Boolean b = (Boolean) value;
-            Residence.getInstance().wmanager.getPerms(world).getFlags().put(flag, b);
+        if (value instanceof Boolean b) {
+            Residence.getInstance().getWorldFlags().getPerms(world).getFlags().put(flag, b);
         } else {
             throw new IllegalArgumentException("value must be a boolean in Residence");
         }

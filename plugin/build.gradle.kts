@@ -1,6 +1,7 @@
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.12.2-R0.1-20180712.012057-156")
     implementation(project(":api"))
+
     implementation(project(":implementations:worldguard"))
     implementation(project(":implementations:dominion"))
     implementation(project(":implementations:griefdefender"))
@@ -18,6 +19,7 @@ dependencies {
     implementation(project(":block-implementations:chestshop"))
     implementation(project(":block-implementations:factionsuuid"))
     implementation(project(":block-implementations:funnyguilds"))
+    implementation(project(":block-implementations:landclaimplugin"))
     implementation(project(":block-implementations:lwcx"))
     implementation(project(":block-implementations:lands"))
     implementation(project(":block-implementations:quickshop"))

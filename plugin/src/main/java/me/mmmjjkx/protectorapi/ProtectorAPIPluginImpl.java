@@ -8,6 +8,7 @@ import io.github.lijinhong11.protector.block_impl.factionsuuid.FactionsUUIDBlock
 import io.github.lijinhong11.protector.block_impl.funnyguilds.FunnyGuildsBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.griefprevention.GriefPreventionBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.husktowns.HuskTownsBlockProtectionModule;
+import io.github.lijinhong11.protector.block_impl.landclaimplugin.LandClaimPluginBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.lands.LandsBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.lockettepro.LocketteProBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.lwcx.LWCXBlockProtectionModule;
@@ -154,6 +155,10 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
 
         if (pm.isPluginEnabled("HuskTowns")) {
             ProtectorAPI.register(new HuskTownsBlockProtectionModule());
+        }
+
+        if (pm.isPluginEnabled("LandClaimPlugin")) {
+            ProtectorAPI.register(new LandClaimPluginBlockProtectionModule());
         }
 
         if (pm.isPluginEnabled("LockettePro")) {

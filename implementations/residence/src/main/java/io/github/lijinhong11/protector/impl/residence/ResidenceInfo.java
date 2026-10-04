@@ -59,7 +59,7 @@ public class ResidenceInfo implements IProtectionRange {
     @Override
     public FlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
         return FlagStates.fromNullableBoolean(
-                permissions.getPlayerFlags(player.getName()).get(flag));
+                permissions.getPlayerFlags(player.getUniqueId()).get(flag));
     }
 
     @Override
@@ -88,6 +88,6 @@ public class ResidenceInfo implements IProtectionRange {
 
     @Override
     public @Nullable OfflinePlayer getOwner() {
-        return Bukkit.getOfflinePlayer(residence.getOwner());
+        return Bukkit.getOfflinePlayer(residence.getOwnerUUID());
     }
 }
