@@ -21,11 +21,30 @@ See wiki: https://lijinhong11.gitbook.io/protectotapi/
 
 Make sure you have installed:
 
-1. JDK 21
-2. Maven
+1. JDK 17
+2. JDK 25 (for compiling the ExcellentClaims, FactionsUUID and LandClaimPlugin adapters)
 
-Then run
-`mvn clean package`
+Gradle automatically detects installed JDKs. Use the included Gradle wrapper:
+
+```sh
+./gradlew clean build
+```
+
+On Windows, run `gradlew.bat clean build`.
+
+The plugin JAR is generated at `plugin/build/libs/ProtectorAPI-Plugin-2.3.0.jar`.
+All ProtectorAPI modules target Java 17, including the adapters compiled with JDK 25.
+Protection plugin dependencies are compile-only and are not bundled in the plugin JAR.
+
+### Runtime compatibility
+
+ProtectorAPI requires Java 17 or newer. The server and installed protection plugins
+must also support the Java version you use. In particular, the currently integrated
+ExcellentClaims 2.0.1 and LandClaimPlugin 3.0.0 require Java 25, and FactionsUUID 0.7.0
+requires Java 21; their adapters are only activated when those plugins are enabled.
+
+The Java 17 compile-time baselines are WorldGuard 7.0.9, WorldEdit 7.2.18,
+PlotSquared 7.3.0 and Bolt 1.0.580.
 
 ## Roadmap
 

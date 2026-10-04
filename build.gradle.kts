@@ -64,13 +64,28 @@ subprojects {
 
     extensions.configure<JavaPluginExtension> {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(25))
+            languageVersion.set(JavaLanguageVersion.of(17))
         }
     }
 
     tasks.withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
-        options.release.set(25)
+        options.release.set(17)
+    }
+
+    // These optional integrations use APIs compiled for Java 21/25. Read them
+    // with JDK 25 while still emitting Java 17 bytecode for our adapters.
+    if (path in setOf(
+            ":block-implementations:excellentclaims",
+            ":block-implementations:factionsuuid",
+            ":block-implementations:landclaimplugin"
+        )) {
+        val integrationCompiler = extensions.getByType<JavaToolchainService>().compilerFor {
+            languageVersion.set(JavaLanguageVersion.of(25))
+        }
+        tasks.withType<JavaCompile>().configureEach {
+            javaCompiler.set(integrationCompiler)
+        }
     }
 
     tasks.withType<Javadoc>().configureEach {

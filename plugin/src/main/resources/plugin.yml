@@ -3,7 +3,7 @@ main: me.mmmjjkx.protectorapi.ProtectorAPIPluginImpl
 version: ${project.version}
 authors: [ mmmjjkx ]
 description: A simple API for protection plugins
-api-version: "26.1"
+api-version: "1.17"
 folia-supported: true
 commands:
   protectorapi-debug:
