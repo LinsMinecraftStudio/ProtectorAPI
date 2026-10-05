@@ -1,5 +1,6 @@
 package io.github.lijinhong11.protector.block_impl.towny;
 
+import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.TownyPermission;
 import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
@@ -14,9 +15,8 @@ public class TownyBlockProtectionModule implements IBlockProtectionModule {
     }
 
     @Override
-    public boolean isProtected(Player player, Location block) {
-        return PlayerCacheUtil.getCachePermission(
-                player, block, block.getBlock().getType(), TownyPermission.ActionType.BUILD);
+    public boolean isProtected(Location block) {
+        return TownyAPI.getInstance().getTownBlock(block) != null;
     }
 
     @Override

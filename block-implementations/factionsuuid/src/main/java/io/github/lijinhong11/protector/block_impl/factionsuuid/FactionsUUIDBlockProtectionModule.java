@@ -10,10 +10,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class FactionsUUIDBlockProtectionModule implements IBlockProtectionModule {
-    private final FPlayers api;
-
     public FactionsUUIDBlockProtectionModule() {
-        api = FPlayers.getInstance();
     }
 
     @Override
@@ -22,28 +19,39 @@ public class FactionsUUIDBlockProtectionModule implements IBlockProtectionModule
     }
 
     @Override
-    public boolean isProtected(Player player, Location block) {
+    public boolean isProtected(Location block) {
         Faction faction = Board.getInstance().getFactionAt(new FLocation(block));
 
-        if (faction == null || faction.getIntId() == 0) {
-            return true;
-        } else {
-            return faction.getIntId() == api.getByPlayer(player).getFaction().getIntId();
-        }
+        return faction != null;
     }
 
     @Override
     public boolean allowBreak(Player player, Location block) {
-        return false;
+        Faction faction = Board.getInstance().getFactionAt(new FLocation(block));
+        if (faction == null) {
+            return true;
+        } else {
+            return faction.getIntId() == FPlayers.getInstance().getByPlayer(player).getFaction().getIntId();
+        }
     }
 
     @Override
     public boolean allowPlace(Player player, Location block) {
-        return false;
+        Faction faction = Board.getInstance().getFactionAt(new FLocation(block));
+        if (faction == null) {
+            return true;
+        } else {
+            return faction.getIntId() == FPlayers.getInstance().getByPlayer(player).getFaction().getIntId();
+        }
     }
 
     @Override
     public boolean allowInteract(Player player, Location block) {
-        return false;
+        Faction faction = Board.getInstance().getFactionAt(new FLocation(block));
+        if (faction == null) {
+            return true;
+        } else {
+            return faction.getIntId() == FPlayers.getInstance().getByPlayer(player).getFaction().getIntId();
+        }
     }
 }

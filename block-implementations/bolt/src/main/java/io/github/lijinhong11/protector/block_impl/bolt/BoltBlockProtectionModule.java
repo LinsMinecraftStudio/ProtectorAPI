@@ -21,7 +21,7 @@ public class BoltBlockProtectionModule implements IBlockProtectionModule {
     }
 
     @Override
-    public boolean isProtected(Player player, Location block) {
+    public boolean isProtected(Location block) {
         return api.isProtected(block.getBlock());
     }
 

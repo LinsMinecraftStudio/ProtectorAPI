@@ -15,7 +15,7 @@ public class GriefPreventionBlockProtectionModule implements IBlockProtectionMod
     }
 
     @Override
-    public boolean isProtected(Player player, Location block) {
+    public boolean isProtected(Location block) {
         return getClaim(block) != null;
     }
 

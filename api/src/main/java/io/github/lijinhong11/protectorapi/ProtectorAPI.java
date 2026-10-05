@@ -115,18 +115,32 @@ public class ProtectorAPI {
      */
     public static void registerFlag(CustomFlag flag) {
         for (IProtectionModule module : modules) {
-            if (module instanceof FlagRegisterable) {
-                FlagRegisterable fr = (FlagRegisterable) module;
+            if (module instanceof FlagRegisterable fr) {
                 fr.registerFlag(flag);
             }
         }
 
         for (IBlockProtectionModule module : blockModules) {
-            if (module instanceof FlagRegisterable) {
-                FlagRegisterable fr = (FlagRegisterable) module;
+            if (module instanceof FlagRegisterable fr) {
                 fr.registerFlag(flag);
             }
         }
+    }
+
+    public static boolean isInProtectionRange(Location location) {
+        for (IProtectionModule module : modules) {
+            if (module.isInProtectionRange(location)) {
+                return true;
+            }
+        }
+
+        for (IBlockProtectionModule module : blockModules) {
+            if (module.isProtected()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -172,9 +186,9 @@ public class ProtectorAPI {
      * @return the block protection module
      */
     @Nullable
-    public static IBlockProtectionModule findBlockModule(Player p, Location block) {
+    public static IBlockProtectionModule findBlockModule(Location block) {
         for (IBlockProtectionModule module : blockModules) {
-            if (module.isProtected(p, block)) {
+            if (module.isProtected(block)) {
                 return module;
             }
         }

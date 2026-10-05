@@ -9,6 +9,7 @@ import me.angeschossen.lands.api.flags.type.Flags;
 import me.angeschossen.lands.api.flags.type.RoleFlag;
 import me.angeschossen.lands.api.land.LandWorld;
 import me.angeschossen.lands.api.player.LandPlayer;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -27,14 +28,14 @@ public class LandsBlockProtectionModule implements IBlockProtectionModule, FlagR
     }
 
     @Override
-    public boolean isProtected(Player player, Location block) {
+    public boolean isProtected(Location block) {
         LandWorld lw = getLandWorld(block);
         if (lw == null) {
             return false;
         }
 
-        LandPlayer lp = api.getLandPlayer(player.getUniqueId());
-        return !lw.hasRoleFlag(lp, block, Flags.BLOCK_BREAK, null, false);
+        Chunk chunk = block.getChunk();
+        return lw.getLandByChunk(chunk.getX(), chunk.getZ()) != null;
     }
 
     @Override

@@ -102,12 +102,12 @@ public class HuskClaimsProtectionModule implements IProtectionModule, FlagRegist
     @Override
     public FlagState<?> getGlobalFlag(@NotNull String flag, @NotNull String world) {
         Optional<OperationType> operationType = OperationType.get(flag);
-        if (!operationType.isPresent()) {
+        if (operationType.isEmpty()) {
             return FlagStates.UNSUPPORTED;
         }
 
         Optional<ClaimWorld> cw = api.getClaimWorld(wrapWorld(Bukkit.getWorld(world)));
-        if (!cw.isPresent()) {
+        if (cw.isEmpty()) {
             return FlagStates.WORLD_NOT_FOUND;
         }
 
@@ -159,7 +159,7 @@ public class HuskClaimsProtectionModule implements IProtectionModule, FlagRegist
         Region.Point center = e.getRegion().getCenter();
         Optional<Claim> claim = e.getClaimWorld().getClaimAt(center);
 
-        if (!claim.isPresent()) {
+        if (claim.isEmpty()) {
             return;
         }
 

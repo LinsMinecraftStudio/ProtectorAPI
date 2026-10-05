@@ -19,7 +19,7 @@ public class LWCXBlockProtectionModule implements IBlockProtectionModule {
     }
 
     @Override
-    public boolean isProtected(Player player, Location block) {
+    public boolean isProtected(Location block) {
         return lwc.isProtectable(block.getBlock());
     }
 

@@ -31,12 +31,10 @@ class DebugCommand implements TabExecutor {
             return true;
         }
 
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("§cYou must be a player to use this command.");
             return true;
         }
-
-        Player player = (Player) sender;
 
         if (args.length == 0 || args[0].equalsIgnoreCase("here")) {
             debugHere(player);
@@ -86,7 +84,7 @@ class DebugCommand implements TabExecutor {
             }
         }
 
-        IBlockProtectionModule blockModule = ProtectorAPI.findBlockModule(player, loc);
+        IBlockProtectionModule blockModule = ProtectorAPI.findBlockModule(loc);
 
         if (blockModule == null) {
             player.sendMessage("§7Block Module: §cNone");
@@ -136,12 +134,10 @@ class DebugCommand implements TabExecutor {
 
             Object value = info.getFlagState(flag, player).value();
 
-            if (!(value instanceof Boolean)) {
+            if (!(value instanceof Boolean bool)) {
                 player.sendMessage("  §f" + flag.name() + ": §7NON-BOOLEAN (" + value.toString() + ")");
                 return;
             }
-
-            Boolean bool = (Boolean) value;
 
             player.sendMessage("  §f" + flag.name() + ": " + formatBool(bool));
         } catch (Exception e) {

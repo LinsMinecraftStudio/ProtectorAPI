@@ -21,25 +21,29 @@ public class BlockLockerBlockProtectionModule implements IBlockProtectionModule 
     }
 
     @Override
-    public boolean isProtected(Player player, Location block) {
-        return find(block)
-                .map(protection -> protection.isAllowed(getProfile(player)))
-                .orElse(false);
+    public boolean isProtected(Location block) {
+        return find(block).isPresent();
     }
 
     @Override
     public boolean allowBreak(Player player, Location block) {
-        return !isProtected(player, block);
+        return find(block)
+                .map(p -> p.isAllowed(getProfile(player)))
+                .orElse(true);
     }
 
     @Override
     public boolean allowPlace(Player player, Location block) {
-        return !isProtected(player, block);
+        return find(block)
+                .map(p -> p.isAllowed(getProfile(player)))
+                .orElse(true);
     }
 
     @Override
     public boolean allowInteract(Player player, Location block) {
-        return !isProtected(player, block);
+        return find(block)
+                .map(p -> p.isAllowed(getProfile(player)))
+                .orElse(true);
     }
 
     private Optional<Protection> find(Location loc) {

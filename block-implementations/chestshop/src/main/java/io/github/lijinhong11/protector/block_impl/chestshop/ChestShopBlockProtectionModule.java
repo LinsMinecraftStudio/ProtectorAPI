@@ -18,18 +18,15 @@ public class ChestShopBlockProtectionModule implements IBlockProtectionModule {
     }
 
     @Override
-    public boolean isProtected(Player player, Location block) {
+    public boolean isProtected(Location block) {
         Block block1 = block.getBlock();
         if (!uBlock.couldBeShopContainer(block1)) {
             return false;
         }
 
         Sign sign = uBlock.getConnectedSign(block1);
-        if (sign != null) {
-            return Security.canAccess(player, block1);
-        }
 
-        return false;
+        return sign != null;
     }
 
     @Override

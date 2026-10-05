@@ -7,14 +7,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Represents a custom flag
  */
-public class CustomFlag {
-    private final @NotNull Plugin plugin;
-    private final @NotNull String namespace;
-    private final @NotNull String id;
-    private final boolean defaultValue;
-    private final @Nullable String displayName;
-    private final @Nullable String description;
-
+public record CustomFlag(@NotNull Plugin plugin, @NotNull String namespace, @NotNull String id, boolean defaultValue,
+                         @Nullable String displayName, @Nullable String description) {
     /**
      * The custom flag object
      *
@@ -25,13 +19,7 @@ public class CustomFlag {
      * @param displayName  the display name of the flag (optional)
      * @param description  the description about the flag (optional)
      */
-    public CustomFlag(@NotNull Plugin plugin, @NotNull String namespace, @NotNull String id, boolean defaultValue, @Nullable String displayName, @Nullable String description) {
-        this.plugin = plugin;
-        this.namespace = namespace;
-        this.id = id;
-        this.defaultValue = defaultValue;
-        this.displayName = displayName;
-        this.description = description;
+    public CustomFlag {
     }
 
     /**
@@ -39,26 +27,27 @@ public class CustomFlag {
      *
      * @return the plugin
      */
+    @Override
     public Plugin plugin() {
         return plugin;
     }
 
+    @Override
     public String namespace() {
         return namespace;
     }
 
+    @Override
     public String id() {
         return id;
     }
 
-    public boolean defaultValue() {
-        return defaultValue;
-    }
-
+    @Override
     public String displayName() {
         return displayName;
     }
 
+    @Override
     public String description() {
         return description;
     }

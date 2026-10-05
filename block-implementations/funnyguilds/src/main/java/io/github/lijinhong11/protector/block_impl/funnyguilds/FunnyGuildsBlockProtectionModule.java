@@ -1,6 +1,7 @@
 package io.github.lijinhong11.protector.block_impl.funnyguilds;
 
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.protection.GuildProtectionPermission;
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
 import org.bukkit.Location;
@@ -20,14 +21,8 @@ public class FunnyGuildsBlockProtectionModule implements IBlockProtectionModule 
     }
 
     @Override
-    public boolean isProtected(Player player, Location block) {
-        return !ProtectionSystem.isProtected(
-                        player,
-                        block,
-                        fakeBreakEvent(block.getBlock(), player),
-                        GuildProtectionPermission.BLOCK_BREAK,
-                        false)
-                .isEmpty();
+    public boolean isProtected(Location block) {
+        return !FunnyGuilds.getInstance().getRegionManager().findRegionAtLocation(block).isEmpty();
     }
 
     @Override
@@ -54,7 +49,7 @@ public class FunnyGuildsBlockProtectionModule implements IBlockProtectionModule 
 
     @Override
     public boolean allowInteract(Player player, Location block) {
-        return !isProtected(player, block);
+        return !isProtected(block);
     }
 
     private BlockBreakEvent fakeBreakEvent(Block block, Player player) {

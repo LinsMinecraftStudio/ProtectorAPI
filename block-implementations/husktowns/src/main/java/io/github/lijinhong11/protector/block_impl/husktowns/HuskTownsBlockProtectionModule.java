@@ -19,7 +19,7 @@ public class HuskTownsBlockProtectionModule implements IBlockProtectionModule, F
     }
 
     @Override
-    public boolean isProtected(Player player, Location block) {
+    public boolean isProtected(Location block) {
         return api.isClaimAt(api.getPosition(block));
     }
 

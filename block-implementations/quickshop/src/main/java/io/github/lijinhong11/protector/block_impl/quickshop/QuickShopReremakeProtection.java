@@ -20,7 +20,7 @@ public class QuickShopReremakeProtection implements IBlockProtectionModule {
     }
 
     @Override
-    public boolean isProtected(Player player, Location block) {
+    public boolean isProtected(Location block) {
         return getShop(block) != null;
     }
 

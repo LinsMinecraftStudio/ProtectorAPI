@@ -13,7 +13,7 @@ public class LocketteProBlockProtectionModule implements IBlockProtectionModule 
     }
 
     @Override
-    public boolean isProtected(Player player, Location block) {
+    public boolean isProtected(Location block) {
         return LocketteProAPI.isProtected(block.getBlock());
     }
 

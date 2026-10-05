@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public interface IBlockProtectionModule {
     @NotNull String getPluginName();
 
-    boolean isProtected(Player player, Location block);
+    boolean isProtected(Location block);
 
     boolean allowBreak(Player player, Location block);
 
@@ -16,8 +16,8 @@ public interface IBlockProtectionModule {
 
     boolean allowInteract(Player player, Location block);
 
-    default boolean isProtected(Player player, Block block) {
-        return isProtected(player, block.getLocation());
+    default boolean isProtected(Block block) {
+        return isProtected(block.getLocation());
     }
 
     default boolean allowBreak(Player player, Block block) {

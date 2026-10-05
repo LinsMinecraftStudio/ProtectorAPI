@@ -22,8 +22,19 @@ public class ChestProtectionBlockProtectionModule implements IBlockProtectionMod
     }
 
     @Override
-    public boolean isProtected(Player player, Location block) {
-        return check(player, block);
+    public boolean isProtected(Location block) {
+        ProtectionManager manager = api.getProtectionManager();
+        if (!manager.isProtectableBlock(block.getBlock().getType())) {
+            return true;
+        }
+
+        ProtectionWorld world = api.getProtectionWorld(block.getWorld());
+        if (world == null) {
+            return true;
+        }
+
+        BlockProtection protection = world.getBlockProtection(block.getBlockX(), block.getBlockY(), block.getBlockZ());
+        return protection != null;
     }
 
     @Override
