@@ -1,14 +1,30 @@
+/*
+ * ProtectorAPI
+ * Copyright (C) 2026 lijinhong11(mmmjjkx)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package io.github.lijinhong11.protectorapi.protection;
 
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.objects.WorldCollection;
+import java.util.List;
+import java.util.Map;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Map;
 
 public interface IProtectionRange {
     /**
@@ -17,28 +33,32 @@ public interface IProtectionRange {
      *
      * @return id
      */
-    @NotNull String getId();
+    @NotNull
+    String getId();
 
     /**
      * Get display name or empty (if the module doesn't support)
      *
      * @return display name
      */
-    @NotNull String getDisplayName();
+    @NotNull
+    String getDisplayName();
 
     /**
      * Get the world which the range exists
      *
      * @return world
      */
-    @NotNull WorldCollection getWorld();
+    @NotNull
+    WorldCollection getWorld();
 
     /**
      * Get all flags
      *
      * @return all flags (the map is not modifiable)
      */
-    @NotNull Map<String, FlagState<?>> getFlags();
+    @NotNull
+    Map<String, FlagState<?>> getFlags();
 
     /**
      * Get flag state
@@ -93,5 +113,6 @@ public interface IProtectionRange {
      *
      * @return owner
      */
-    @Nullable OfflinePlayer getOwner();
+    @Nullable
+    OfflinePlayer getOwner();
 }

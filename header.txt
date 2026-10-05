@@ -15,18 +15,3 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package io.github.lijinhong11.protectorapi.flag;
-
-/**
- * Flag register interface.
- * You can register custom flags when the module implements it.
- */
-public interface FlagRegisterable {
-    /**
-     * Register a flag
-     *
-     * @param flag the flag
-     * @throws UnsupportedOperationException if the module doesn't support registering flags
-     */
-    void registerFlag(CustomFlag flag);
-}

@@ -1,3 +1,20 @@
+/*
+ * ProtectorAPI
+ * Copyright (C) 2026 lijinhong11(mmmjjkx)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package io.github.lijinhong11.protector.impl.redprotect;
 
 import br.net.fabiozumbi12.RedProtect.Bukkit.API.RedProtectAPI;
@@ -12,6 +29,9 @@ import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
 import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -19,10 +39,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RedProtectProtectionModule implements IProtectionModule, FlagRegisterable, Listener {
     private final RedProtectAPI api;
@@ -154,5 +170,5 @@ public class RedProtectProtectionModule implements IProtectionModule, FlagRegist
         RedProtectRegionInfo info = new RedProtectRegionInfo(e.getRegion());
 
         ProtectorAPI.getHandlers(RangeDeleteHandler.class).forEach(a -> a.onDelete(this, info));
-    }    
+    }
 }

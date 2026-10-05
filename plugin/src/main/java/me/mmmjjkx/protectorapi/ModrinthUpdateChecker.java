@@ -1,11 +1,25 @@
+/*
+ * ProtectorAPI
+ * Copyright (C) 2026 lijinhong11(mmmjjkx)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package me.mmmjjkx.protectorapi;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -19,6 +33,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class ModrinthUpdateChecker {
     private final JavaPlugin plugin;
@@ -36,8 +52,7 @@ public class ModrinthUpdateChecker {
                 String currentVersion = plugin.getDescription().getVersion();
                 String url = buildUrl();
 
-                HttpURLConnection connection =
-                        (HttpURLConnection) new URL(url).openConnection();
+                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("User-Agent", plugin.getName());
@@ -50,9 +65,8 @@ public class ModrinthUpdateChecker {
                     return;
                 }
 
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)
-                );
+                BufferedReader reader =
+                        new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
 
                 StringBuilder response = new StringBuilder();
                 String line;
@@ -61,10 +75,8 @@ public class ModrinthUpdateChecker {
                 }
                 reader.close();
 
-                Type listType = new TypeToken<List<ModrinthVersion>>() {
-                }.getType();
-                List<ModrinthVersion> versions =
-                        gson.fromJson(response.toString(), listType);
+                Type listType = new TypeToken<List<ModrinthVersion>>() {}.getType();
+                List<ModrinthVersion> versions = gson.fromJson(response.toString(), listType);
 
                 if (versions == null || versions.isEmpty()) {
                     plugin.getLogger().info("No updates found.");
@@ -125,9 +137,7 @@ public class ModrinthUpdateChecker {
     }
 
     private String[] normalize(String v) {
-        return v.replace("v", "")
-                .replace("-SNAPSHOT", "")
-                .split("\\.");
+        return v.replace("v", "").replace("-SNAPSHOT", "").split("\\.");
     }
 
     private int parseInt(String s) {

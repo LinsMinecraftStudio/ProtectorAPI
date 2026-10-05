@@ -1,3 +1,20 @@
+/*
+ * ProtectorAPI
+ * Copyright (C) 2026 lijinhong11(mmmjjkx)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package io.github.lijinhong11.protector.impl.worldguard;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -11,17 +28,16 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 public class WorldGuardProtectionModule implements IProtectionModule, FlagRegisterable {
     private final RegionContainer api;
@@ -55,7 +71,7 @@ public class WorldGuardProtectionModule implements IProtectionModule, FlagRegist
         ProtectedRegion[] regions = api.createQuery()
                 .getApplicableRegions(toWELocation(location))
                 .getRegions()
-                .toArray(new ProtectedRegion[]{});
+                .toArray(new ProtectedRegion[] {});
         if (regions.length > 0) {
             return new WorldGuardProtectedRegionInfo(location.getWorld(), regions[0]);
         } else {

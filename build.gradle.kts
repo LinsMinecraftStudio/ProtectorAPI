@@ -7,9 +7,11 @@ import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.jvm.tasks.Jar
 
 plugins {
+    java
     base
-    id("com.gradleup.shadow") version "8.3.8" apply false
+    id("com.gradleup.shadow") version "9.6.1" apply false
     id("com.vanniktech.maven.publish") version "0.37.0" apply false
+    id("com.diffplug.spotless") version "8.10.3"
 }
 
 group = "io.github.lijinhong11"
@@ -46,6 +48,7 @@ allprojects {
 subprojects {
     apply(plugin = "java")
     apply(plugin = "java-library")
+    apply(plugin = "com.diffplug.spotless")
 
     dependencies {
         "compileOnly"("org.jetbrains:annotations:26.0.2-1")
@@ -75,14 +78,17 @@ subprojects {
 
     // These optional integrations use APIs compiled for Java 21/25. Read them
     // with JDK 25 while still emitting Java 17 bytecode for our adapters.
-    if (path in setOf(
+    if (path in
+        setOf(
             ":block-implementations:excellentclaims",
             ":block-implementations:factionsuuid",
-            ":block-implementations:landclaimplugin"
-        )) {
-        val integrationCompiler = extensions.getByType<JavaToolchainService>().compilerFor {
-            languageVersion.set(JavaLanguageVersion.of(25))
-        }
+            ":block-implementations:landclaimplugin",
+        )
+    ) {
+        val integrationCompiler =
+            extensions.getByType<JavaToolchainService>().compilerFor {
+                languageVersion.set(JavaLanguageVersion.of(25))
+            }
         tasks.withType<JavaCompile>().configureEach {
             javaCompiler.set(integrationCompiler)
         }
@@ -98,6 +104,25 @@ subprojects {
         filesMatching(listOf("plugin.yml", "config.yml")) {
             expand("project" to mapOf("version" to project.version.toString()))
         }
+    }
+
+    spotless {
+        java {
+            palantirJavaFormat()
+            trimTrailingWhitespace()
+            endWithNewline()
+            removeUnusedImports()
+            licenseHeaderFile(rootProject.file("header.txt"))
+            importOrder().wildcardsLast(true)
+        }
+    }
+}
+
+spotless {
+    kotlinGradle {
+        target("*.gradle.kts")
+        lineEndings = com.diffplug.spotless.LineEnding.UNIX
+        ktlint()
     }
 }
 
@@ -150,6 +175,12 @@ project(":plugin") {
         archiveClassifier.set("")
         archiveVersion.set(project.version.toString())
     }
-    tasks.named("build") { dependsOn("shadowJar") }
-    tasks.named<Jar>("jar") { archiveClassifier.set("plain") }
+
+    tasks.named("build") {
+        dependsOn("shadowJar")
+    }
+
+    tasks.named<Jar>("jar") {
+        archiveClassifier.set("plain")
+    }
 }

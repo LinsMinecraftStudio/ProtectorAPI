@@ -1,11 +1,31 @@
+/*
+ * ProtectorAPI
+ * Copyright (C) 2026 lijinhong11(mmmjjkx)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package io.github.lijinhong11.protectorapi;
 
 import com.google.common.base.Preconditions;
-import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.handlers.AHandler;
+import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
+import java.util.*;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,10 +33,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.stream.Collectors;
 
 @SuppressWarnings({"unchecked", "unused"})
 public class ProtectorAPI {
@@ -135,7 +151,7 @@ public class ProtectorAPI {
         }
 
         for (IBlockProtectionModule module : blockModules) {
-            if (module.isProtected()) {
+            if (module.isProtected(location)) {
                 return true;
             }
         }
@@ -181,7 +197,6 @@ public class ProtectorAPI {
     /**
      * Find the block protection module that protects the block
      *
-     * @param p     the player
      * @param block the block
      * @return the block protection module
      */
@@ -238,7 +253,7 @@ public class ProtectorAPI {
      * @return true if the player can break a block, false otherwise
      */
     public static boolean allowBreak(Player player, Location block) {
-        IBlockProtectionModule module = findBlockModule(player, block);
+        IBlockProtectionModule module = findBlockModule(block);
         if (allowBreak(player)) {
             if (module == null) {
                 return true;
@@ -292,7 +307,7 @@ public class ProtectorAPI {
      * @return true if the player can place a block, false otherwise
      */
     public static boolean allowPlace(Player player, Location block) {
-        IBlockProtectionModule module = findBlockModule(player, block);
+        IBlockProtectionModule module = findBlockModule(block);
         if (allowPlace(player)) {
             if (module == null) {
                 return true;
@@ -346,7 +361,7 @@ public class ProtectorAPI {
      * @return true if the player can interact with the block
      */
     public static boolean allowInteract(Player player, Location block) {
-        IBlockProtectionModule module = findBlockModule(player, block);
+        IBlockProtectionModule module = findBlockModule(block);
         if (allowInteract(player)) {
             if (module == null) {
                 return true;

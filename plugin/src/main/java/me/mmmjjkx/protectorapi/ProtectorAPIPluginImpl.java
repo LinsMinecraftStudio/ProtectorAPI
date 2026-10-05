@@ -1,3 +1,20 @@
+/*
+ * ProtectorAPI
+ * Copyright (C) 2026 lijinhong11(mmmjjkx)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package me.mmmjjkx.protectorapi;
 
 import io.github.lijinhong11.protector.block_impl.blocklocker.BlockLockerBlockProtectionModule;
@@ -31,10 +48,9 @@ import io.github.lijinhong11.protector.impl.worldguard.WorldGuardProtectionModul
 import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
+import java.util.stream.Collectors;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.stream.Collectors;
 
 public class ProtectorAPIPluginImpl extends JavaPlugin {
     @Override
@@ -51,8 +67,9 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         registerBlockModules();
 
         Metrics metrics = new Metrics(this, 26519);
-        metrics.addCustomChart(new Metrics.AdvancedPie("protection_plugins", () ->
-                ProtectionPluginMetrics.countPluginNames(
+        metrics.addCustomChart(new Metrics.AdvancedPie(
+                "protection_plugins",
+                () -> ProtectionPluginMetrics.countPluginNames(
                         ProtectorAPI.getAllAvailableProtectionModules().stream()
                                 .map(IProtectionModule::getPluginName)
                                 .collect(Collectors.toList()),

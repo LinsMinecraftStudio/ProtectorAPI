@@ -1,30 +1,26 @@
 /*
- * This Metrics class was auto-generated and can be copied into your project if you are
- * not using a build tool like Gradle or Maven for dependency management.
+ * ProtectorAPI
+ * Copyright (C) 2026 lijinhong11(mmmjjkx)
  *
- * IMPORTANT: You are not allowed to modify this class, except changing the package.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Disallowed modifications include but are not limited to:
- *  - Remove the option for users to opt-out
- *  - Change the frequency for data submission
- *  - Obfuscate the code (every obfuscator should allow you to make an exception for specific files)
- *  - Reformat the code (if you use a linter, add an exception)
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Violations will result in a ban of your plugin and account from bStats.
- */
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package me.mmmjjkx.protectorapi;
 
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
-import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -35,6 +31,12 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPOutputStream;
+import java.util.*;
+import javax.net.ssl.HttpsURLConnection;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 public class Metrics {
 
@@ -86,13 +88,13 @@ public class Metrics {
         } catch (Exception e) {
         }
         metricsBase = new // See https://github.com/Bastian/bstats-metrics/pull/126
-                // See https://github.com/Bastian/bstats-metrics/pull/126
-                // See https://github.com/Bastian/bstats-metrics/pull/126
-                // See https://github.com/Bastian/bstats-metrics/pull/126
-                // See https://github.com/Bastian/bstats-metrics/pull/126
-                // See https://github.com/Bastian/bstats-metrics/pull/126
-                // See https://github.com/Bastian/bstats-metrics/pull/126
-                MetricsBase(
+        // See https://github.com/Bastian/bstats-metrics/pull/126
+        // See https://github.com/Bastian/bstats-metrics/pull/126
+        // See https://github.com/Bastian/bstats-metrics/pull/126
+        // See https://github.com/Bastian/bstats-metrics/pull/126
+        // See https://github.com/Bastian/bstats-metrics/pull/126
+        // See https://github.com/Bastian/bstats-metrics/pull/126
+        MetricsBase(
                 "bukkit",
                 serverUUID,
                 serviceId,
@@ -368,7 +370,7 @@ public class Metrics {
             }
             StringBuilder builder = new StringBuilder();
             try (BufferedReader bufferedReader =
-                         new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                    new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     builder.append(line);
@@ -388,9 +390,9 @@ public class Metrics {
                     || !System.getProperty("bstats.relocatecheck").equals("false")) {
                 // Maven's Relocate is clever and changes strings, too. So we have to use this
                 // little "trick" ... :D
-                final String defaultPackage = new String(new byte[]{'o', 'r', 'g', '.', 'b', 's', 't', 'a', 't', 's'});
+                final String defaultPackage = new String(new byte[] {'o', 'r', 'g', '.', 'b', 's', 't', 'a', 't', 's'});
                 final String examplePackage =
-                        new String(new byte[]{'y', 'o', 'u', 'r', '.', 'p', 'a', 'c', 'k', 'a', 'g', 'e'});
+                        new String(new byte[] {'y', 'o', 'u', 'r', '.', 'p', 'a', 'c', 'k', 'a', 'g', 'e'});
                 // We want to make sure no one just copy & pastes the example and uses the wrong
                 // package names
                 if (MetricsBase.class.getPackage().getName().startsWith(defaultPackage)
@@ -684,7 +686,7 @@ public class Metrics {
                 return null;
             }
             for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                valuesBuilder.appendField(entry.getKey(), new int[]{entry.getValue()});
+                valuesBuilder.appendField(entry.getKey(), new int[] {entry.getValue()});
             }
             return new JsonObjectBuilder()
                     .appendField("values", valuesBuilder.build())

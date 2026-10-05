@@ -1,3 +1,20 @@
+/*
+ * ProtectorAPI
+ * Copyright (C) 2026 lijinhong11(mmmjjkx)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package io.github.lijinhong11.protector.impl.griefdefender;
 
 import com.griefdefender.api.Core;
@@ -12,24 +29,25 @@ import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
 import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class GriefDefenderProtectionModule implements IProtectionModule {
     private final Core api = GriefDefender.getCore();
 
     public GriefDefenderProtectionModule() {
         GriefDefender.getEventManager().getBus().subscribe(CreateClaimEvent.Post.class, event -> {
-            ProtectorAPI.getHandlers(RangeCreateHandler.class).forEach(h -> h.onCreate(this, new GriefDefenderClaimInfo(event.getClaim())));
+            ProtectorAPI.getHandlers(RangeCreateHandler.class)
+                    .forEach(h -> h.onCreate(this, new GriefDefenderClaimInfo(event.getClaim())));
         });
 
         GriefDefender.getEventManager().getBus().subscribe(RemoveClaimEvent.class, event -> {
-            ProtectorAPI.getHandlers(RangeDeleteHandler.class).forEach(h -> h.onDelete(this, new GriefDefenderClaimInfo(event.getClaim())));
+            ProtectorAPI.getHandlers(RangeDeleteHandler.class)
+                    .forEach(h -> h.onDelete(this, new GriefDefenderClaimInfo(event.getClaim())));
         });
     }
 
@@ -40,7 +58,9 @@ public class GriefDefenderProtectionModule implements IProtectionModule {
 
     @Override
     public List<? extends IProtectionRange> getProtectionRangeInfos(@NotNull OfflinePlayer player) {
-        return api.getAllPlayerClaims(player.getUniqueId()).stream().map(GriefDefenderClaimInfo::new).collect(Collectors.toList());
+        return api.getAllPlayerClaims(player.getUniqueId()).stream()
+                .map(GriefDefenderClaimInfo::new)
+                .collect(Collectors.toList());
     }
 
     @Override
