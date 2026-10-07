@@ -88,6 +88,7 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        ProtectorAPI.cancelPendingChecks();
         getLogger().info("Successfully disabled ProtectorAPI!");
     }
 

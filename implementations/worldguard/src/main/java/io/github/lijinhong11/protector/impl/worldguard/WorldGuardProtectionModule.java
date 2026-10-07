@@ -28,6 +28,7 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
+import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -51,6 +52,15 @@ public class WorldGuardProtectionModule implements IProtectionModule, FlagRegist
     @Override
     public @NotNull String getPluginName() {
         return "WorldGuard";
+    }
+
+    @Override
+    public boolean supportsAsync(@NotNull ProtectionCheck check) {
+        // WorldGuard documents its region API as thread-safe:
+        // https://worldguard.enginehub.org/en/latest/developer/regions/
+        // Our range flag reads only read region data; they do not access player state.
+        // Global flags use Bukkit world lookup and configuration, outside that guarantee.
+        return check == ProtectionCheck.LOOKUP || check == ProtectionCheck.FLAGS;
     }
 
     @Override

@@ -23,6 +23,7 @@ import io.github.lijinhong11.protectorapi.handlers.AHandler;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 import java.util.*;
@@ -36,18 +37,12 @@ import org.jetbrains.annotations.Unmodifiable;
 
 @SuppressWarnings({"unchecked", "unused"})
 public class ProtectorAPI {
-    private static final Set<IProtectionModule> modules;
-    private static final Set<IBlockProtectionModule> blockModules;
-
-    private static final List<AHandler> handlers;
+    private static final Set<IProtectionModule> modules = new CopyOnWriteArraySet<>();
+    private static final Set<IBlockProtectionModule> blockModules = new CopyOnWriteArraySet<>();
+    private static final List<AHandler> handlers = new ArrayList<>();
+    private static final AsyncProtectionChecks asyncChecks = new AsyncProtectionChecks(modules, blockModules);
 
     private static JavaPlugin pluginHost;
-
-    static {
-        modules = new CopyOnWriteArraySet<>();
-        blockModules = new CopyOnWriteArraySet<>();
-        handlers = new ArrayList<>();
-    }
 
     /**
      * Register the protection module
@@ -209,6 +204,86 @@ public class ProtectorAPI {
         }
 
         return null;
+    }
+
+    /**
+     * Find the first matching module in registration order, dispatching each lookup according
+     * to its verified asynchronous capability. Completion may occur on either thread; callers
+     * must schedule Bukkit world/player mutations on the server thread and must not block it
+     * with <code>Future.get()</code> or <code>CompletableFuture.join()</code>. Locations are copied before scheduling.
+     */
+    public static CompletableFuture<IProtectionModule> findModuleAsync(Location location) {
+        return asyncChecks.findModule(location);
+    }
+
+    /**
+     * @see {@link #findModuleAsync(Location)}
+     */
+    public static CompletableFuture<IBlockProtectionModule> findBlockModuleAsync(Location location) {
+        return asyncChecks.findBlockModule(location);
+    }
+
+    /**
+     * @see {@link #findModuleAsync(Location)}
+     */
+    public static CompletableFuture<Boolean> isInProtectionRangeAsync(Location location) {
+        return asyncChecks.isInProtectionRange(location);
+    }
+
+    /**
+     * Check the player's captured location without blocking for asynchronous checks.
+     */
+    public static CompletableFuture<Boolean> allowBreakAsync(Player player) {
+        return asyncChecks.allow(player, CommonFlags.BREAK);
+    }
+
+    /**
+     * Check both region and block protection at the supplied location.
+     *
+     * @see {@link #findModuleAsync(Location)}
+     */
+    public static CompletableFuture<Boolean> allowBreakAsync(Player player, Location block) {
+        return asyncChecks.allow(player, block, CommonFlags.BREAK);
+    }
+
+    /**
+     * Check the player's captured location without blocking for asynchronous checks.
+     */
+    public static CompletableFuture<Boolean> allowPlaceAsync(Player player) {
+        return asyncChecks.allow(player, CommonFlags.PLACE);
+    }
+
+    /**
+     * Check both region and block protection at the supplied location.
+     *
+     * @see #findModuleAsync(Location)
+     */
+    public static CompletableFuture<Boolean> allowPlaceAsync(Player player, Location block) {
+        return asyncChecks.allow(player, block, CommonFlags.PLACE);
+    }
+
+    /**
+     * Check the player's captured location without blocking for asynchronous checks.
+     */
+    public static CompletableFuture<Boolean> allowInteractAsync(Player player) {
+        return asyncChecks.allow(player, CommonFlags.INTERACT);
+    }
+
+    /**
+     * Check both region and block protection at the supplied location.
+     *
+     * @see #findModuleAsync(Location)
+     */
+    public static CompletableFuture<Boolean> allowInteractAsync(Player player, Location block) {
+        return asyncChecks.allow(player, block, CommonFlags.INTERACT);
+    }
+
+    /**
+     * @apiNote Internal lifecycle hook. Completes pending checks when scheduler tasks are cancelled on disable.
+     */
+    @ApiStatus.Internal
+    public static void cancelPendingChecks() {
+        asyncChecks.close();
     }
 
     /**

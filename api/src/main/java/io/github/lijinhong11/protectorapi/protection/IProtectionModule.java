@@ -36,6 +36,19 @@ public interface IProtectionModule {
     String getPluginName();
 
     /**
+     * Whether the complete adapter call for this operation is safe off the server thread.
+     * Defaults to false until the underlying plugin API and this adapter have been audited.
+     * This method itself must be thread-safe. Player location capture and global flag reads
+     * are dispatched separately; this does not make arbitrary range methods thread-safe.
+     *
+     * @param check the operation being scheduled
+     * @return true only if this operation supports concurrent asynchronous calls
+     */
+    default boolean supportsAsync(@NotNull ProtectionCheck check) {
+        return false;
+    }
+
+    /**
      * Check if the player is in the protection range
      *
      * @param player the player

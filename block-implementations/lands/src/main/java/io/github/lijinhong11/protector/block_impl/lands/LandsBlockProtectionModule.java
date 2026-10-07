@@ -21,12 +21,12 @@ import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.flag.CustomFlag;
 import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.flags.type.Flags;
 import me.angeschossen.lands.api.flags.type.RoleFlag;
 import me.angeschossen.lands.api.land.LandWorld;
 import me.angeschossen.lands.api.player.LandPlayer;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -45,14 +45,16 @@ public class LandsBlockProtectionModule implements IBlockProtectionModule, FlagR
     }
 
     @Override
-    public boolean isProtected(Location block) {
-        LandWorld lw = getLandWorld(block);
-        if (lw == null) {
-            return false;
-        }
+    public boolean supportsAsync(@NotNull ProtectionCheck check) {
+        // LandsAPI 7.15.20 explicitly permits getLandByUnloadedChunk on async threads.
+        // Role checks and Flags.getInteract(Block) do not share that guarantee.
+        return check == ProtectionCheck.LOOKUP;
+    }
 
-        Chunk chunk = block.getChunk();
-        return lw.getLandByChunk(chunk.getX(), chunk.getZ()) != null;
+    @Override
+    public boolean isProtected(Location block) {
+        // Query both loaded and unloaded claims without asking Bukkit to load a chunk.
+        return api.getLandByUnloadedChunk(block.getWorld(), block.getBlockX() >> 4, block.getBlockZ() >> 4) != null;
     }
 
     @Override

@@ -18,6 +18,7 @@
 package io.github.lijinhong11.protector.block_impl.landclaimplugin;
 
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import org.ayosynk.landClaimPlugin.api.LandClaimAPI;
 import org.ayosynk.landClaimPlugin.models.ClaimProfile;
 import org.bukkit.Location;
@@ -33,8 +34,16 @@ public class LandClaimPluginBlockProtectionModule implements IBlockProtectionMod
     }
 
     @Override
+    public boolean supportsAsync(@NotNull ProtectionCheck check) {
+        // In 3.0.0 the coordinate overload reads ClaimManager's ConcurrentHashMap directly.
+        // PermissionResolver reads mutable ClaimProfile/Role HashMaps and HashSets.
+        return check == ProtectionCheck.LOOKUP;
+    }
+
+    @Override
     public boolean isProtected(Location block) {
-        return api.isLocationClaimed(block);
+        // The Location overload calls getChunk(); use coordinates to avoid loading chunks.
+        return api.isChunkClaimed(block.getWorld().getName(), block.getBlockX() >> 4, block.getBlockZ() >> 4);
     }
 
     @Override

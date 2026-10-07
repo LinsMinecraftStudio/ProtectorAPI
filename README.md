@@ -46,12 +46,42 @@ requires Java 21; their adapters are only activated when those plugins are enabl
 The Java 17 compile-time baselines are WorldGuard 7.0.9, WorldEdit 7.2.18,
 PlotSquared 7.3.0 and Bolt 1.0.580.
 
-## Roadmap
-
-1. Event handlers
-2. More plugin supports
-
 ## Develop Examples
+
+### Async protection checks
+
+Use `allowBreakAsync`, `allowPlaceAsync`, or `allowInteractAsync` to check protection
+without waiting for asynchronous work on the server thread. Each returns a
+`CompletableFuture<Boolean>`:
+
+- `(Player, Location)` checks region and block protection at the target location.
+- `(Player)` captures the player's location on the server thread and checks region protection there.
+- `findModuleAsync`, `findBlockModuleAsync`, and `isInProtectionRangeAsync` provide asynchronous lookup entry points.
+
+Only verified thread-safe operations run asynchronously; other operations stay on
+the server thread. See the [async support audit](ASYNC_SUPPORT_AUDIT.md) for adapter
+support and verification details.
+
+```java
+Location target = block.getLocation(); // capture on the server thread
+ProtectorAPI.allowBreakAsync(player, target).whenComplete((allowed, error) -> {
+    Bukkit.getScheduler().runTask(myPlugin, () -> {
+        if (error != null) {
+            myPlugin.getLogger().log(Level.WARNING, "Protection check failed", error);
+            return;
+        }
+        if (player.isOnline()) {
+            player.sendMessage(allowed ? "Allowed" : "Denied");
+        }
+    });
+});
+```
+
+Completion may occur on either thread, so schedule Bukkit world/player operations
+back onto the server thread as shown above. Never wait with `join()` or `get()` on
+the server thread. An asynchronous result cannot retroactively cancel a synchronous
+Bukkit event; finish the check before performing a deferred action. Existing boolean
+methods remain synchronous.
 
 ### Check whether a player can place
 
