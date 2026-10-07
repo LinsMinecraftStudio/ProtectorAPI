@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "io.github.lijinhong11"
-version = "2.4.0"
+version = findProperty("version")!! as String
 
 allprojects {
     group = rootProject.group
