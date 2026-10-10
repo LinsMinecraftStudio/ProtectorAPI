@@ -29,16 +29,23 @@ import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import java.lang.reflect.Field;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +58,7 @@ class AsyncProtectionChecksTest {
     private static final JavaPlugin HOST = mock(JavaPlugin.class);
     private final Queue<Runnable> mainTasks = new ArrayDeque<>();
     private final Queue<Runnable> asyncTasks = new ArrayDeque<>();
+    private final List<BukkitTask> scheduledTasks = new ArrayList<>();
     private final BukkitScheduler scheduler = mock(BukkitScheduler.class);
     private final World world = mock(World.class);
     private final Player player = mock(Player.class);
@@ -81,11 +89,11 @@ class AsyncProtectionChecksTest {
         bukkit.when(Bukkit::getScheduler).thenReturn(scheduler);
         when(scheduler.runTask(eq(HOST), any(Runnable.class))).thenAnswer(invocation -> {
             mainTasks.add(invocation.getArgument(1));
-            return null;
+            return newTask();
         });
         when(scheduler.runTaskAsynchronously(eq(HOST), any(Runnable.class))).thenAnswer(invocation -> {
             asyncTasks.add(invocation.getArgument(1));
-            return null;
+            return newTask();
         });
     }
 
@@ -98,6 +106,12 @@ class AsyncProtectionChecksTest {
         Field field = ProtectorAPI.class.getDeclaredField(name);
         field.setAccessible(true);
         ((Set<?>) field.get(null)).clear();
+    }
+
+    private BukkitTask newTask() {
+        BukkitTask task = mock(BukkitTask.class);
+        scheduledTasks.add(task);
+        return task;
     }
 
     private void drainTasks() {
@@ -331,19 +345,21 @@ class AsyncProtectionChecksTest {
     void rejectedTasksAndDisableCompletePendingFutures() {
         ProtectionCheckScheduler dispatcher = new ProtectionCheckScheduler();
         Runnable check = mock(Runnable.class);
-        CompletableFuture<Boolean> pending = dispatcher.submit(true, () -> {
+        CompletableFuture<Boolean> pending = dispatcher.execute(request -> request.submit(true, () -> {
             check.run();
             return true;
-        });
+        }));
         dispatcher.close();
         assertTrue(pending.isCancelled());
-        assertTrue(dispatcher.submit(true, () -> true).isCancelled());
+        assertTrue(
+                dispatcher.execute(request -> request.submit(true, () -> true)).isCancelled());
         drainTasks();
         verifyNoInteractions(check);
 
         IllegalStateException rejected = new IllegalStateException("scheduler stopped");
         when(scheduler.runTaskAsynchronously(eq(HOST), any(Runnable.class))).thenThrow(rejected);
-        CompletableFuture<Boolean> result = new ProtectionCheckScheduler().submit(true, () -> true);
+        CompletableFuture<Boolean> result =
+                new ProtectionCheckScheduler().execute(request -> request.submit(true, () -> true));
         assertSame(
                 rejected, assertThrows(CompletionException.class, result::join).getCause());
     }
@@ -353,5 +369,251 @@ class AsyncProtectionChecksTest {
         assertTrue(ProtectorAPI.allowBreakAsync(player, location).join());
         assertFalse(ProtectorAPI.isInProtectionRangeAsync(location).join());
         verifyNoInteractions(scheduler);
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = CommonFlags.class,
+            names = {"BREAK", "PLACE", "INTERACT"})
+    void cancellingPermissionRequestStopsQueuedLookupAndLaterModules(CommonFlags flag) {
+        IProtectionModule first = mock(IProtectionModule.class);
+        IProtectionModule second = mock(IProtectionModule.class);
+        IBlockProtectionModule block = mock(IBlockProtectionModule.class);
+        when(first.supportsAsync(ProtectionCheck.LOOKUP)).thenReturn(true);
+        ProtectorAPI.register(first);
+        ProtectorAPI.register(second);
+        ProtectorAPI.register(block);
+
+        CompletableFuture<Boolean> result = permissionRequest(flag);
+        assertTrue(result.cancel(false));
+        verify(scheduledTasks.get(0)).cancel();
+        drainTasks();
+
+        assertTrue(result.isCancelled());
+        verify(first, never()).isInProtectionRange(any(Location.class));
+        verifyNoInteractions(second, block);
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+            value = CommonFlags.class,
+            names = {"BREAK", "PLACE", "INTERACT"})
+    void cancellingBetweenLookupAndFlagsStopsServerThreadPermissions(CommonFlags flag) {
+        IProtectionModule region = mock(IProtectionModule.class);
+        IProtectionRange range = mock(IProtectionRange.class);
+        IBlockProtectionModule block = mock(IBlockProtectionModule.class);
+        when(region.supportsAsync(ProtectionCheck.LOOKUP)).thenReturn(true);
+        when(region.isInProtectionRange(any(Location.class))).thenReturn(true);
+        when(region.getProtectionRangeInfo(any(Location.class))).thenReturn(range);
+        ProtectorAPI.register(region);
+        ProtectorAPI.register(block);
+
+        CompletableFuture<Boolean> result = permissionRequest(flag);
+        primary = false;
+        asyncTasks.remove().run();
+        asyncTasks.remove().run();
+        assertEquals(1, mainTasks.size());
+        assertTrue(result.cancel(false));
+        verify(scheduledTasks.get(2)).cancel();
+        drainTasks();
+
+        verifyNoInteractions(range, block);
+        verify(scheduledTasks.get(0), never()).cancel();
+        verify(scheduledTasks.get(1), never()).cancel();
+    }
+
+    @Test
+    void cancellingOneLookupDoesNotCancelAnotherRequest() {
+        IProtectionModule region = mock(IProtectionModule.class);
+        when(region.supportsAsync(ProtectionCheck.LOOKUP)).thenReturn(true);
+        when(region.isInProtectionRange(any(Location.class))).thenReturn(true);
+        ProtectorAPI.register(region);
+
+        CompletableFuture<IProtectionModule> cancelled = ProtectorAPI.findModuleAsync(location);
+        CompletableFuture<IProtectionModule> remaining = ProtectorAPI.findModuleAsync(location);
+        cancelled.cancel(true);
+        drainTasks();
+
+        assertTrue(cancelled.isCancelled());
+        assertSame(region, remaining.join());
+        verify(region).isInProtectionRange(any(Location.class));
+        verify(scheduledTasks.get(0)).cancel();
+        verify(scheduledTasks.get(1), never()).cancel();
+    }
+
+    @Test
+    void cancellingProtectionRangeRequestStopsBlockFallback() {
+        IProtectionModule region = mock(IProtectionModule.class);
+        IBlockProtectionModule block = mock(IBlockProtectionModule.class);
+        when(region.supportsAsync(ProtectionCheck.LOOKUP)).thenReturn(true);
+        when(block.supportsAsync(ProtectionCheck.LOOKUP)).thenReturn(true);
+        ProtectorAPI.register(region);
+        ProtectorAPI.register(block);
+
+        CompletableFuture<Boolean> result = ProtectorAPI.isInProtectionRangeAsync(location);
+        primary = false;
+        asyncTasks.remove().run();
+        assertEquals(1, asyncTasks.size());
+        result.cancel(false);
+        drainTasks();
+
+        assertTrue(result.isCancelled());
+        verify(block, never()).isProtected(any(Location.class));
+        verify(scheduledTasks.get(1)).cancel();
+    }
+
+    @Test
+    void cancellingPlayerRequestStopsQueuedLocationCapture() {
+        primary = false;
+        CompletableFuture<Boolean> result = ProtectorAPI.allowBreakAsync(player);
+        assertTrue(result.cancel(false));
+        drainTasks();
+
+        verify(player, never()).getLocation();
+        verify(scheduledTasks.get(0)).cancel();
+    }
+
+    @Test
+    void cancellingGlobalFlagRequestStopsQueuedFlagRead() {
+        IProtectionModule region = mock(IProtectionModule.class);
+        when(region.supportsAsync(ProtectionCheck.GLOBAL_FLAGS)).thenReturn(true);
+        when(region.isSupportGlobalFlags()).thenReturn(true);
+        ProtectorAPI.register(region);
+
+        CompletableFuture<Boolean> result = ProtectorAPI.allowBreakAsync(player, location);
+        primary = false;
+        asyncTasks.remove().run();
+        primary = true;
+        mainTasks.remove().run();
+        assertEquals(1, asyncTasks.size());
+        result.cancel(false);
+        drainTasks();
+
+        verify(region, never()).getGlobalFlag(any(CommonFlags.class), anyString());
+        verify(scheduledTasks.get(2)).cancel();
+    }
+
+    @Test
+    void disableCancelsEntireRequestsAndRejectsEmptyChecks() {
+        IProtectionModule region = mock(IProtectionModule.class);
+        when(region.supportsAsync(ProtectionCheck.LOOKUP)).thenReturn(true);
+        List<IProtectionModule> modules = new ArrayList<>(List.of(region));
+        AsyncProtectionChecks checks = new AsyncProtectionChecks(modules, List.of());
+        CompletableFuture<Boolean> pending = checks.allow(player, location, CommonFlags.BREAK);
+
+        checks.close();
+        assertTrue(pending.isCancelled());
+        modules.clear();
+        assertTrue(checks.findModule(location).isCancelled());
+        assertTrue(checks.findBlockModule(location).isCancelled());
+        assertTrue(checks.isInProtectionRange(location).isCancelled());
+        assertTrue(checks.allow(player, location, CommonFlags.PLACE).isCancelled());
+        assertTrue(checks.allow(player, CommonFlags.INTERACT).isCancelled());
+        drainTasks();
+
+        verify(region, never()).isInProtectionRange(any(Location.class));
+        verify(scheduledTasks.get(0)).cancel();
+        assertEquals(1, scheduledTasks.size());
+    }
+
+    @Test
+    void disabledHostRejectsEmptyChecks() {
+        when(HOST.isEnabled()).thenReturn(false);
+        CompletableFuture<Boolean> result = ProtectorAPI.allowBreakAsync(player, location);
+        assertInstanceOf(
+                IllegalStateException.class,
+                assertThrows(CompletionException.class, result::join).getCause());
+        verifyNoInteractions(scheduler);
+    }
+
+    @Test
+    void disableDuringDispatchCancelsTaskReturnedAfterClose() {
+        ProtectionCheckScheduler dispatcher = new ProtectionCheckScheduler();
+        BukkitTask task = mock(BukkitTask.class);
+        Runnable check = mock(Runnable.class);
+        when(scheduler.runTaskAsynchronously(eq(HOST), any(Runnable.class))).thenAnswer(invocation -> {
+            asyncTasks.add(invocation.getArgument(1));
+            dispatcher.close();
+            return task;
+        });
+
+        CompletableFuture<Boolean> result = dispatcher.execute(request -> request.submit(true, () -> {
+            check.run();
+            return true;
+        }));
+        assertTrue(result.isCancelled());
+        verify(task).cancel();
+        drainTasks();
+        verifyNoInteractions(check);
+    }
+
+    @Test
+    void cancellationDuringRunningCheckPreventsLaterStages() {
+        IProtectionModule region = mock(IProtectionModule.class);
+        when(region.supportsAsync(ProtectionCheck.LOOKUP)).thenReturn(true);
+        ProtectorAPI.register(region);
+        CompletableFuture<Boolean> result = ProtectorAPI.allowBreakAsync(player, location);
+        when(region.isInProtectionRange(any(Location.class))).thenAnswer(invocation -> {
+            result.cancel(false);
+            return true;
+        });
+
+        drainTasks();
+        assertTrue(result.isCancelled());
+        verify(region, never()).getProtectionRangeInfo(any(Location.class));
+        assertEquals(1, scheduledTasks.size());
+    }
+
+    @Test
+    void timeoutCancelsQueuedChecks() throws Exception {
+        IProtectionModule region = mock(IProtectionModule.class);
+        when(region.supportsAsync(ProtectionCheck.LOOKUP)).thenReturn(true);
+        ProtectorAPI.register(region);
+        CompletableFuture<Boolean> result = ProtectorAPI.allowBreakAsync(player, location);
+
+        result.orTimeout(1, TimeUnit.MILLISECONDS);
+        assertInstanceOf(
+                TimeoutException.class,
+                assertThrows(ExecutionException.class, () -> result.get(5, TimeUnit.SECONDS))
+                        .getCause());
+        verify(scheduledTasks.get(0), timeout(1000)).cancel();
+        drainTasks();
+        verify(region, never()).isInProtectionRange(any(Location.class));
+    }
+
+    @Test
+    void disableWhileRequestIsBeingComposedStopsNewStages() throws Exception {
+        ProtectionCheckScheduler dispatcher = new ProtectionCheckScheduler();
+        CountDownLatch composing = new CountDownLatch(1);
+        CompletableFuture<Void> resume = new CompletableFuture<>();
+        Runnable check = mock(Runnable.class);
+        CompletableFuture<CompletableFuture<Boolean>> invocation =
+                CompletableFuture.supplyAsync(() -> dispatcher.execute(request -> {
+                    composing.countDown();
+                    resume.join();
+                    return request.submit(true, () -> {
+                        check.run();
+                        return true;
+                    });
+                }));
+        try {
+            assertTrue(composing.await(5, TimeUnit.SECONDS));
+            dispatcher.close();
+            resume.complete(null);
+            assertTrue(invocation.get(5, TimeUnit.SECONDS).isCancelled());
+            verifyNoInteractions(check, scheduler);
+        } finally {
+            resume.complete(null);
+            dispatcher.close();
+        }
+    }
+
+    private CompletableFuture<Boolean> permissionRequest(CommonFlags flag) {
+        return switch (flag) {
+            case BREAK -> ProtectorAPI.allowBreakAsync(player, location);
+            case PLACE -> ProtectorAPI.allowPlaceAsync(player, location);
+            case INTERACT -> ProtectorAPI.allowInteractAsync(player, location);
+            default -> throw new AssertionError(flag);
+        };
     }
 }

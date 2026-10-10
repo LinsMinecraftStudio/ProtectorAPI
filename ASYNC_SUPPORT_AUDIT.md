@@ -1,5 +1,7 @@
 # Async support audit
 
+[简体中文](ASYNC_SUPPORT_AUDIT_CN.md)
+
 This document records the thread-safety evidence and unresolved questions for
 ProtectorAPI adapters. Decisions apply to the operations used by an adapter, not
 to every API offered by its plugin.
@@ -58,7 +60,12 @@ distinguish known unsafe access from paths that have not been fully verified.
 These are source/bytecode audit results for the listed versions, not live-server
 concurrency tests or guarantees for arbitrary forks and future versions. Scheduling
 tests cover asynchronous block lookup followed by server-thread permissions for
-break, place and interact, along with ordering, errors and cancellation.
+break, place and interact, along with ordering and errors. Request cancellation
+tests cover queued lookup, player location capture, region-to-block fallback,
+region permissions, global flag reads, and cancellation during a running check.
+Lifecycle tests cover task dispatch and request composition racing with disable,
+timeouts, independent requests, and rejection after disable even when no modules
+are registered.
 
 Before opting in another operation, verify the complete call path, including
 Bukkit access, collection mutations and third-party permission providers. Supporting

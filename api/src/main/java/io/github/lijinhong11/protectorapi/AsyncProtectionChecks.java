@@ -49,90 +49,110 @@ final class AsyncProtectionChecks {
 
     CompletableFuture<IProtectionModule> findModule(Location location) {
         Location snapshot = location.clone();
+        return scheduler.execute(request -> findModule(request, snapshot));
+    }
+
+    private CompletableFuture<IProtectionModule> findModule(
+            ProtectionCheckScheduler.Request<?> request, Location location) {
         return findFirst(
                 modules,
-                module -> scheduler.submit(
+                module -> request.submit(
                         module.supportsAsync(ProtectionCheck.LOOKUP),
-                        () -> module.isInProtectionRange(snapshot.clone())));
+                        () -> module.isInProtectionRange(location.clone())));
     }
 
     CompletableFuture<IBlockProtectionModule> findBlockModule(Location location) {
         Location snapshot = location.clone();
+        return scheduler.execute(request -> findBlockModule(request, snapshot));
+    }
+
+    private CompletableFuture<IBlockProtectionModule> findBlockModule(
+            ProtectionCheckScheduler.Request<?> request, Location location) {
         return findFirst(
                 blockModules,
-                module -> scheduler.submit(
-                        module.supportsAsync(ProtectionCheck.LOOKUP), () -> module.isProtected(snapshot.clone())));
+                module -> request.submit(
+                        module.supportsAsync(ProtectionCheck.LOOKUP), () -> module.isProtected(location.clone())));
     }
 
     CompletableFuture<Boolean> isInProtectionRange(Location location) {
         Location snapshot = location.clone();
-        return findModule(snapshot)
+        return scheduler.execute(request -> findModule(request, snapshot)
                 .thenCompose(module -> module != null
                         ? completedFuture(true)
-                        : findBlockModule(snapshot).thenApply(Objects::nonNull));
+                        : findBlockModule(request, snapshot).thenApply(Objects::nonNull)));
     }
 
     CompletableFuture<Boolean> allow(Player player, CommonFlags flag) {
         // Player location capture always belongs on the server thread.
-        return scheduler
-                .submit(false, () -> player.getLocation().clone())
-                .thenCompose(location -> allowRegion(player, location, flag));
+        return scheduler.execute(
+                request -> request.submit(false, () -> player.getLocation().clone())
+                        .thenCompose(location -> allowRegion(request, player, location, flag)));
     }
 
     CompletableFuture<Boolean> allow(Player player, Location block, CommonFlags flag) {
         Location snapshot = block.clone();
-        return allowRegion(player, snapshot, flag)
-                .thenCompose(allowed -> allowed ? allowBlock(player, snapshot, flag) : completedFuture(false));
+        return scheduler.execute(request -> allowRegion(request, player, snapshot, flag)
+                .thenCompose(
+                        allowed -> allowed ? allowBlock(request, player, snapshot, flag) : completedFuture(false)));
     }
 
-    private CompletableFuture<Boolean> allowRegion(Player player, Location location, CommonFlags flag) {
-        return findModule(location)
+    private CompletableFuture<Boolean> allowRegion(
+            ProtectionCheckScheduler.Request<?> request, Player player, Location location, CommonFlags flag) {
+        return findModule(request, location)
                 .thenCompose(module -> module == null
-                        ? allowGlobal(location, flag)
-                        : scheduler
-                                .submit(
+                        ? allowGlobal(request, location, flag)
+                        : request.submit(
                                         module.supportsAsync(ProtectionCheck.LOOKUP),
                                         () -> module.getProtectionRangeInfo(location.clone()))
-                                .thenCompose(range -> allowRange(module, range, player, flag)));
+                                .thenCompose(range -> allowRange(request, module, range, player, flag)));
     }
 
     private CompletableFuture<Boolean> allowRange(
-            IProtectionModule module, IProtectionRange range, Player player, CommonFlags flag) {
+            ProtectionCheckScheduler.Request<?> request,
+            IProtectionModule module,
+            IProtectionRange range,
+            Player player,
+            CommonFlags flag) {
         if (range == null) {
             return completedFuture(true);
         }
-        return scheduler.submit(module.supportsAsync(ProtectionCheck.FLAGS), () -> {
+        return request.submit(module.supportsAsync(ProtectionCheck.FLAGS), () -> {
             FlagState<?> state = range.getFlagState(flag, player);
             return state instanceof FlagStates.UnsupportedFlagState || state.toBooleanOrThrow();
         });
     }
 
-    private CompletableFuture<Boolean> allowGlobal(Location location, CommonFlags flag) {
+    private CompletableFuture<Boolean> allowGlobal(
+            ProtectionCheckScheduler.Request<?> request, Location location, CommonFlags flag) {
         return findFirst(
                         modules,
-                        module -> scheduler.submit(
+                        module -> request.submit(
                                 module.supportsAsync(ProtectionCheck.GLOBAL_FLAGS), module::isSupportGlobalFlags))
-                .thenCompose(module -> allowGlobalFlag(module, location, flag));
+                .thenCompose(module -> allowGlobalFlag(request, module, location, flag));
     }
 
-    private CompletableFuture<Boolean> allowGlobalFlag(IProtectionModule module, Location location, CommonFlags flag) {
+    private CompletableFuture<Boolean> allowGlobalFlag(
+            ProtectionCheckScheduler.Request<?> request,
+            IProtectionModule module,
+            Location location,
+            CommonFlags flag) {
         if (module == null) {
             return completedFuture(true);
         }
-        return scheduler
-                .submit(false, () -> location.getWorld().getName())
-                .thenCompose(world -> scheduler.submit(
+        return request.submit(false, () -> location.getWorld().getName())
+                .thenCompose(world -> request.submit(
                         module.supportsAsync(ProtectionCheck.GLOBAL_FLAGS),
                         () -> Objects.requireNonNull(module.getGlobalFlag(flag, world))
                                 .toBooleanOrThrow()));
     }
 
-    private CompletableFuture<Boolean> allowBlock(Player player, Location location, CommonFlags flag) {
-        return findBlockModule(location).thenCompose(module -> {
+    private CompletableFuture<Boolean> allowBlock(
+            ProtectionCheckScheduler.Request<?> request, Player player, Location location, CommonFlags flag) {
+        return findBlockModule(request, location).thenCompose(module -> {
             if (module == null) {
                 return completedFuture(true);
             }
-            return scheduler.submit(
+            return request.submit(
                     module.supportsAsync(ProtectionCheck.FLAGS),
                     () -> checkBlockFlag(module, player, location.clone(), flag));
         });

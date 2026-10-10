@@ -13,6 +13,8 @@
   </p>
 </div>
 
+[English](README.md) | [简体中文](README_CN.md)
+
 ## Usage & Develop
 
 See wiki: https://lijinhong11.gitbook.io/protectotapi/
@@ -32,7 +34,7 @@ Gradle automatically detects installed JDKs. Use the included Gradle wrapper:
 
 On Windows, run `gradlew.bat clean build`.
 
-The plugin JAR is generated at `plugin/build/libs/ProtectorAPI-Plugin-2.3.0.jar`.
+The plugin JAR is generated at `plugin/build/libs/ProtectorAPI-Plugin-<version>.jar`, where `<version>` is the project version.
 All ProtectorAPI modules target Java 17, including the adapters compiled with JDK 25.
 Protection plugin dependencies are compile-only and are not bundled in the plugin JAR.
 
@@ -83,6 +85,17 @@ the server thread. An asynchronous result cannot retroactively cancel a synchron
 Bukkit event; finish the check before performing a deferred action. Existing boolean
 methods remain synchronous.
 
+Cancelling the future returned by ProtectorAPI also cancels its queued checks and
+prevents later stages from running. Cancellation affects only that request; it does
+not interrupt a third-party check that has already started. Completing the returned
+future exceptionally (for example, with `orTimeout`) also stops remaining stages.
+Apply cancellation or a timeout to the original returned future: cancelling a future
+created by `thenApply` or `whenComplete` does not cancel its upstream request.
+
+Plugin disable cancels pending requests and rejects subsequent requests, including
+lookups with no registered modules. Check failures and scheduling errors complete
+the future exceptionally rather than returning an allowed result.
+
 ### Check whether a player can place
 
 ```java
@@ -97,7 +110,7 @@ If you need to check wehether a player can place a block at a location (safer th
 Player player = ...;
 Block block = ...;
 
-boolean allow = ProtectorAPI.allowPlace(player, block);
+boolean allow = ProtectorAPI.allowPlace(player, block.getLocation());
 ```
 
 ### Check whether a player can break
@@ -114,7 +127,7 @@ If you need to check whether a player can break a block at a location (safer tha
 Player player = ...;
 Block block = ...;
 
-boolean allow = ProtectorAPI.allowBreak(player, block);
+boolean allow = ProtectorAPI.allowBreak(player, block.getLocation());
 ```
 
 ### Check whether a player can interact
@@ -133,5 +146,5 @@ If you need to whether a player can interact block at a location (safer than pre
 Player player = ...;
 Block block = ...;
 
-boolean allow = ProtectorAPI.allowInteract(player, block);
+boolean allow = ProtectorAPI.allowInteract(player, block.getLocation());
 ```

@@ -42,7 +42,7 @@ public class ProtectorAPI {
     private static final List<AHandler> handlers = new ArrayList<>();
     private static final AsyncProtectionChecks asyncChecks = new AsyncProtectionChecks(modules, blockModules);
 
-    private static JavaPlugin pluginHost;
+    private static volatile JavaPlugin pluginHost;
 
     /**
      * Register the protection module
@@ -211,6 +211,9 @@ public class ProtectorAPI {
      * to its verified asynchronous capability. Completion may occur on either thread; callers
      * must schedule Bukkit world/player mutations on the server thread and must not block it
      * with <code>Future.get()</code> or <code>CompletableFuture.join()</code>. Locations are copied before scheduling.
+     * Cancelling or exceptionally completing the returned future stops queued and subsequent checks;
+     * checks already running are not interrupted. Plugin disable cancels pending requests and
+     * rejects new requests, even when no protection modules are registered.
      */
     public static CompletableFuture<IProtectionModule> findModuleAsync(Location location) {
         return asyncChecks.findModule(location);
@@ -232,6 +235,8 @@ public class ProtectorAPI {
 
     /**
      * Check the player's captured location without blocking for asynchronous checks.
+     *
+     * @see #findModuleAsync(Location)
      */
     public static CompletableFuture<Boolean> allowBreakAsync(Player player) {
         return asyncChecks.allow(player, CommonFlags.BREAK);
@@ -248,6 +253,8 @@ public class ProtectorAPI {
 
     /**
      * Check the player's captured location without blocking for asynchronous checks.
+     *
+     * @see #findModuleAsync(Location)
      */
     public static CompletableFuture<Boolean> allowPlaceAsync(Player player) {
         return asyncChecks.allow(player, CommonFlags.PLACE);
@@ -264,6 +271,8 @@ public class ProtectorAPI {
 
     /**
      * Check the player's captured location without blocking for asynchronous checks.
+     *
+     * @see #findModuleAsync(Location)
      */
     public static CompletableFuture<Boolean> allowInteractAsync(Player player) {
         return asyncChecks.allow(player, CommonFlags.INTERACT);
@@ -279,7 +288,7 @@ public class ProtectorAPI {
     }
 
     /**
-     * @apiNote Internal lifecycle hook. Completes pending checks when scheduler tasks are cancelled on disable.
+     * @apiNote Internal lifecycle hook. Cancels pending requests and queued tasks, and rejects new requests on disable.
      */
     @ApiStatus.Internal
     public static void cancelPendingChecks() {
