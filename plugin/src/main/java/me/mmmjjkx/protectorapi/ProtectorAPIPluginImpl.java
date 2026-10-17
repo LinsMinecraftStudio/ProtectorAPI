@@ -96,54 +96,54 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
 
         if (pm.isPluginEnabled("WorldGuard")) {
             WorldGuardProtectionModule module = new WorldGuardProtectionModule();
-            ProtectorAPI.register((IProtectionModule) module);
-            ProtectorAPI.registerChunk(module);
+            ProtectorAPI.registerProtectionModule(module);
+            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("Dominion")) {
-            ProtectorAPI.register(new DominionProtectionModule());
+            ProtectorAPI.registerProtectionModule(new DominionProtectionModule());
         }
 
         if (pm.isPluginEnabled("HuskClaims")) {
-            ProtectorAPI.register(new HuskClaimsProtectionModule());
+            ProtectorAPI.registerProtectionModule(new HuskClaimsProtectionModule());
         }
 
         if (pm.isPluginEnabled("IridiumSkyblock")) {
-            ProtectorAPI.register(new IridiumSkyblockProtectionModule());
+            ProtectorAPI.registerProtectionModule(new IridiumSkyblockProtectionModule());
         }
 
         if (pm.isPluginEnabled("RedProtect")) {
             RedProtectProtectionModule module = new RedProtectProtectionModule();
-            ProtectorAPI.register((IProtectionModule) module);
-            ProtectorAPI.registerChunk(module);
+            ProtectorAPI.registerProtectionModule(module);
+            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("Residence")) {
             ResidenceProtectionModule module = new ResidenceProtectionModule();
-            ProtectorAPI.register((IProtectionModule) module);
-            ProtectorAPI.registerChunk(module);
+            ProtectorAPI.registerProtectionModule(module);
+            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("BentoBox")) {
             BentoBoxProtectionModule module = new BentoBoxProtectionModule();
-            ProtectorAPI.register((IProtectionModule) module);
-            ProtectorAPI.registerChunk(module);
+            ProtectorAPI.registerProtectionModule(module);
+            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("PlotSquared")) {
             PlotSquaredProtectionModule module = new PlotSquaredProtectionModule();
-            ProtectorAPI.register((IProtectionModule) module);
-            ProtectorAPI.registerChunk(module);
+            ProtectorAPI.registerProtectionModule(module);
+            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("GriefDefender")) {
             GriefDefenderProtectionModule module = new GriefDefenderProtectionModule();
-            ProtectorAPI.register((IProtectionModule) module);
-            ProtectorAPI.registerChunk(module);
+            ProtectorAPI.registerProtectionModule(module);
+            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("ASkyBlock")) {
-            ProtectorAPI.register(new ASkyBlockProtectionModule());
+            ProtectorAPI.registerProtectionModule(new ASkyBlockProtectionModule());
         }
     }
 
@@ -151,85 +151,85 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
 
         if (pm.isPluginEnabled("BlockLocker")) {
-            ProtectorAPI.register(new BlockLockerBlockProtectionModule());
+            ProtectorAPI.registerBlockProtectionModule(new BlockLockerBlockProtectionModule());
         }
 
         if (pm.isPluginEnabled("Bolt")) {
-            ProtectorAPI.register(new BoltBlockProtectionModule());
+            ProtectorAPI.registerBlockProtectionModule(new BoltBlockProtectionModule());
         }
 
         if (pm.isPluginEnabled("ChestProtection")) {
-            ProtectorAPI.register(new ChestProtectionBlockProtectionModule());
+            ProtectorAPI.registerBlockProtectionModule(new ChestProtectionBlockProtectionModule());
         }
 
         if (pm.isPluginEnabled("ChestShop")) {
-            ProtectorAPI.register(new ChestShopBlockProtectionModule());
+            ProtectorAPI.registerBlockProtectionModule(new ChestShopBlockProtectionModule());
         }
 
         if (pm.isPluginEnabled("ExcellentClaims")) {
-            ProtectorAPI.register(new ExcellentClaimsBlockProtectionModule());
+            ProtectorAPI.registerBlockProtectionModule(new ExcellentClaimsBlockProtectionModule());
         }
 
         if (pm.isPluginEnabled("FactionsUUID")) {
             FactionsUUIDBlockProtectionModule module = new FactionsUUIDBlockProtectionModule();
-            ProtectorAPI.register((IBlockProtectionModule) module);
-            ProtectorAPI.registerChunk(module);
+            ProtectorAPI.registerBlockProtectionModule(module);
+            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("FunnyGuilds")) {
-            ProtectorAPI.register(new FunnyGuildsBlockProtectionModule());
+            ProtectorAPI.registerBlockProtectionModule(new FunnyGuildsBlockProtectionModule());
         }
 
         if (pm.isPluginEnabled("GriefPrevention")) {
             GriefPreventionBlockProtectionModule module = new GriefPreventionBlockProtectionModule();
-            ProtectorAPI.register((IBlockProtectionModule) module);
-            ProtectorAPI.registerChunk(module);
+            ProtectorAPI.registerBlockProtectionModule(module);
+            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("HuskTowns")) {
-            ProtectorAPI.register(new HuskTownsBlockProtectionModule());
+            ProtectorAPI.registerBlockProtectionModule(new HuskTownsBlockProtectionModule());
         }
 
         if (pm.isPluginEnabled("LandClaimPlugin")) {
             LandClaimPluginBlockProtectionModule module = new LandClaimPluginBlockProtectionModule();
-            ProtectorAPI.register((IBlockProtectionModule) module);
-            ProtectorAPI.registerChunk(module);
+            ProtectorAPI.registerBlockProtectionModule(module);
+            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("LockettePro")) {
-            ProtectorAPI.register(new LocketteProBlockProtectionModule());
+            ProtectorAPI.registerBlockProtectionModule(new LocketteProBlockProtectionModule());
         }
 
         if (pm.isPluginEnabled("LWC")) {
-            ProtectorAPI.register(new LWCXBlockProtectionModule());
+            ProtectorAPI.registerBlockProtectionModule(new LWCXBlockProtectionModule());
         }
 
         if (pm.isPluginEnabled("QuickShop-Hikari")) {
-            ProtectorAPI.register(new QuickShopHikariProtection());
+            ProtectorAPI.registerBlockProtectionModule(new QuickShopHikariProtection());
         }
 
         if (pm.isPluginEnabled("QuickShop-Reremake")) {
-            ProtectorAPI.register(new QuickShopReremakeProtection());
+            ProtectorAPI.registerBlockProtectionModule(new QuickShopReremakeProtection());
         }
 
         if (pm.isPluginEnabled("ShopChest")) {
-            ProtectorAPI.register(new ShopChestBlockProtectionModule());
+            ProtectorAPI.registerBlockProtectionModule(new ShopChestBlockProtectionModule());
         }
 
         if (pm.isPluginEnabled("Towny")) {
             TownyBlockProtectionModule module = new TownyBlockProtectionModule();
-            ProtectorAPI.register((IBlockProtectionModule) module);
-            ProtectorAPI.registerChunk(module);
+            ProtectorAPI.registerBlockProtectionModule(module);
+            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("Lands")) {
             LandsBlockProtectionModule module = new LandsBlockProtectionModule();
-            ProtectorAPI.register((IBlockProtectionModule) module);
-            ProtectorAPI.registerChunk(module);
+            ProtectorAPI.registerBlockProtectionModule(module);
+            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("NoBuildPlus")) {
-            ProtectorAPI.register(new NoBuildPlusBlockProtectionModule());
+            ProtectorAPI.registerBlockProtectionModule(new NoBuildPlusBlockProtectionModule());
         }
     }
 }

@@ -60,12 +60,9 @@ public class ResidenceProtectionModule
 
     @Override
     public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
-        int minX = chunkX << 4;
-        int minZ = chunkZ << 4;
-        return ResidenceApi.getResidenceManager().getByLoc(new Location(world, minX, 0, minZ)) != null
-                || ResidenceApi.getResidenceManager().getByLoc(new Location(world, minX + 15, 0, minZ)) != null
-                || ResidenceApi.getResidenceManager().getByLoc(new Location(world, minX, 0, minZ + 15)) != null
-                || ResidenceApi.getResidenceManager().getByLoc(new Location(world, minX + 15, 0, minZ + 15)) != null;
+        List<ClaimedResidence> residences =
+                Residence.getInstance().getResidenceManager().getByChunk(world.getChunkAt(chunkX, chunkZ));
+        return residences != null && !residences.isEmpty();
     }
 
     @Override

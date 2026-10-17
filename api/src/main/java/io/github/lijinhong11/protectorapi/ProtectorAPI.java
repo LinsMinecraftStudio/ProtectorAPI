@@ -54,7 +54,7 @@ public class ProtectorAPI {
      *
      * @param module the protection module
      */
-    public static void register(IProtectionModule module) {
+    public static void registerProtectionModule(IProtectionModule module) {
         Preconditions.checkNotNull(module, "module cannot be null");
         Preconditions.checkArgument(!modules.contains(module), "module already registered");
 
@@ -66,7 +66,7 @@ public class ProtectorAPI {
      *
      * @param module the block protection module
      */
-    public static void register(IBlockProtectionModule module) {
+    public static void registerBlockProtectionModule(IBlockProtectionModule module) {
         Preconditions.checkNotNull(module, "block module cannot be null");
         Preconditions.checkArgument(!blockModules.contains(module), "block module already registered");
 
@@ -78,16 +78,7 @@ public class ProtectorAPI {
      *
      * @param module the chunk protection module
      */
-    public static void register(IChunkProtectionModule module) {
-        registerChunk(module);
-    }
-
-    /**
-     * Register a chunk protection module explicitly.
-     *
-     * @param module the chunk protection module
-     */
-    public static void registerChunk(IChunkProtectionModule module) {
+    public static void registerChunkProtectionModule(IChunkProtectionModule module) {
         Preconditions.checkNotNull(module, "chunk module cannot be null");
         Preconditions.checkArgument(!chunkModules.contains(module), "chunk module already registered");
 

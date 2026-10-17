@@ -44,8 +44,8 @@ ProtectorAPI 需要 Java 17 或更高版本。服务器和已安装的保护插�
 当前集成的 ExcellentClaims 2.0.1 和 LandClaimPlugin 3.0.0 需要 Java 25，
 FactionsUUID 0.7.0 需要 Java 21；对应适配器仅在这些插件启用时加载。
 
-Java 17 下的编译依赖基准版本为 WorldGuard 7.0.9、WorldEdit 7.2.18、
-PlotSquared 7.3.0 和 Bolt 1.0.580。
+Paper API 编译基准版本为 1.20.1。其他集成依赖基准版本包括 WorldGuard 7.0.9、
+WorldEdit 7.2.18、PlotSquared 7.3.0 和 Bolt 1.0.580。
 
 ## 开发示例
 

@@ -28,7 +28,7 @@ support alone does not make it a chunk adapter.
 | Adapter / audited dependency | Enabled operations | Evidence                                                                                                                                                                                                                                                                |
 |------------------------------|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | WorldGuard 7.0.9             | `LOOKUP`, `FLAGS`, `CHUNK_LOOKUP` | [WorldGuard documents its region API as thread-safe][worldguard-regions]. This adapter's region flag reads do not access player state. Global configuration reads stay on the server thread. The chunk query checks a cuboid covering the chunk. |
-| Towny 0.100.0.0              | `LOOKUP`, `CHUNK_LOOKUP` | `getTownBlock(Location)` converts coordinates and reads `TownyUniverse.townBlocks`, a `ConcurrentHashMap`. The chunk adapter checks its four corners; permissions use live block types and `PlayerCacheUtil`. [Source][towny-lookup] |
+| Towny 0.100.0.0              | `LOOKUP`, `CHUNK_LOOKUP` | `getTownBlock(Location)` converts coordinates and reads `TownyUniverse.townBlocks`, a `ConcurrentHashMap`. The chunk adapter enumerates every TownBlock coordinate covered by the chunk; permissions use live block types and `PlayerCacheUtil`. [Source][towny-lookup] |
 | LandsAPI 7.15.20             | `LOOKUP`, `CHUNK_LOOKUP` | Uses `getLandByUnloadedChunk(World, int, int)`, explicitly documented as async-safe. Computes chunk coordinates without `Location.getChunk()`. Role checks have no equivalent guarantee; interaction reads a live block. [Source][lands-lookup]                         |
 | LandClaimPlugin 3.0.0        | `LOOKUP`, `CHUNK_LOOKUP` | Uses `isChunkClaimed(String, int, int)` to read the concurrent spatial index. The Location overload loads chunks; permission resolution reads mutable `ClaimProfile`/`Role` maps and sets. [API][landclaim-api], [index][landclaim-index], [profile][landclaim-profile] |
 | GriefPrevention 16.18.2     | `CHUNK_LOOKUP` | Uses the coordinate-based `DataStore.getClaims(int, int)` path from the Regionerator hook. Permission checks remain synchronous. |
@@ -39,10 +39,10 @@ The following adapters implement chunk lookup but keep it on the server thread:
 |---------|-------------------|
 | FactionsUUID 0.7.0 | Reads the faction board at the chunk coordinate. Its mutable primitive maps are not verified for concurrent access. |
 | PlotSquared 7.3.0 | Queries plot areas intersecting a cuboid covering the chunk. |
-| BentoBox 3.0.1 | Samples the configured island grid within the chunk. |
+| BentoBox 3.0.1 | Compares every island protection bounding box in the world with the chunk bounding box. |
 | GriefDefender 2.1.1 | Reads the claim manager's chunk-to-claims index. |
 | RedProtect 8.1.2 | Checks region bounds against the requested chunk. |
-| Residence 6.0.3.3 | Checks the four chunk corners through the Residence location lookup. |
+| Residence 6.0.3.3 | Enumerates all Residence cuboid areas in the world and checks horizontal intersection with the chunk. |
 
 Lands lookup covers claimed chunks even when they are unloaded, without loading
 them as a side effect. LandClaimPlugin likewise avoids loading chunks during lookup.

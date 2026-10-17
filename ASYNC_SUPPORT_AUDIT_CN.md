@@ -26,7 +26,7 @@
 | 适配器 / 已审计依赖版本 | 已启用的异步操作 | 依据 |
 | --- | --- | --- |
 | WorldGuard 7.0.9 | `LOOKUP`、`FLAGS`、`CHUNK_LOOKUP` | [WorldGuard 文档明确说明区域 API 是线程安全的][worldguard-regions]。此适配器读取区域 flag 时不访问玩家状态。全局配置读取仍在服务器主线程执行。chunk 查询使用覆盖整个区块的 cuboid。 |
-| Towny 0.100.0.0 | `LOOKUP`、`CHUNK_LOOKUP` | `getTownBlock(Location)` 转换坐标后读取 `TownyUniverse.townBlocks`，其类型为 `ConcurrentHashMap`。chunk 适配器检查区块四角；权限检查会访问实时方块类型和 `PlayerCacheUtil`。[源码][towny-lookup] |
+| Towny 0.100.0.0 | `LOOKUP`、`CHUNK_LOOKUP` | `getTownBlock(Location)` 转换坐标后读取 `TownyUniverse.townBlocks`，其类型为 `ConcurrentHashMap`。chunk 适配器枚举该区块覆盖的全部 TownBlock 坐标；权限检查会访问实时方块类型和 `PlayerCacheUtil`。[源码][towny-lookup] |
 | LandsAPI 7.15.20 | `LOOKUP`、`CHUNK_LOOKUP` | 使用文档明确标注可安全异步调用的 `getLandByUnloadedChunk(World, int, int)`。计算区块坐标时不调用 `Location.getChunk()`。角色检查没有同等的线程安全保证，交互检查会读取实时方块。[源码][lands-lookup] |
 | LandClaimPlugin 3.0.0 | `LOOKUP`、`CHUNK_LOOKUP` | 使用 `isChunkClaimed(String, int, int)` 读取并发空间索引。接收 `Location` 的重载会加载区块；权限解析会读取可变的 `ClaimProfile` / `Role` Map 和集合。[API][landclaim-api]、[索引][landclaim-index]、[权限配置][landclaim-profile] |
 | GriefPrevention 16.18.2 | `CHUNK_LOOKUP` | 使用 Regionerator hook 中的坐标查询路径 `DataStore.getClaims(int, int)`。权限检查仍在服务器主线程执行。 |
@@ -37,10 +37,10 @@
 | --- | --- |
 | FactionsUUID 0.7.0 | 在区块坐标上读取 faction board。其可变 primitive Map 尚未验证可并发访问。 |
 | PlotSquared 7.3.0 | 查询与区块 cuboid 相交的 plot area。 |
-| BentoBox 3.0.1 | 在区块内采样配置的岛屿网格。 |
+| BentoBox 3.0.1 | 将该世界每个岛屿的保护 BoundingBox 与目标区块 BoundingBox 比较。 |
 | GriefDefender 2.1.1 | 读取 claim manager 的区块到领地索引。 |
 | RedProtect 8.1.2 | 将区域边界与目标区块进行比较。 |
-| Residence 6.0.3.3 | 通过 Residence 的位置查询检查区块四角。 |
+| Residence 6.0.3.3 | 枚举该世界所有 Residence 的 cuboid 范围，并检查其水平范围是否与目标区块相交。 |
 
 Lands 查询可以覆盖已认领但未加载的区块，并且不会因查询而加载区块。
 LandClaimPlugin 查询同样避免加载区块。

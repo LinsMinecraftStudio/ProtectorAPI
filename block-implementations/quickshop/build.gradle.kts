@@ -1,5 +1,4 @@
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT")
     compileOnly("org.maxgamer:QuickShop:5.1.2.5-SNAPSHOT") {
         exclude("org.spigotmc")
     }

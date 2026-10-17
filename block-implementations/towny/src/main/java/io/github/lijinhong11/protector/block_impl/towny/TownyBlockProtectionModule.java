@@ -18,7 +18,10 @@
 package io.github.lijinhong11.protector.block_impl.towny;
 
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Coord;
+import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TownyPermission;
+import com.palmergames.bukkit.towny.object.WorldCoord;
 import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
@@ -47,10 +50,17 @@ public class TownyBlockProtectionModule implements IBlockProtectionModule, IChun
     public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
         int minX = chunkX << 4;
         int minZ = chunkZ << 4;
-        return api.getTownBlock(new Location(world, minX, 0, minZ)) != null
-                || api.getTownBlock(new Location(world, minX + 15, 0, minZ)) != null
-                || api.getTownBlock(new Location(world, minX, 0, minZ + 15)) != null
-                || api.getTownBlock(new Location(world, minX + 15, 0, minZ + 15)) != null;
+        Coord low = Coord.parseCoord(minX, minZ);
+        Coord high = Coord.parseCoord(minX + 15, minZ + 15);
+        for (int x = low.getX(); x <= high.getX(); x++) {
+            for (int z = low.getZ(); z <= high.getZ(); z++) {
+                TownBlock townBlock = new WorldCoord(world.getName(), x, z).getTownBlockOrNull();
+                if (townBlock != null && townBlock.hasTown()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

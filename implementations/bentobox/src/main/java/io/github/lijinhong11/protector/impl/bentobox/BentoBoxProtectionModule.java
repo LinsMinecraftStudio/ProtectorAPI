@@ -32,6 +32,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import world.bentobox.bentobox.BentoBox;
@@ -63,20 +64,14 @@ public class BentoBoxProtectionModule implements IProtectionModule, IChunkProtec
         if (!bentoBox.getIWM().inWorld(world)) {
             return false;
         }
-        int distance = bentoBox.getIWM().getWorldSettings(world).getIslandDistance();
-        if (distance <= 0) {
-            return false;
-        }
-        int increment = Math.min(distance, 8) * 2 - 1;
         int minX = chunkX << 4;
         int minZ = chunkZ << 4;
-        for (int x = 0; x < 16; x += increment) {
-            for (int z = 0; z < 16; z += increment) {
-                if (bentoBox.getIslands()
-                        .getIslandAt(new Location(world, minX + x, 0, minZ + z))
-                        .isPresent()) {
-                    return true;
-                }
+        BoundingBox chunk = BoundingBox.of(
+                new Location(world, minX, world.getMinHeight(), minZ),
+                new Location(world, minX + 15, world.getMaxHeight(), minZ + 15));
+        for (Island island : bentoBox.getIslands().getIslands()) {
+            if (island.getWorld() == world && island.getProtectionBoundingBox().overlaps(chunk)) {
+                return true;
             }
         }
         return false;

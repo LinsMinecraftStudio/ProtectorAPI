@@ -52,6 +52,7 @@ subprojects {
 
     dependencies {
         "compileOnly"("org.jetbrains:annotations:26.0.2-1")
+        "compileOnly"("io.papermc.paper:paper-api:1.20.1-R0.1-20230921.165944-178")
     }
 
     // Protection plugins are only compile-time APIs. Do not resolve their

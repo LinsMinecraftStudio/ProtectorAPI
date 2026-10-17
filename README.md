@@ -45,8 +45,8 @@ must also support the Java version you use. In particular, the currently integra
 ExcellentClaims 2.0.1 and LandClaimPlugin 3.0.0 require Java 25, and FactionsUUID 0.7.0
 requires Java 21; their adapters are only activated when those plugins are enabled.
 
-The Java 17 compile-time baselines are WorldGuard 7.0.9, WorldEdit 7.2.18,
-PlotSquared 7.3.0 and Bolt 1.0.580.
+The Paper API compile-time baseline is 1.20.1. Other integration baselines are
+WorldGuard 7.0.9, WorldEdit 7.2.18, PlotSquared 7.3.0 and Bolt 1.0.580.
 
 ## Develop Examples
 

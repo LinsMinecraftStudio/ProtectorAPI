@@ -19,11 +19,16 @@ package io.github.lijinhong11.protector.block_impl.shopchest;
 
 import de.epiceric.shopchest.ShopChest;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
+import java.util.Arrays;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class ShopChestBlockProtectionModule implements IBlockProtectionModule {
+public class ShopChestBlockProtectionModule implements IBlockProtectionModule, IChunkProtectionModule {
     private final ShopChest api;
 
     public ShopChestBlockProtectionModule() {
@@ -33,6 +38,19 @@ public class ShopChestBlockProtectionModule implements IBlockProtectionModule {
     @Override
     public @NotNull String getPluginName() {
         return "ShopChest";
+    }
+
+    @Override
+    public boolean supportsAsync(@NotNull ProtectionCheck check) {
+        return false;
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        return Arrays.stream(api.getShopUtils().getShops()).anyMatch(s -> {
+            Chunk chunk = s.getLocation().getChunk();
+            return chunk.getX() == chunkX && chunk.getZ() == chunkZ;
+        });
     }
 
     @Override
