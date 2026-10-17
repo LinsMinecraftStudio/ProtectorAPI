@@ -22,12 +22,14 @@ import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
 import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
+import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +39,7 @@ import world.bentobox.bentobox.api.events.island.IslandCreatedEvent;
 import world.bentobox.bentobox.api.events.island.IslandDeletedEvent;
 import world.bentobox.bentobox.database.objects.Island;
 
-public class BentoBoxProtectionModule implements IProtectionModule, Listener {
+public class BentoBoxProtectionModule implements IProtectionModule, IChunkProtectionModule, Listener {
     private final BentoBox bentoBox;
 
     public BentoBoxProtectionModule() {
@@ -49,6 +51,35 @@ public class BentoBoxProtectionModule implements IProtectionModule, Listener {
     @Override
     public @NotNull String getPluginName() {
         return "BentoBox";
+    }
+
+    @Override
+    public boolean supportsAsync(@NotNull io.github.lijinhong11.protectorapi.protection.ProtectionCheck check) {
+        return false;
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        if (!bentoBox.getIWM().inWorld(world)) {
+            return false;
+        }
+        int distance = bentoBox.getIWM().getWorldSettings(world).getIslandDistance();
+        if (distance <= 0) {
+            return false;
+        }
+        int increment = Math.min(distance, 8) * 2 - 1;
+        int minX = chunkX << 4;
+        int minZ = chunkZ << 4;
+        for (int x = 0; x < 16; x += increment) {
+            for (int z = 0; z < 16; z += increment) {
+                if (bentoBox.getIslands()
+                        .getIslandAt(new Location(world, minX + x, 0, minZ + z))
+                        .isPresent()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

@@ -21,12 +21,14 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.TownyPermission;
 import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class TownyBlockProtectionModule implements IBlockProtectionModule {
+public class TownyBlockProtectionModule implements IBlockProtectionModule, IChunkProtectionModule {
     private final TownyAPI api = TownyAPI.getInstance();
 
     @Override
@@ -38,7 +40,17 @@ public class TownyBlockProtectionModule implements IBlockProtectionModule {
     public boolean supportsAsync(@NotNull ProtectionCheck check) {
         // Audited against 0.100.0.0: WorldCoord lookup reads TownyUniverse's ConcurrentHashMap.
         // Permission checks below read live block types and PlayerCacheUtil state.
-        return check == ProtectionCheck.LOOKUP;
+        return check == ProtectionCheck.LOOKUP || check == ProtectionCheck.CHUNK_LOOKUP;
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        int minX = chunkX << 4;
+        int minZ = chunkZ << 4;
+        return api.getTownBlock(new Location(world, minX, 0, minZ)) != null
+                || api.getTownBlock(new Location(world, minX + 15, 0, minZ)) != null
+                || api.getTownBlock(new Location(world, minX, 0, minZ + 15)) != null
+                || api.getTownBlock(new Location(world, minX + 15, 0, minZ + 15)) != null;
     }
 
     @Override

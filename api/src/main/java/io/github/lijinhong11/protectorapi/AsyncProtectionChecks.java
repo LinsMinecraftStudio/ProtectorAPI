@@ -23,6 +23,7 @@ import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
@@ -32,6 +33,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 /**
@@ -40,11 +42,20 @@ import org.bukkit.entity.Player;
 final class AsyncProtectionChecks {
     private final Collection<IProtectionModule> modules;
     private final Collection<IBlockProtectionModule> blockModules;
+    private final Collection<IChunkProtectionModule> chunkModules;
     private final ProtectionCheckScheduler scheduler = new ProtectionCheckScheduler();
 
     AsyncProtectionChecks(Collection<IProtectionModule> modules, Collection<IBlockProtectionModule> blockModules) {
+        this(modules, blockModules, java.util.List.of());
+    }
+
+    AsyncProtectionChecks(
+            Collection<IProtectionModule> modules,
+            Collection<IBlockProtectionModule> blockModules,
+            Collection<IChunkProtectionModule> chunkModules) {
         this.modules = modules;
         this.blockModules = blockModules;
+        this.chunkModules = chunkModules;
     }
 
     CompletableFuture<IProtectionModule> findModule(Location location) {
@@ -64,6 +75,23 @@ final class AsyncProtectionChecks {
     CompletableFuture<IBlockProtectionModule> findBlockModule(Location location) {
         Location snapshot = location.clone();
         return scheduler.execute(request -> findBlockModule(request, snapshot));
+    }
+
+    CompletableFuture<IChunkProtectionModule> findChunkModule(World world, int chunkX, int chunkZ) {
+        return scheduler.execute(request -> findChunkModule(request, world, chunkX, chunkZ));
+    }
+
+    private CompletableFuture<IChunkProtectionModule> findChunkModule(
+            ProtectionCheckScheduler.Request<?> request, World world, int chunkX, int chunkZ) {
+        return findFirst(
+                chunkModules,
+                module -> request.submit(
+                        module.supportsAsync(ProtectionCheck.CHUNK_LOOKUP),
+                        () -> module.isProtected(world, chunkX, chunkZ)));
+    }
+
+    CompletableFuture<Boolean> isChunkProtected(World world, int chunkX, int chunkZ) {
+        return findChunkModule(world, chunkX, chunkZ).thenApply(Objects::nonNull);
     }
 
     private CompletableFuture<IBlockProtectionModule> findBlockModule(
@@ -178,9 +206,5 @@ final class AsyncProtectionChecks {
                     : matches.apply(candidate).thenApply(match -> match ? candidate : null));
         }
         return result;
-    }
-
-    void close() {
-        scheduler.close();
     }
 }

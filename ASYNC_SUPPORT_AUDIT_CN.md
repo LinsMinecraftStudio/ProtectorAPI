@@ -10,6 +10,7 @@
 适配器通过 `supportsAsync(ProtectionCheck)` 分别声明以下操作的异步支持：
 
 - `LOOKUP`：根据位置查询保护，包括获取区域信息。
+- `CHUNK_LOOKUP`：基于区块坐标查询保护，不加载区块。
 - `FLAGS`：读取区域 flag，或检查方块破坏、放置和交互权限。
 - `GLOBAL_FLAGS`：查询全局 flag 支持情况并读取其值；方块适配器不使用此项。
 
@@ -17,14 +18,29 @@
 仅有异步数据库 API、线程安全的外层 Map，或 Folia 支持，
 不足以证明整个调用链可以安全地在 Bukkit 异步调度器上执行。
 
+区块坐标查询通过 `IChunkProtectionModule` 独立选择性启用。适配器必须明确实现并注册该能力；
+仅支持位置查询或方块查询，不会自动成为 chunk 适配器。
+
 ## 已确认可异步执行的操作
 
 | 适配器 / 已审计依赖版本 | 已启用的异步操作 | 依据 |
 | --- | --- | --- |
-| WorldGuard 7.0.9 | `LOOKUP`、`FLAGS` | [WorldGuard 文档明确说明区域 API 是线程安全的][worldguard-regions]。此适配器读取区域 flag 时不访问玩家状态。全局配置读取仍在服务器主线程执行。 |
-| Towny 0.100.0.0 | `LOOKUP` | `getTownBlock(Location)` 转换坐标后读取 `TownyUniverse.townBlocks`，其类型为 `ConcurrentHashMap`。权限检查会访问实时方块类型和 `PlayerCacheUtil`。[源码][towny-lookup] |
-| LandsAPI 7.15.20 | `LOOKUP` | 使用文档明确标注可安全异步调用的 `getLandByUnloadedChunk(World, int, int)`。计算区块坐标时不调用 `Location.getChunk()`。角色检查没有同等的线程安全保证，交互检查会读取实时方块。[源码][lands-lookup] |
-| LandClaimPlugin 3.0.0 | `LOOKUP` | 使用 `isChunkClaimed(String, int, int)` 读取并发空间索引。接收 `Location` 的重载会加载区块；权限解析会读取可变的 `ClaimProfile` / `Role` Map 和集合。[API][landclaim-api]、[索引][landclaim-index]、[权限配置][landclaim-profile] |
+| WorldGuard 7.0.9 | `LOOKUP`、`FLAGS`、`CHUNK_LOOKUP` | [WorldGuard 文档明确说明区域 API 是线程安全的][worldguard-regions]。此适配器读取区域 flag 时不访问玩家状态。全局配置读取仍在服务器主线程执行。chunk 查询使用覆盖整个区块的 cuboid。 |
+| Towny 0.100.0.0 | `LOOKUP`、`CHUNK_LOOKUP` | `getTownBlock(Location)` 转换坐标后读取 `TownyUniverse.townBlocks`，其类型为 `ConcurrentHashMap`。chunk 适配器检查区块四角；权限检查会访问实时方块类型和 `PlayerCacheUtil`。[源码][towny-lookup] |
+| LandsAPI 7.15.20 | `LOOKUP`、`CHUNK_LOOKUP` | 使用文档明确标注可安全异步调用的 `getLandByUnloadedChunk(World, int, int)`。计算区块坐标时不调用 `Location.getChunk()`。角色检查没有同等的线程安全保证，交互检查会读取实时方块。[源码][lands-lookup] |
+| LandClaimPlugin 3.0.0 | `LOOKUP`、`CHUNK_LOOKUP` | 使用 `isChunkClaimed(String, int, int)` 读取并发空间索引。接收 `Location` 的重载会加载区块；权限解析会读取可变的 `ClaimProfile` / `Role` Map 和集合。[API][landclaim-api]、[索引][landclaim-index]、[权限配置][landclaim-profile] |
+| GriefPrevention 16.18.2 | `CHUNK_LOOKUP` | 使用 Regionerator hook 中的坐标查询路径 `DataStore.getClaims(int, int)`。权限检查仍在服务器主线程执行。 |
+
+以下适配器实现了 chunk 查询，但保持在服务器主线程执行：
+
+| 适配器 | Chunk 查询路径 |
+| --- | --- |
+| FactionsUUID 0.7.0 | 在区块坐标上读取 faction board。其可变 primitive Map 尚未验证可并发访问。 |
+| PlotSquared 7.3.0 | 查询与区块 cuboid 相交的 plot area。 |
+| BentoBox 3.0.1 | 在区块内采样配置的岛屿网格。 |
+| GriefDefender 2.1.1 | 读取 claim manager 的区块到领地索引。 |
+| RedProtect 8.1.2 | 将区域边界与目标区块进行比较。 |
+| Residence 6.0.3.3 | 通过 Residence 的位置查询检查区块四角。 |
 
 Lands 查询可以覆盖已认领但未加载的区块，并且不会因查询而加载区块。
 LandClaimPlugin 查询同样避免加载区块。
@@ -60,10 +76,8 @@ LandClaimPlugin 查询同样避免加载区块。
 
 调度测试覆盖方块保护的异步查询，以及查询后切回服务器主线程进行破坏、放置和交互权限检查，
 同时验证检查顺序和异常处理。
-请求取消测试覆盖排队中的查询、玩家位置获取、区域查询到方块查询的回退、
-区域权限检查、全局 flag 读取，以及检查执行期间发生的取消。
-生命周期测试覆盖任务调度和请求组装与插件停用并发发生的情况、超时、请求之间的独立性，
-以及插件停用后拒绝请求的行为，包括没有注册模块的情况。
+Chunk 查询测试覆盖基于坐标的查询、注册顺序、独立的 `CHUNK_LOOKUP` 能力声明，
+以及没有 chunk 模块时的行为。
 
 为其他操作启用异步支持前，应验证完整调用链，包括 Bukkit 访问、集合修改和第三方权限提供者。
 支持异步查询不代表支持异步权限检查，也不代表区域修改是线程安全的。

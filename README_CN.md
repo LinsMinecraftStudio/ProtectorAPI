@@ -61,6 +61,22 @@ PlotSquared 7.3.0 和 Bolt 1.0.580。
 只有已确认线程安全的操作才会异步执行，其他操作仍在服务器主线程执行。
 各适配器的支持情况和验证依据见[异步支持审计](ASYNC_SUPPORT_AUDIT_CN.md)。
 
+### Chunk 检查
+
+Chunk 检查使用可选的 `IChunkProtectionModule` 接口。
+Chunk 模块的注册独立于区域模块和方块模块。
+基于坐标的重载接收 `World`、`chunkX` 和 `chunkZ`，适配器可以在不调用 Bukkit 加载区块 API 的情况下查询未加载的区块：
+
+```java
+boolean protectedChunk = ProtectorAPI.isChunkProtected(world, chunkX, chunkZ);
+ProtectorAPI.isChunkProtectedAsync(world, chunkX, chunkZ).whenComplete((protectedChunk, error) -> {
+    // 使用结果进行 Bukkit 或玩家操作前，先切回服务器主线程。
+});
+```
+
+只有底层保护插件提供了具备所需线程安全保证的区块坐标查询时，才应实现 `IChunkProtectionModule`。
+通过 `supportsAsync(ProtectionCheck.CHUNK_LOOKUP)` 声明异步支持；未验证的 chunk 查询仍会在服务器主线程执行。
+
 ```java
 Location target = block.getLocation(); // 在服务器主线程获取目标位置
 ProtectorAPI.allowBreakAsync(player, target).whenComplete((allowed, error) -> {
@@ -81,14 +97,8 @@ Future 可能在主线程或异步线程完成，因此涉及 Bukkit 世界或�
 异步结果无法事后取消一个同步 Bukkit 事件；应先完成保护检查，再执行延后的操作。
 现有返回 `boolean` 的方法仍然同步执行。
 
-取消 ProtectorAPI 返回的 Future 会同时取消该请求中排队的检查，并阻止后续阶段执行。
-取消只影响当前请求，不会中断已经开始执行的第三方检查。
-以异常结束返回的 Future（例如使用 `orTimeout`）也会停止剩余阶段。
-取消或超时应作用于 API 原始返回的 Future：取消 `thenApply` 或 `whenComplete`
-创建的派生 Future 不会取消上游请求。
-
-插件停用会取消尚未完成的请求，并拒绝后续请求，包括没有注册模块时的查询。
-检查失败或任务调度出错时，Future 会以异常结束，不会返回“允许”。
+返回的 Future 会完成为最终保护结果。检查失败或任务调度出错时，Future 会以异常结束，
+不会返回“允许”。应在 ProtectorAPI 启用期间提交检查请求。
 
 ### 检查玩家能否放置方块
 

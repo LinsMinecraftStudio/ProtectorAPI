@@ -27,6 +27,7 @@ import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
 import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
+import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.lang.reflect.Field;
@@ -35,12 +36,14 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class RedProtectProtectionModule implements IProtectionModule, FlagRegisterable, Listener {
+public class RedProtectProtectionModule
+        implements IProtectionModule, IChunkProtectionModule, FlagRegisterable, Listener {
     private final RedProtectAPI api;
 
     public RedProtectProtectionModule() {
@@ -52,6 +55,26 @@ public class RedProtectProtectionModule implements IProtectionModule, FlagRegist
     @Override
     public @NotNull String getPluginName() {
         return "RedProtect";
+    }
+
+    @Override
+    public boolean supportsAsync(@NotNull io.github.lijinhong11.protectorapi.protection.ProtectionCheck check) {
+        return false;
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        for (Region region : RedProtect.get().getRegionManager().getRegionsByWorld(world.getName())) {
+            Location min = region.getMinLocation();
+            Location max = region.getMaxLocation();
+            if (min.getBlockX() >> 4 <= chunkX
+                    && max.getBlockX() >> 4 >= chunkX
+                    && min.getBlockZ() >> 4 <= chunkZ
+                    && max.getBlockZ() >> 4 >= chunkZ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

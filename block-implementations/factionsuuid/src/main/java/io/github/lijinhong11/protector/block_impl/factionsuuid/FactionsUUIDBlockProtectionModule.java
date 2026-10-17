@@ -22,16 +22,30 @@ import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class FactionsUUIDBlockProtectionModule implements IBlockProtectionModule {
+public class FactionsUUIDBlockProtectionModule implements IBlockProtectionModule, IChunkProtectionModule {
     public FactionsUUIDBlockProtectionModule() {}
 
     @Override
     public @NotNull String getPluginName() {
         return "FactionsUUID";
+    }
+
+    @Override
+    public boolean supportsAsync(@NotNull ProtectionCheck check) {
+        return false;
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        Faction faction = Board.getInstance().getFactionAt(new FLocation(world.getName(), chunkX, chunkZ));
+        return faction != null && !faction.isWilderness();
     }
 
     @Override

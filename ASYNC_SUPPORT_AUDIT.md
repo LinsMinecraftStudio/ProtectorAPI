@@ -11,6 +11,7 @@ to every API offered by its plugin.
 Adapters declare `supportsAsync(ProtectionCheck)` separately for:
 
 - `LOOKUP`: location-based protection lookup, including region information retrieval.
+- `CHUNK_LOOKUP`: chunk-coordinate protection lookup without loading the chunk.
 - `FLAGS`: region flag reads or block break/place/interact permission checks.
 - `GLOBAL_FLAGS`: global flag support and reads; unused by block adapters.
 
@@ -18,14 +19,30 @@ Unverified operations default to the server thread. An asynchronous database API
 a concurrent outer map, or Folia support alone does not establish that the whole
 call path is safe on Bukkit's asynchronous scheduler.
 
+Chunk-coordinate support is opt-in through `IChunkProtectionModule`. An adapter
+must explicitly implement and register that capability; location or block lookup
+support alone does not make it a chunk adapter.
+
 ## Confirmed asynchronous operations
 
 | Adapter / audited dependency | Enabled operations | Evidence                                                                                                                                                                                                                                                                |
 |------------------------------|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| WorldGuard 7.0.9             | `LOOKUP`, `FLAGS`  | [WorldGuard documents its region API as thread-safe][worldguard-regions]. This adapter's region flag reads do not access player state. Global configuration reads stay on the server thread.                                                                            |
-| Towny 0.100.0.0              | `LOOKUP`           | `getTownBlock(Location)` converts coordinates and reads `TownyUniverse.townBlocks`, a `ConcurrentHashMap`. Permissions use live block types and `PlayerCacheUtil`. [Source][towny-lookup]                                                                               |
-| LandsAPI 7.15.20             | `LOOKUP`           | Uses `getLandByUnloadedChunk(World, int, int)`, explicitly documented as async-safe. Computes chunk coordinates without `Location.getChunk()`. Role checks have no equivalent guarantee; interaction reads a live block. [Source][lands-lookup]                         |
-| LandClaimPlugin 3.0.0        | `LOOKUP`           | Uses `isChunkClaimed(String, int, int)` to read the concurrent spatial index. The Location overload loads chunks; permission resolution reads mutable `ClaimProfile`/`Role` maps and sets. [API][landclaim-api], [index][landclaim-index], [profile][landclaim-profile] |
+| WorldGuard 7.0.9             | `LOOKUP`, `FLAGS`, `CHUNK_LOOKUP` | [WorldGuard documents its region API as thread-safe][worldguard-regions]. This adapter's region flag reads do not access player state. Global configuration reads stay on the server thread. The chunk query checks a cuboid covering the chunk. |
+| Towny 0.100.0.0              | `LOOKUP`, `CHUNK_LOOKUP` | `getTownBlock(Location)` converts coordinates and reads `TownyUniverse.townBlocks`, a `ConcurrentHashMap`. The chunk adapter checks its four corners; permissions use live block types and `PlayerCacheUtil`. [Source][towny-lookup] |
+| LandsAPI 7.15.20             | `LOOKUP`, `CHUNK_LOOKUP` | Uses `getLandByUnloadedChunk(World, int, int)`, explicitly documented as async-safe. Computes chunk coordinates without `Location.getChunk()`. Role checks have no equivalent guarantee; interaction reads a live block. [Source][lands-lookup]                         |
+| LandClaimPlugin 3.0.0        | `LOOKUP`, `CHUNK_LOOKUP` | Uses `isChunkClaimed(String, int, int)` to read the concurrent spatial index. The Location overload loads chunks; permission resolution reads mutable `ClaimProfile`/`Role` maps and sets. [API][landclaim-api], [index][landclaim-index], [profile][landclaim-profile] |
+| GriefPrevention 16.18.2     | `CHUNK_LOOKUP` | Uses the coordinate-based `DataStore.getClaims(int, int)` path from the Regionerator hook. Permission checks remain synchronous. |
+
+The following adapters implement chunk lookup but keep it on the server thread:
+
+| Adapter | Chunk lookup path |
+|---------|-------------------|
+| FactionsUUID 0.7.0 | Reads the faction board at the chunk coordinate. Its mutable primitive maps are not verified for concurrent access. |
+| PlotSquared 7.3.0 | Queries plot areas intersecting a cuboid covering the chunk. |
+| BentoBox 3.0.1 | Samples the configured island grid within the chunk. |
+| GriefDefender 2.1.1 | Reads the claim manager's chunk-to-claims index. |
+| RedProtect 8.1.2 | Checks region bounds against the requested chunk. |
+| Residence 6.0.3.3 | Checks the four chunk corners through the Residence location lookup. |
 
 Lands lookup covers claimed chunks even when they are unloaded, without loading
 them as a side effect. LandClaimPlugin likewise avoids loading chunks during lookup.
@@ -60,12 +77,9 @@ distinguish known unsafe access from paths that have not been fully verified.
 These are source/bytecode audit results for the listed versions, not live-server
 concurrency tests or guarantees for arbitrary forks and future versions. Scheduling
 tests cover asynchronous block lookup followed by server-thread permissions for
-break, place and interact, along with ordering and errors. Request cancellation
-tests cover queued lookup, player location capture, region-to-block fallback,
-region permissions, global flag reads, and cancellation during a running check.
-Lifecycle tests cover task dispatch and request composition racing with disable,
-timeouts, independent requests, and rejection after disable even when no modules
-are registered.
+break, place and interact, along with ordering and errors. Chunk lookup tests cover
+coordinate-based queries, registration order, the dedicated `CHUNK_LOOKUP`
+capability, and no-module behavior.
 
 Before opting in another operation, verify the complete call path, including
 Bukkit access, collection mutations and third-party permission providers. Supporting

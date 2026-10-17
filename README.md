@@ -64,6 +64,25 @@ Only verified thread-safe operations run asynchronously; other operations stay o
 the server thread. See the [async support audit](ASYNC_SUPPORT_AUDIT.md) for adapter
 support and verification details.
 
+### Chunk checks
+
+Chunk checks use the optional `IChunkProtectionModule` interface. Registering a chunk
+module is independent from region and block modules. The coordinate-based overloads
+accept `World`, `chunkX`, and `chunkZ`, so adapters can query an unloaded chunk without
+calling Bukkit's chunk-loading APIs:
+
+```java
+boolean protectedChunk = ProtectorAPI.isChunkProtected(world, chunkX, chunkZ);
+ProtectorAPI.isChunkProtectedAsync(world, chunkX, chunkZ).whenComplete((protectedChunk, error) -> {
+    // Move Bukkit/player work back to the server thread before using the result.
+});
+```
+
+Implement `IChunkProtectionModule` only when the underlying protection plugin has a
+chunk-coordinate lookup with the required thread-safety guarantee. Declare asynchronous
+support with `supportsAsync(ProtectionCheck.CHUNK_LOOKUP)`; unverified chunk lookups
+remain on the server thread.
+
 ```java
 Location target = block.getLocation(); // capture on the server thread
 ProtectorAPI.allowBreakAsync(player, target).whenComplete((allowed, error) -> {
@@ -85,16 +104,10 @@ the server thread. An asynchronous result cannot retroactively cancel a synchron
 Bukkit event; finish the check before performing a deferred action. Existing boolean
 methods remain synchronous.
 
-Cancelling the future returned by ProtectorAPI also cancels its queued checks and
-prevents later stages from running. Cancellation affects only that request; it does
-not interrupt a third-party check that has already started. Completing the returned
-future exceptionally (for example, with `orTimeout`) also stops remaining stages.
-Apply cancellation or a timeout to the original returned future: cancelling a future
-created by `thenApply` or `whenComplete` does not cancel its upstream request.
-
-Plugin disable cancels pending requests and rejects subsequent requests, including
-lookups with no registered modules. Check failures and scheduling errors complete
-the future exceptionally rather than returning an allowed result.
+The returned future completes with the final protection result. Check failures and
+scheduling errors complete the future exceptionally rather than returning an allowed
+result. Plugin disable does not change an already submitted check into an allowed
+result; callers should submit checks while ProtectorAPI is enabled.
 
 ### Check whether a player can place
 

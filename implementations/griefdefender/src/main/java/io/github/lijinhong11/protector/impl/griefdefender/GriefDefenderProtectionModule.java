@@ -20,6 +20,7 @@ package io.github.lijinhong11.protector.impl.griefdefender;
 import com.griefdefender.api.Core;
 import com.griefdefender.api.GriefDefender;
 import com.griefdefender.api.claim.Claim;
+import com.griefdefender.api.claim.ClaimManager;
 import com.griefdefender.api.event.CreateClaimEvent;
 import com.griefdefender.api.event.RemoveClaimEvent;
 import io.github.lijinhong11.protectorapi.ProtectorAPI;
@@ -27,16 +28,19 @@ import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
 import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
+import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class GriefDefenderProtectionModule implements IProtectionModule {
+public class GriefDefenderProtectionModule implements IProtectionModule, IChunkProtectionModule {
     private final Core api = GriefDefender.getCore();
 
     public GriefDefenderProtectionModule() {
@@ -54,6 +58,24 @@ public class GriefDefenderProtectionModule implements IProtectionModule {
     @Override
     public @NotNull String getPluginName() {
         return "GriefDefender";
+    }
+
+    @Override
+    public boolean supportsAsync(@NotNull io.github.lijinhong11.protectorapi.protection.ProtectionCheck check) {
+        return false;
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        if (!GriefDefender.getCore().isEnabled(world.getUID())) {
+            return false;
+        }
+        ClaimManager claimManager = GriefDefender.getCore().getClaimManager(world.getUID());
+        if (claimManager == null) {
+            return false;
+        }
+        Set<Claim> claims = claimManager.getChunksToClaimsMap().get(chunkX & 0xffffffffL | (long) chunkZ << 32);
+        return claims != null && !claims.isEmpty();
     }
 
     @Override

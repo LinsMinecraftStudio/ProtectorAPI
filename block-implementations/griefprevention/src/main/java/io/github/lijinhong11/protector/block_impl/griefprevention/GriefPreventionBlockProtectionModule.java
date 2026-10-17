@@ -18,17 +18,38 @@
 package io.github.lijinhong11.protector.block_impl.griefprevention;
 
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class GriefPreventionBlockProtectionModule implements IBlockProtectionModule {
+public class GriefPreventionBlockProtectionModule implements IBlockProtectionModule, IChunkProtectionModule {
     @Override
     public @NotNull String getPluginName() {
         return "GriefPrevention";
+    }
+
+    @Override
+    public boolean supportsAsync(@NotNull ProtectionCheck check) {
+        return check == ProtectionCheck.CHUNK_LOOKUP;
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        if (!GriefPrevention.instance.claimsEnabledForWorld(world)) {
+            return false;
+        }
+        for (Claim claim : GriefPrevention.instance.dataStore.getClaims(chunkX, chunkZ)) {
+            if (world.equals(claim.getGreaterBoundaryCorner().getWorld())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

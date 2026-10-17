@@ -27,6 +27,7 @@ import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
 import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
+import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.List;
@@ -35,12 +36,14 @@ import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ResidenceProtectionModule implements IProtectionModule, FlagRegisterable, Listener {
+public class ResidenceProtectionModule
+        implements IProtectionModule, IChunkProtectionModule, FlagRegisterable, Listener {
     public ResidenceProtectionModule() {
         Bukkit.getPluginManager().registerEvents(this, ProtectorAPI.getPluginHost());
     }
@@ -48,6 +51,21 @@ public class ResidenceProtectionModule implements IProtectionModule, FlagRegiste
     @Override
     public @NotNull String getPluginName() {
         return "Residence";
+    }
+
+    @Override
+    public boolean supportsAsync(@NotNull io.github.lijinhong11.protectorapi.protection.ProtectionCheck check) {
+        return false;
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        int minX = chunkX << 4;
+        int minZ = chunkZ << 4;
+        return ResidenceApi.getResidenceManager().getByLoc(new Location(world, minX, 0, minZ)) != null
+                || ResidenceApi.getResidenceManager().getByLoc(new Location(world, minX + 15, 0, minZ)) != null
+                || ResidenceApi.getResidenceManager().getByLoc(new Location(world, minX, 0, minZ + 15)) != null
+                || ResidenceApi.getResidenceManager().getByLoc(new Location(world, minX + 15, 0, minZ + 15)) != null;
     }
 
     @Override

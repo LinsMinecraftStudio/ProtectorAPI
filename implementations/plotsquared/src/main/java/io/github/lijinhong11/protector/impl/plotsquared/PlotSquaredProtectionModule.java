@@ -19,12 +19,16 @@ package io.github.lijinhong11.protector.impl.plotsquared;
 
 import com.google.common.eventbus.Subscribe;
 import com.plotsquared.core.PlotAPI;
+import com.plotsquared.core.PlotSquared;
 import com.plotsquared.core.events.PlayerAutoPlotEvent;
 import com.plotsquared.core.events.PlayerAutoPlotsChosenEvent;
 import com.plotsquared.core.events.PlayerClaimPlotEvent;
 import com.plotsquared.core.events.PlotDeleteEvent;
 import com.plotsquared.core.player.PlotPlayer;
+import com.plotsquared.core.plot.PlotArea;
 import com.plotsquared.core.plot.flag.GlobalFlagContainer;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.CustomFlag;
@@ -32,16 +36,18 @@ import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
 import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
+import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PlotSquaredProtectionModule implements IProtectionModule, FlagRegisterable {
+public class PlotSquaredProtectionModule implements IProtectionModule, IChunkProtectionModule, FlagRegisterable {
     private final PlotAPI plotAPI;
 
     public PlotSquaredProtectionModule() {
@@ -53,6 +59,25 @@ public class PlotSquaredProtectionModule implements IProtectionModule, FlagRegis
     @Override
     public @NotNull String getPluginName() {
         return "PlotSquared";
+    }
+
+    @Override
+    public boolean supportsAsync(@NotNull io.github.lijinhong11.protectorapi.protection.ProtectionCheck check) {
+        return false;
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        int minX = chunkX << 4;
+        int minZ = chunkZ << 4;
+        CuboidRegion chunk =
+                new CuboidRegion(BlockVector3.at(minX, 0, minZ), BlockVector3.at(minX + 15, 255, minZ + 15));
+        for (PlotArea area : PlotSquared.platform().plotAreaManager().getPlotAreas(world.getName(), chunk)) {
+            if (!area.getPlots().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

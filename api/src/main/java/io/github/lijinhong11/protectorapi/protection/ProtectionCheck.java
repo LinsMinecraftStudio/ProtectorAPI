@@ -26,6 +26,10 @@ public enum ProtectionCheck {
      */
     LOOKUP,
     /**
+     * Chunk-coordinate protection lookup without loading the chunk.
+     */
+    CHUNK_LOOKUP,
+    /**
      * Range flag reads with a player, or block break/place/interact permission checks.
      */
     FLAGS,

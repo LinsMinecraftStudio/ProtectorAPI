@@ -21,6 +21,7 @@ import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.flag.CustomFlag;
 import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.flags.type.Flags;
@@ -28,11 +29,12 @@ import me.angeschossen.lands.api.flags.type.RoleFlag;
 import me.angeschossen.lands.api.land.LandWorld;
 import me.angeschossen.lands.api.player.LandPlayer;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 // terrible condition check
-public class LandsBlockProtectionModule implements IBlockProtectionModule, FlagRegisterable {
+public class LandsBlockProtectionModule implements IBlockProtectionModule, IChunkProtectionModule, FlagRegisterable {
     private final LandsIntegration api;
 
     public LandsBlockProtectionModule() {
@@ -48,13 +50,18 @@ public class LandsBlockProtectionModule implements IBlockProtectionModule, FlagR
     public boolean supportsAsync(@NotNull ProtectionCheck check) {
         // LandsAPI 7.15.20 explicitly permits getLandByUnloadedChunk on async threads.
         // Role checks and Flags.getInteract(Block) do not share that guarantee.
-        return check == ProtectionCheck.LOOKUP;
+        return check == ProtectionCheck.LOOKUP || check == ProtectionCheck.CHUNK_LOOKUP;
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        return api.getLandByUnloadedChunk(world, chunkX, chunkZ) != null;
     }
 
     @Override
     public boolean isProtected(Location block) {
         // Query both loaded and unloaded claims without asking Bukkit to load a chunk.
-        return api.getLandByUnloadedChunk(block.getWorld(), block.getBlockX() >> 4, block.getBlockZ() >> 4) != null;
+        return isProtected(block.getWorld(), block.getBlockX() >> 4, block.getBlockZ() >> 4);
     }
 
     @Override

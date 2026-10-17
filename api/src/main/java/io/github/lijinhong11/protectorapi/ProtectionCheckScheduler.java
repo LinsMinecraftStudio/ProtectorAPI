@@ -17,83 +17,39 @@
 */
 package io.github.lijinhong11.protectorapi;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
 /**
  * Dispatches checks without waiting on the server thread.
  */
 final class ProtectionCheckScheduler {
-    private final Set<CompletableFuture<?>> pending = new HashSet<>();
-    private boolean closed;
-
     <T> CompletableFuture<T> execute(Function<Request<T>, CompletableFuture<T>> checks) {
-        Request<T> request;
-        synchronized (pending) {
-            if (closed) {
-                return CompletableFuture.failedFuture(new CancellationException("ProtectorAPI checks are closed"));
-            }
-            request = new Request<>();
-            pending.add(request);
-        }
-        request.whenComplete((value, failure) -> {
-            synchronized (pending) {
-                pending.remove(request);
-            }
-            CompletableFuture<?> stage = request.current;
-            request.current = null;
-            if (stage != null) {
-                stage.cancel(false);
-            }
-        });
+        Request<T> request = new Request<>();
         try {
             enabledHost();
-            if (!request.isDone()) {
-                checks.apply(request).whenComplete((value, failure) -> {
-                    if (failure == null) {
-                        request.complete(value);
-                    } else {
-                        request.completeExceptionally(failure);
-                    }
-                });
-            }
+            checks.apply(request).whenComplete((value, failure) -> {
+                if (failure == null) {
+                    request.complete(value);
+                } else {
+                    request.completeExceptionally(failure);
+                }
+            });
         } catch (Throwable failure) {
             request.completeExceptionally(failure);
         }
         return request;
     }
 
-    /** Checks are sequential, so a request only needs to retain its current stage. */
+    /** Executes one stage and lets the composed future schedule the next stage. */
     static final class Request<T> extends CompletableFuture<T> {
-        private volatile CompletableFuture<?> current;
-
         <R> CompletableFuture<R> submit(boolean async, Supplier<R> check) {
             CompletableFuture<R> stage = new CompletableFuture<>();
-            current = stage;
-            if (isDone()) {
-                stage.cancel(false);
-                return stage;
-            }
-
             try {
-                BukkitTask task = dispatch(async, () -> runCheck(stage, check));
-                if (task != null) {
-                    // Also handles cancellation while dispatch is returning the task handle.
-                    stage.whenComplete((value, failure) -> {
-                        if (stage.isCancelled()) {
-                            task.cancel();
-                        }
-                    });
-                }
+                dispatch(async, () -> runCheck(stage, check));
             } catch (Throwable failure) {
                 stage.completeExceptionally(failure);
             }
@@ -109,15 +65,14 @@ final class ProtectionCheckScheduler {
         return host;
     }
 
-    private static BukkitTask dispatch(boolean async, Runnable task) {
+    private static void dispatch(boolean async, Runnable task) {
         JavaPlugin host = enabledHost();
         if (async) {
-            return Bukkit.getScheduler().runTaskAsynchronously(host, task);
+            Bukkit.getScheduler().runTaskAsynchronously(host, task);
         } else if (Bukkit.isPrimaryThread()) {
             task.run();
-            return null;
         } else {
-            return Bukkit.getScheduler().runTask(host, task);
+            Bukkit.getScheduler().runTask(host, task);
         }
     }
 
@@ -130,16 +85,5 @@ final class ProtectionCheckScheduler {
         } catch (Throwable failure) {
             result.completeExceptionally(failure);
         }
-    }
-
-    void close() {
-        List<CompletableFuture<?>> snapshot;
-        synchronized (pending) {
-            closed = true;
-            snapshot = new ArrayList<>(pending);
-        }
-        // Complete outside the lock: callbacks may submit stages or close another scheduler.
-        snapshot.forEach(
-                future -> future.completeExceptionally(new CancellationException("ProtectorAPI checks are closed")));
     }
 }

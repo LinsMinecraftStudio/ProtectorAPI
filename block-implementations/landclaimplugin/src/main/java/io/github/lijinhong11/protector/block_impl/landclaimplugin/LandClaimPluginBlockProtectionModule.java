@@ -18,32 +18,39 @@
 package io.github.lijinhong11.protector.block_impl.landclaimplugin;
 
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import org.ayosynk.landClaimPlugin.api.LandClaimAPI;
 import org.ayosynk.landClaimPlugin.models.ClaimProfile;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class LandClaimPluginBlockProtectionModule implements IBlockProtectionModule {
+public class LandClaimPluginBlockProtectionModule implements IBlockProtectionModule, IChunkProtectionModule {
     private final LandClaimAPI api = LandClaimAPI.getInstance();
 
     @Override
     public @NotNull String getPluginName() {
-        return "HuskTowns";
+        return "LandClaimPlugin";
     }
 
     @Override
     public boolean supportsAsync(@NotNull ProtectionCheck check) {
         // In 3.0.0 the coordinate overload reads ClaimManager's ConcurrentHashMap directly.
         // PermissionResolver reads mutable ClaimProfile/Role HashMaps and HashSets.
-        return check == ProtectionCheck.LOOKUP;
+        return check == ProtectionCheck.LOOKUP || check == ProtectionCheck.CHUNK_LOOKUP;
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        return api.isChunkClaimed(world.getName(), chunkX, chunkZ);
     }
 
     @Override
     public boolean isProtected(Location block) {
         // The Location overload calls getChunk(); use coordinates to avoid loading chunks.
-        return api.isChunkClaimed(block.getWorld().getName(), block.getBlockX() >> 4, block.getBlockZ() >> 4);
+        return isProtected(block.getWorld(), block.getBlockX() >> 4, block.getBlockZ() >> 4);
     }
 
     @Override

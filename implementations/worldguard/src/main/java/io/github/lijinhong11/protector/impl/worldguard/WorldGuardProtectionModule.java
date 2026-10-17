@@ -18,14 +18,18 @@
 package io.github.lijinhong11.protector.impl.worldguard;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.BukkitWorldConfiguration;
 import com.sk89q.worldguard.config.ConfigurationManager;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import io.github.lijinhong11.protectorapi.flag.*;
+import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
@@ -40,7 +44,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class WorldGuardProtectionModule implements IProtectionModule, FlagRegisterable {
+public class WorldGuardProtectionModule implements IProtectionModule, IChunkProtectionModule, FlagRegisterable {
     private final RegionContainer api;
     private final ConfigurationManager globalFlags;
 
@@ -60,7 +64,23 @@ public class WorldGuardProtectionModule implements IProtectionModule, FlagRegist
         // https://worldguard.enginehub.org/en/latest/developer/regions/
         // Our range flag reads only read region data; they do not access player state.
         // Global flags use Bukkit world lookup and configuration, outside that guarantee.
-        return check == ProtectionCheck.LOOKUP || check == ProtectionCheck.FLAGS;
+        return check == ProtectionCheck.LOOKUP
+                || check == ProtectionCheck.CHUNK_LOOKUP
+                || check == ProtectionCheck.FLAGS;
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        RegionManager manager = api.get(BukkitAdapter.adapt(world));
+        if (manager == null) {
+            return false;
+        }
+
+        int minX = chunkX << 4;
+        int minZ = chunkZ << 4;
+        ProtectedCuboidRegion chunk = new ProtectedCuboidRegion(
+                "__protectorapi_chunk__", BlockVector3.at(minX, 0, minZ), BlockVector3.at(minX + 15, 255, minZ + 15));
+        return !manager.getApplicableRegions(chunk).getRegions().isEmpty();
     }
 
     @Override

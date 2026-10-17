@@ -21,13 +21,16 @@ import com.google.common.base.Preconditions;
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.handlers.AHandler;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 import java.util.*;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.ApiStatus;
@@ -39,8 +42,10 @@ import org.jetbrains.annotations.Unmodifiable;
 public class ProtectorAPI {
     private static final Set<IProtectionModule> modules = new CopyOnWriteArraySet<>();
     private static final Set<IBlockProtectionModule> blockModules = new CopyOnWriteArraySet<>();
+    private static final Set<IChunkProtectionModule> chunkModules = new CopyOnWriteArraySet<>();
     private static final List<AHandler> handlers = new ArrayList<>();
-    private static final AsyncProtectionChecks asyncChecks = new AsyncProtectionChecks(modules, blockModules);
+    private static final AsyncProtectionChecks asyncChecks =
+            new AsyncProtectionChecks(modules, blockModules, chunkModules);
 
     private static volatile JavaPlugin pluginHost;
 
@@ -66,6 +71,27 @@ public class ProtectorAPI {
         Preconditions.checkArgument(!blockModules.contains(module), "block module already registered");
 
         blockModules.add(module);
+    }
+
+    /**
+     * Register a chunk protection module.
+     *
+     * @param module the chunk protection module
+     */
+    public static void register(IChunkProtectionModule module) {
+        registerChunk(module);
+    }
+
+    /**
+     * Register a chunk protection module explicitly.
+     *
+     * @param module the chunk protection module
+     */
+    public static void registerChunk(IChunkProtectionModule module) {
+        Preconditions.checkNotNull(module, "chunk module cannot be null");
+        Preconditions.checkArgument(!chunkModules.contains(module), "chunk module already registered");
+
+        chunkModules.add(module);
     }
 
     public static void registerHandler(AHandler handler) {
@@ -173,6 +199,15 @@ public class ProtectorAPI {
     }
 
     /**
+     * Get all available chunk protection modules.
+     *
+     * @return a set containing all registered chunk protection modules
+     */
+    public static @Unmodifiable @NotNull Set<IChunkProtectionModule> getAllAvailableChunkProtectionModules() {
+        return Collections.unmodifiableSet(chunkModules);
+    }
+
+    /**
      * Find the protection module that protects the protection range
      *
      * @param location the location in the protection range
@@ -207,13 +242,57 @@ public class ProtectorAPI {
     }
 
     /**
+     * Find the first chunk protection module in registration order.
+     * This coordinate-based overload does not load the chunk.
+     *
+     * @param world the chunk's world
+     * @param chunkX the chunk X coordinate
+     * @param chunkZ the chunk Z coordinate
+     * @return the matching module, or null
+     */
+    @Nullable
+    public static IChunkProtectionModule findChunkModule(World world, int chunkX, int chunkZ) {
+        for (IChunkProtectionModule module : chunkModules) {
+            if (module.isProtected(world, chunkX, chunkZ)) {
+                return module;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Find the first chunk protection module for an already obtained chunk.
+     *
+     * @param chunk the chunk
+     * @return the matching module, or null
+     */
+    @Nullable
+    public static IChunkProtectionModule findChunkModule(Chunk chunk) {
+        return findChunkModule(chunk.getWorld(), chunk.getX(), chunk.getZ());
+    }
+
+    /**
+     * Check whether a chunk is protected by any registered chunk module.
+     * This coordinate-based overload does not load the chunk.
+     */
+    public static boolean isChunkProtected(World world, int chunkX, int chunkZ) {
+        return findChunkModule(world, chunkX, chunkZ) != null;
+    }
+
+    /**
+     * Check whether an already obtained chunk is protected.
+     */
+    public static boolean isChunkProtected(Chunk chunk) {
+        return findChunkModule(chunk) != null;
+    }
+
+    /**
      * Find the first matching module in registration order, dispatching each lookup according
      * to its verified asynchronous capability. Completion may occur on either thread; callers
      * must schedule Bukkit world/player mutations on the server thread and must not block it
      * with <code>Future.get()</code> or <code>CompletableFuture.join()</code>. Locations are copied before scheduling.
-     * Cancelling or exceptionally completing the returned future stops queued and subsequent checks;
-     * checks already running are not interrupted. Plugin disable cancels pending requests and
-     * rejects new requests, even when no protection modules are registered.
+     * The returned future completes with the final result or an exception. Each check stage is
+     * dispatched according to the adapter's verified capability.
      */
     public static CompletableFuture<IProtectionModule> findModuleAsync(Location location) {
         return asyncChecks.findModule(location);
@@ -224,6 +303,34 @@ public class ProtectorAPI {
      */
     public static CompletableFuture<IBlockProtectionModule> findBlockModuleAsync(Location location) {
         return asyncChecks.findBlockModule(location);
+    }
+
+    /**
+     * Find the first chunk protection module asynchronously without loading the chunk.
+     */
+    public static CompletableFuture<IChunkProtectionModule> findChunkModuleAsync(World world, int chunkX, int chunkZ) {
+        return asyncChecks.findChunkModule(world, chunkX, chunkZ);
+    }
+
+    /**
+     * Check whether a chunk is protected asynchronously without loading the chunk.
+     */
+    public static CompletableFuture<Boolean> isChunkProtectedAsync(World world, int chunkX, int chunkZ) {
+        return asyncChecks.isChunkProtected(world, chunkX, chunkZ);
+    }
+
+    /**
+     * Find the first chunk protection module asynchronously for an already obtained chunk.
+     */
+    public static CompletableFuture<IChunkProtectionModule> findChunkModuleAsync(Chunk chunk) {
+        return findChunkModuleAsync(chunk.getWorld(), chunk.getX(), chunk.getZ());
+    }
+
+    /**
+     * Check whether an already obtained chunk is protected asynchronously.
+     */
+    public static CompletableFuture<Boolean> isChunkProtectedAsync(Chunk chunk) {
+        return isChunkProtectedAsync(chunk.getWorld(), chunk.getX(), chunk.getZ());
     }
 
     /**
@@ -285,14 +392,6 @@ public class ProtectorAPI {
      */
     public static CompletableFuture<Boolean> allowInteractAsync(Player player, Location block) {
         return asyncChecks.allow(player, block, CommonFlags.INTERACT);
-    }
-
-    /**
-     * @apiNote Internal lifecycle hook. Cancels pending requests and queued tasks, and rejects new requests on disable.
-     */
-    @ApiStatus.Internal
-    public static void cancelPendingChecks() {
-        asyncChecks.close();
     }
 
     /**

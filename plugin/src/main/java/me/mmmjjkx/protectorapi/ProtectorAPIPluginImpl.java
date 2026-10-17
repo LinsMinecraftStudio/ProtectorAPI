@@ -88,7 +88,6 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        ProtectorAPI.cancelPendingChecks();
         getLogger().info("Successfully disabled ProtectorAPI!");
     }
 
@@ -96,7 +95,9 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
 
         if (pm.isPluginEnabled("WorldGuard")) {
-            ProtectorAPI.register(new WorldGuardProtectionModule());
+            WorldGuardProtectionModule module = new WorldGuardProtectionModule();
+            ProtectorAPI.register((IProtectionModule) module);
+            ProtectorAPI.registerChunk(module);
         }
 
         if (pm.isPluginEnabled("Dominion")) {
@@ -112,23 +113,33 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         }
 
         if (pm.isPluginEnabled("RedProtect")) {
-            ProtectorAPI.register(new RedProtectProtectionModule());
+            RedProtectProtectionModule module = new RedProtectProtectionModule();
+            ProtectorAPI.register((IProtectionModule) module);
+            ProtectorAPI.registerChunk(module);
         }
 
         if (pm.isPluginEnabled("Residence")) {
-            ProtectorAPI.register(new ResidenceProtectionModule());
+            ResidenceProtectionModule module = new ResidenceProtectionModule();
+            ProtectorAPI.register((IProtectionModule) module);
+            ProtectorAPI.registerChunk(module);
         }
 
         if (pm.isPluginEnabled("BentoBox")) {
-            ProtectorAPI.register(new BentoBoxProtectionModule());
+            BentoBoxProtectionModule module = new BentoBoxProtectionModule();
+            ProtectorAPI.register((IProtectionModule) module);
+            ProtectorAPI.registerChunk(module);
         }
 
         if (pm.isPluginEnabled("PlotSquared")) {
-            ProtectorAPI.register(new PlotSquaredProtectionModule());
+            PlotSquaredProtectionModule module = new PlotSquaredProtectionModule();
+            ProtectorAPI.register((IProtectionModule) module);
+            ProtectorAPI.registerChunk(module);
         }
 
         if (pm.isPluginEnabled("GriefDefender")) {
-            ProtectorAPI.register(new GriefDefenderProtectionModule());
+            GriefDefenderProtectionModule module = new GriefDefenderProtectionModule();
+            ProtectorAPI.register((IProtectionModule) module);
+            ProtectorAPI.registerChunk(module);
         }
 
         if (pm.isPluginEnabled("ASkyBlock")) {
@@ -160,7 +171,9 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         }
 
         if (pm.isPluginEnabled("FactionsUUID")) {
-            ProtectorAPI.register(new FactionsUUIDBlockProtectionModule());
+            FactionsUUIDBlockProtectionModule module = new FactionsUUIDBlockProtectionModule();
+            ProtectorAPI.register((IBlockProtectionModule) module);
+            ProtectorAPI.registerChunk(module);
         }
 
         if (pm.isPluginEnabled("FunnyGuilds")) {
@@ -168,7 +181,9 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         }
 
         if (pm.isPluginEnabled("GriefPrevention")) {
-            ProtectorAPI.register(new GriefPreventionBlockProtectionModule());
+            GriefPreventionBlockProtectionModule module = new GriefPreventionBlockProtectionModule();
+            ProtectorAPI.register((IBlockProtectionModule) module);
+            ProtectorAPI.registerChunk(module);
         }
 
         if (pm.isPluginEnabled("HuskTowns")) {
@@ -176,7 +191,9 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         }
 
         if (pm.isPluginEnabled("LandClaimPlugin")) {
-            ProtectorAPI.register(new LandClaimPluginBlockProtectionModule());
+            LandClaimPluginBlockProtectionModule module = new LandClaimPluginBlockProtectionModule();
+            ProtectorAPI.register((IBlockProtectionModule) module);
+            ProtectorAPI.registerChunk(module);
         }
 
         if (pm.isPluginEnabled("LockettePro")) {
@@ -200,11 +217,15 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         }
 
         if (pm.isPluginEnabled("Towny")) {
-            ProtectorAPI.register(new TownyBlockProtectionModule());
+            TownyBlockProtectionModule module = new TownyBlockProtectionModule();
+            ProtectorAPI.register((IBlockProtectionModule) module);
+            ProtectorAPI.registerChunk(module);
         }
 
         if (pm.isPluginEnabled("Lands")) {
-            ProtectorAPI.register(new LandsBlockProtectionModule());
+            LandsBlockProtectionModule module = new LandsBlockProtectionModule();
+            ProtectorAPI.register((IBlockProtectionModule) module);
+            ProtectorAPI.registerChunk(module);
         }
 
         if (pm.isPluginEnabled("NoBuildPlus")) {
