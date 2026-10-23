@@ -27,6 +27,7 @@ allprojects {
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://nexus.iridiumdevelopment.net/repository/maven-releases/")
         maven("https://repo.codemc.org/repository/maven-public/")
+        maven("https://repo.codemc.org/repository/ghost-chu/")
         maven("https://repo.codemc.io/repository/bentoboxworld/")
         maven("https://repo.onarandombox.com/dumptruckman-releases/")
         maven("https://repo.nightexpressdev.com/releases")

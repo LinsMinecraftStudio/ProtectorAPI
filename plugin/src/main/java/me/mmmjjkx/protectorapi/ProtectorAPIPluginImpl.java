@@ -31,7 +31,6 @@ import io.github.lijinhong11.protector.block_impl.lockettepro.LocketteProBlockPr
 import io.github.lijinhong11.protector.block_impl.lwcx.LWCXBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.nobuildplus.NoBuildPlusBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.quickshop.QuickShopHikariProtection;
-import io.github.lijinhong11.protector.block_impl.quickshop.QuickShopReremakeProtection;
 import io.github.lijinhong11.protector.block_impl.shopchest.ShopChestBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.towny.TownyBlockProtectionModule;
 import io.github.lijinhong11.protector.impl.askyblock.ASkyBlockProtectionModule;
@@ -206,10 +205,6 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
 
         if (pm.isPluginEnabled("QuickShop-Hikari")) {
             ProtectorAPI.registerBlockProtectionModule(new QuickShopHikariProtection());
-        }
-
-        if (pm.isPluginEnabled("QuickShop-Reremake")) {
-            ProtectorAPI.registerBlockProtectionModule(new QuickShopReremakeProtection());
         }
 
         if (pm.isPluginEnabled("ShopChest")) {

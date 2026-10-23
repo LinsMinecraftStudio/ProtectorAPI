@@ -21,11 +21,17 @@ import com.ghostchu.quickshop.api.QuickShopAPI;
 import com.ghostchu.quickshop.api.shop.Shop;
 import com.ghostchu.quickshop.api.shop.permission.BuiltInShopPermission;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
+import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class QuickShopHikariProtection implements IBlockProtectionModule {
+import java.util.HashMap;
+import java.util.Objects;
+
+public class QuickShopHikariProtection implements IBlockProtectionModule, IChunkProtectionModule {
     private final QuickShopAPI api;
 
     public QuickShopHikariProtection() {
@@ -35,6 +41,16 @@ public class QuickShopHikariProtection implements IBlockProtectionModule {
     @Override
     public @NotNull String getPluginName() {
         return "QuickShop-Hikari";
+    }
+
+    @Override
+    public boolean supportsAsync(@NotNull ProtectionCheck check) {
+        return check == ProtectionCheck.LOOKUP;
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        return !Objects.requireNonNullElse(api.getShopManager().getShops(world.getName(), chunkX, chunkZ), new HashMap<>()).isEmpty();
     }
 
     @Override
