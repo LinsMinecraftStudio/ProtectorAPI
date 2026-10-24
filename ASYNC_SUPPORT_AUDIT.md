@@ -22,8 +22,9 @@ call path is safe on Bukkit's asynchronous scheduler.
 
 Chunk-coordinate queries are part of both `IProtectionModule` and
 `IBlockProtectionModule`; normal registration includes them automatically. Adapters
-must implement `isProtected(World, int, int)` for block modules, using native protection
-data or a complete block scan. Only region modules retain a default returning false.
+must implement `isProtected(World, int, int)` for both block and region modules.
+Block modules use native protection data or a complete block scan; region modules
+use a protection index or region intersection query without loading chunks.
 The facade invokes module async methods,
 allowing adapters to split a lookup into server-thread capture and asynchronous data access.
 
@@ -45,9 +46,12 @@ The following adapters implement chunk lookup but keep it on the server thread:
 | FactionsUUID 0.7.0 | Reads the faction board at the chunk coordinate. Its mutable primitive maps are not verified for concurrent access. |
 | PlotSquared 7.3.0 | Queries plot areas intersecting a cuboid covering the chunk. |
 | BentoBox 3.0.1 | Compares every island protection bounding box in the world with the chunk bounding box. |
-| GriefDefender 2.1.1 | Reads the claim manager's chunk-to-claims index. |
+| GriefDefender 2.1.1 | Reads the claim manager's chunk-to-claims index using the same key as `GDClaim.getChunkHashes(boolean)` / `BlockUtil.asLong(x, z)`: X in the low 32 bits and Z in the high 32 bits. |
 | RedProtect 8.1.2 | Checks region bounds against the requested chunk. |
 | Residence 6.0.3.3 | Enumerates all Residence cuboid areas in the world and checks horizontal intersection with the chunk. |
+| Dominion API 4.5 | Filters all dominions by world UUID and intersects their cuboids with the chunk's full build height, respecting exclusive upper bounds. No chunk load. |
+| HuskClaims 1.5.10 | Checks world claimability and uses `ClaimWorld.isRegionClaimed` with a region covering the chunk's entire X/Z footprint. No chunk load; claim index concurrency is not verified. |
+| IridiumSkyblock (local JAR) | Checks the island world and intersects each island's `getPos1` / `getPos2` bounds with the chunk. No chunk load; island data concurrency is not verified. |
 | ShopChest 1.11.1 | Enumerates shop locations and compares world and block coordinates; never calls `Location.getChunk()`. Its shop map remains mutable. |
 | BlockLocker 1.13 | Loads the chunk and checks every block across its full build height with the sign-backed protection finder, stopping at the first match. |
 | LockettePro (local JAR) | Loads the chunk and checks every block with `LocketteProAPI.isProtected`, including non-container blocks such as doors. |

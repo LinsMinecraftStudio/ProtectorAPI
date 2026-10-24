@@ -17,6 +17,7 @@
 */
 package io.github.lijinhong11.protector.impl.iridiumskyblock;
 
+import com.iridium.iridiumskyblock.IridiumSkyblock;
 import com.iridium.iridiumskyblock.api.IridiumSkyblockAPI;
 import com.iridium.iridiumskyblock.api.IslandCreateEvent;
 import com.iridium.iridiumskyblock.api.IslandDeleteEvent;
@@ -33,6 +34,7 @@ import java.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
@@ -56,6 +58,31 @@ public class IridiumSkyblockProtectionModule implements IProtectionModule, Liste
         return user.getIsland()
                 .map(i -> Collections.singletonList(new IridiumSkyblockIslandInfo(i)))
                 .orElse(new ArrayList<>());
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        if (!api.isIslandWorld(world)) {
+            return false;
+        }
+        int minX = chunkX << 4;
+        int minZ = chunkZ << 4;
+        // Use the same live entries as getIslandViaLocation, avoiding the sorted island cache.
+        for (Island island : IridiumSkyblock.getInstance()
+                .getDatabaseManager()
+                .getIslandTableManager()
+                .getEntries()) {
+            Location first = island.getPos1(world);
+            Location second = island.getPos2(world);
+            // isInIsland compares integer block coordinates against exact, inclusive bounds.
+            if (Math.ceil(Math.min(first.getX(), second.getX())) <= minX + 15
+                    && Math.floor(Math.max(first.getX(), second.getX())) >= minX
+                    && Math.ceil(Math.min(first.getZ(), second.getZ())) <= minZ + 15
+                    && Math.floor(Math.max(first.getZ(), second.getZ())) >= minZ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

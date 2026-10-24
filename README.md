@@ -88,10 +88,11 @@ ProtectorAPI.isChunkProtectedAsync(world, chunkX, chunkZ).whenComplete((protecte
 });
 ```
 
-Every `IBlockProtectionModule` must implement `isProtected(World, int, int)`;
+Every `IBlockProtectionModule` and `IProtectionModule` must implement `isProtected(World, int, int)`;
 there is no default that silently reports no protection. Use a native protection
-index or a complete block scan. Region modules may override the same method; only
-`IProtectionModule` retains a default returning `false`. Declare asynchronous
+index or a complete block scan for block modules, and a protection index or region
+intersection query for region modules. Region lookups cover the entire chunk without
+loading it, including regions that only partially intersect it. Declare asynchronous
 support with `supportsAsync(ProtectionCheck.CHUNK_LOOKUP)`; unverified chunk lookups
 remain on the server thread.
 
@@ -110,7 +111,7 @@ a block module. These methods also accept an already obtained `Chunk`.
 Migration: remove `IChunkProtectionModule` and `registerChunkProtectionModule` usages.
 Replace `findChunkModule` / `findChunkModuleAsync` with the corresponding region or
 block lookup above. The separate chunk registry and its getter have been removed.
-External block adapters must now implement the required chunk-coordinate method.
+External block and region adapters must now implement the required chunk-coordinate method.
 
 ```java
 Location target = block.getLocation(); // capture on the server thread

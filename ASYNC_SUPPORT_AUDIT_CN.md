@@ -20,8 +20,9 @@
 不足以证明整个调用链可以安全地在 Bukkit 异步调度器上执行。
 
 区块坐标查询已并入 `IProtectionModule` 和 `IBlockProtectionModule`，正常注册模块即可参与。
-方块适配器必须实现 `isProtected(World, int, int)`，通过原生保护数据或完整逐方块扫描查询。
-仅区域模块保留返回 false 的默认实现。聚合查询调用模块的 async 方法，因此适配器可以将查询拆成
+方块和区域适配器都必须实现 `isProtected(World, int, int)`。
+方块模块通过原生保护数据或完整逐方块扫描查询，区域模块通过保护索引或领地边界相交查询，且不加载区块。
+聚合查询调用模块的 async 方法，因此适配器可以将查询拆成
 主线程状态捕获与异步数据访问两个阶段。
 
 ## 已确认可异步执行的操作
@@ -42,9 +43,12 @@
 | FactionsUUID 0.7.0 | 在区块坐标上读取 faction board。其可变 primitive Map 尚未验证可并发访问。 |
 | PlotSquared 7.3.0 | 查询与区块 cuboid 相交的 plot area。 |
 | BentoBox 3.0.1 | 将该世界每个岛屿的保护 BoundingBox 与目标区块 BoundingBox 比较。 |
-| GriefDefender 2.1.1 | 读取 claim manager 的区块到领地索引。 |
+| GriefDefender 2.1.1 | 读取 claim manager 的区块到领地索引，key 与 `GDClaim.getChunkHashes(boolean)` / `BlockUtil.asLong(x, z)` 一致：X 占低 32 位，Z 占高 32 位。 |
 | RedProtect 8.1.2 | 将区域边界与目标区块进行比较。 |
 | Residence 6.0.3.3 | 枚举该世界所有 Residence 的 cuboid 范围，并检查其水平范围是否与目标区块相交。 |
+| Dominion API 4.5 | 按世界 UUID 筛选全部领地，用覆盖区块完整建筑高度的 cuboid 检查相交，遵循上界不包含的边界规则。不加载区块。 |
+| HuskClaims 1.5.10 | 检查世界是否允许领地，使用 `ClaimWorld.isRegionClaimed` 查询覆盖整个区块 X/Z 范围的区域。不加载区块；领地索引尚未验证可并发访问。 |
+| IridiumSkyblock（本地 JAR） | 检查岛屿世界，用每个岛屿的 `getPos1` / `getPos2` 边界检查与区块的相交。不加载区块；岛屿数据尚未验证可并发访问。 |
 | ShopChest 1.11.1 | 枚举商店位置并比较世界和方块坐标，不调用 `Location.getChunk()`；商店 Map 仍是可变的。 |
 | BlockLocker 1.13 | 加载区块，遍历完整建筑高度内的每个方块，使用告示牌保护查找器查询，命中即结束。 |
 | LockettePro（本地 JAR） | 加载区块，对每个方块调用 `LocketteProAPI.isProtected`，覆盖门等非容器方块。 |

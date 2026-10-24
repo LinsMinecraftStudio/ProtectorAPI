@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Region and optional chunk protection. Async methods dispatch to the thread supported by each operation.
+ * Region and chunk protection. Async methods dispatch to the thread supported by each operation.
  * Completion may occur on either thread; never block the server thread waiting for the result.
  * Returned ranges retain their underlying plugin's thread-safety restrictions.
  */
@@ -60,17 +60,16 @@ public interface IProtectionModule {
 
     /**
      * Check whether any protection intersects the chunk, without loading it.
-     * Override when the plugin supports an exact chunk lookup. The default reports no chunk protection;
-     * it does not approximate region protection by sampling locations.
+     * Every region module must implement this lookup using its protection index or region bounds.
+     * The lookup must cover the entire chunk, including partially intersecting regions,
+     * and must not approximate region protection by sampling locations.
      *
      * @param world the chunk's world
      * @param chunkX the chunk X coordinate
      * @param chunkZ the chunk Z coordinate
      * @return true if the chunk is protected
      */
-    default boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
-        return false;
-    }
+    boolean isProtected(@NotNull World world, int chunkX, int chunkZ);
 
     /**
      * Check an already obtained chunk without loading it.

@@ -29,6 +29,7 @@ import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
 import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
+import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,7 +53,7 @@ public class ResidenceProtectionModule implements IProtectionModule, FlagRegiste
     }
 
     @Override
-    public boolean supportsAsync(@NotNull io.github.lijinhong11.protectorapi.protection.ProtectionCheck check) {
+    public boolean supportsAsync(@NotNull ProtectionCheck check) {
         return false;
     }
 

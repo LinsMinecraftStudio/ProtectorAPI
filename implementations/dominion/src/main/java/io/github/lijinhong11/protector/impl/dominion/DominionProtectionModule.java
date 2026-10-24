@@ -18,6 +18,7 @@
 package io.github.lijinhong11.protector.impl.dominion;
 
 import cn.lunadeer.dominion.api.DominionAPI;
+import cn.lunadeer.dominion.api.dtos.CuboidDTO;
 import cn.lunadeer.dominion.api.dtos.DominionDTO;
 import cn.lunadeer.dominion.api.dtos.flag.Flags;
 import cn.lunadeer.dominion.api.dtos.flag.PriFlag;
@@ -34,9 +35,8 @@ import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
+
+import org.bukkit.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
@@ -63,6 +63,21 @@ public class DominionProtectionModule implements IProtectionModule, FlagRegister
     }
 
     @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        int minX = chunkX << 4;
+        int minZ = chunkZ << 4;
+        // Dominion cuboids use inclusive lower bounds and exclusive upper bounds.
+        CuboidDTO chunk = new CuboidDTO(minX, world.getMinHeight(), minZ, minX + 16, world.getMaxHeight(), minZ + 16);
+        for (DominionDTO dominion : api.getAllDominions()) {
+            if (world.getUID().equals(dominion.getWorldUid())
+                    && dominion.getCuboid().intersectWith(chunk)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public boolean isInProtectionRange(@NotNull Location location) {
         return api.getDominion(location) != null;
     }
@@ -81,8 +96,8 @@ public class DominionProtectionModule implements IProtectionModule, FlagRegister
     public void registerFlag(CustomFlag flag) {
         String displayName = flag.displayName() == null ? flag.id() : flag.displayName();
         String description = flag.description() == null ? "" : flag.description();
-        PriFlag flag1 = new PriFlag(flag.id(), displayName, description, flag.defaultValue(), true);
-        Flags.getAllPriFlags().add(flag1); // is that a great way?
+        PriFlag flag1 = new PriFlag(flag.id(), displayName, description, flag.defaultValue(), true, flag.icon());
+        Flags.registerPriFlag(ProtectorAPI.getPluginHost(), flag1);
     }
 
     @Override
@@ -112,9 +127,11 @@ public class DominionProtectionModule implements IProtectionModule, FlagRegister
 
     @EventHandler
     public void onCreated(DominionCreateEvent e) {
-        DominionRangeInfo info = new DominionRangeInfo(e.getDominion());
+        e.afterCreated(d -> {
+            DominionRangeInfo info = new DominionRangeInfo(d);
 
-        ProtectorAPI.getHandlers(RangeCreateHandler.class).forEach(a -> a.onCreate(this, info));
+            ProtectorAPI.getHandlers(RangeCreateHandler.class).forEach(a -> a.onCreate(this, info));
+        });
     }
 
     @EventHandler

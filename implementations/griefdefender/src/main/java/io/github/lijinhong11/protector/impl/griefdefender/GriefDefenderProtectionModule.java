@@ -30,6 +30,7 @@ import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
 import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
+import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -60,7 +61,7 @@ public class GriefDefenderProtectionModule implements IProtectionModule {
     }
 
     @Override
-    public boolean supportsAsync(@NotNull io.github.lijinhong11.protectorapi.protection.ProtectionCheck check) {
+    public boolean supportsAsync(@NotNull ProtectionCheck check) {
         return false;
     }
 
@@ -73,7 +74,9 @@ public class GriefDefenderProtectionModule implements IProtectionModule {
         if (claimManager == null) {
             return false;
         }
-        Set<Claim> claims = claimManager.getChunksToClaimsMap().get(chunkX & 0xffffffffL | (long) chunkZ << 32);
+        // Match BlockUtil.asLong(x, z), used by GDClaim.getChunkHashes(boolean).
+        long chunkHash = ((long) chunkX & 0xffffffffL) | (((long) chunkZ & 0xffffffffL) << 32);
+        Set<Claim> claims = claimManager.getChunksToClaimsMap().get(chunkHash);
         return claims != null && !claims.isEmpty();
     }
 

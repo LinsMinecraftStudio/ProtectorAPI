@@ -24,6 +24,7 @@ import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
 import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
+import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import java.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -54,7 +55,7 @@ public class BentoBoxProtectionModule implements IProtectionModule, Listener {
     }
 
     @Override
-    public boolean supportsAsync(@NotNull io.github.lijinhong11.protectorapi.protection.ProtectionCheck check) {
+    public boolean supportsAsync(@NotNull ProtectionCheck check) {
         return false;
     }
 

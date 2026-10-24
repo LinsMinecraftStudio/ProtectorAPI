@@ -17,6 +17,7 @@
 */
 package io.github.lijinhong11.protectorapi.flag;
 
+import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +31,8 @@ public record CustomFlag(
         @NotNull String id,
         boolean defaultValue,
         @Nullable String displayName,
-        @Nullable String description) {
+        @Nullable String description,
+        @NotNull Material icon) {
     /**
      * The custom flag object
      *
@@ -40,36 +42,7 @@ public record CustomFlag(
      * @param defaultValue the default value
      * @param displayName  the display name of the flag (optional)
      * @param description  the description about the flag (optional)
+     * @param icon         the display icon of the flag (BentoBox & Dominion is required)
      */
     public CustomFlag {}
-
-    /**
-     * Gets the plugin
-     *
-     * @return the plugin
-     */
-    @Override
-    public Plugin plugin() {
-        return plugin;
-    }
-
-    @Override
-    public String namespace() {
-        return namespace;
-    }
-
-    @Override
-    public String id() {
-        return id;
-    }
-
-    @Override
-    public String displayName() {
-        return displayName;
-    }
-
-    @Override
-    public String description() {
-        return description;
-    }
 }

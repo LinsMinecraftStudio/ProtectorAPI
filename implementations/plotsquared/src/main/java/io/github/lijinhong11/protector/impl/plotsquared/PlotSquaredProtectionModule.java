@@ -38,6 +38,7 @@ import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
 import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
+import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.bukkit.Location;
@@ -61,7 +62,7 @@ public class PlotSquaredProtectionModule implements IProtectionModule, FlagRegis
     }
 
     @Override
-    public boolean supportsAsync(@NotNull io.github.lijinhong11.protectorapi.protection.ProtectionCheck check) {
+    public boolean supportsAsync(@NotNull ProtectionCheck check) {
         return false;
     }
 

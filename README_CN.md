@@ -82,9 +82,9 @@ ProtectorAPI.isChunkProtectedAsync(world, chunkX, chunkZ).whenComplete((protecte
 });
 ```
 
-所有 `IBlockProtectionModule` 必须实现 `isProtected(World, int, int)`，
-不再提供直接返回 `false` 的默认实现。查询应使用插件原生保护索引或完整逐方块扫描。
-区域模块也可重写同名方法，仅 `IProtectionModule` 保留返回 `false` 的默认实现。
+所有 `IBlockProtectionModule` 和 `IProtectionModule` 必须实现 `isProtected(World, int, int)`，
+不再提供直接返回 `false` 的默认实现。方块模块使用插件原生保护索引或完整逐方块扫描，
+区域模块使用保护索引或领地边界相交查询，覆盖整个区块及部分相交的领地，并且不加载区块。
 通过 `supportsAsync(ProtectionCheck.CHUNK_LOOKUP)` 声明异步支持；未验证的 chunk 查询仍会在服务器主线程执行。
 
 BlockLocker、LockettePro 和 ChestShop 会加载区块并扫描完整建筑高度内的每个方块，
@@ -101,7 +101,7 @@ ChestProtection、ExcellentClaims 也会先取得加载的 Bukkit 区块，再�
 迁移时移除 `IChunkProtectionModule` 和 `registerChunkProtectionModule`，
 将 `findChunkModule` / `findChunkModuleAsync` 替换为上述对应类型的查询方法。
 独立的 chunk 注册表及其 getter 已删除。
-外部方块适配器现在必须实现区块坐标查询方法。
+外部方块和区域适配器现在都必须实现区块坐标查询方法。
 
 ```java
 Location target = block.getLocation(); // 在服务器主线程获取目标位置

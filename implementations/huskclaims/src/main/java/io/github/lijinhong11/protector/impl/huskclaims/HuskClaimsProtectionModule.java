@@ -58,14 +58,6 @@ public class HuskClaimsProtectionModule implements IProtectionModule, FlagRegist
         Bukkit.getPluginManager().registerEvents(this, ProtectorAPI.getPluginHost());
     }
 
-    static World wrapWorld(org.bukkit.World world) {
-        return api.getWorld(world);
-    }
-
-    static Position wrapLocation(Location location) {
-        return api.getPosition(location);
-    }
-
     @Override
     public @NotNull String getPluginName() {
         return "HuskClaims";
@@ -83,6 +75,20 @@ public class HuskClaimsProtectionModule implements IProtectionModule, FlagRegist
         }
 
         return list;
+    }
+
+    @Override
+    public boolean isProtected(@NotNull org.bukkit.World world, int chunkX, int chunkZ) {
+        World claimWorld = wrapWorld(world);
+        if (!api.isWorldClaimable(claimWorld)) {
+            return false;
+        }
+        int minX = chunkX << 4;
+        int minZ = chunkZ << 4;
+        Region chunk = Region.from(Region.Point.at(minX, minZ), Region.Point.at(minX + 15, minZ + 15));
+        return api.getClaimWorld(claimWorld)
+                .map(claims -> claims.isRegionClaimed(chunk))
+                .orElse(false);
     }
 
     @Override
@@ -204,5 +210,13 @@ public class HuskClaimsProtectionModule implements IProtectionModule, FlagRegist
                 .findFirst();
         return sw.map(serverWorld -> BukkitHuskClaims.Adapter.adapt(serverWorld.world()))
                 .orElse(null);
+    }
+
+    static World wrapWorld(org.bukkit.World world) {
+        return api.getWorld(world);
+    }
+
+    static Position wrapLocation(Location location) {
+        return api.getPosition(location);
     }
 }
