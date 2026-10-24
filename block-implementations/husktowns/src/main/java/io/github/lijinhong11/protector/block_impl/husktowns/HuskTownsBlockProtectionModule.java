@@ -22,8 +22,10 @@ import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import net.kyori.adventure.key.Key;
 import net.william278.husktowns.api.BukkitHuskTownsAPI;
+import net.william278.husktowns.claim.Chunk;
 import net.william278.husktowns.libraries.cloplib.operation.OperationType;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,6 +35,11 @@ public class HuskTownsBlockProtectionModule implements IBlockProtectionModule, F
     @Override
     public @NotNull String getPluginName() {
         return "HuskTowns";
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        return api.isClaimAt(Chunk.at(chunkX, chunkZ), api.getWorld(world.getName()));
     }
 
     @Override

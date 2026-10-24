@@ -21,8 +21,10 @@ import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import me.angeschossen.chestprotect.api.ChestProtectAPI;
 import me.angeschossen.chestprotect.api.protection.ProtectionManager;
 import me.angeschossen.chestprotect.api.protection.block.BlockProtection;
+import me.angeschossen.chestprotect.api.protection.world.ProtectionChunk;
 import me.angeschossen.chestprotect.api.protection.world.ProtectionWorld;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +38,19 @@ public class ChestProtectionBlockProtectionModule implements IBlockProtectionMod
     @Override
     public @NotNull String getPluginName() {
         return "ChestProtection";
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        // ChestProtect only exposes loaded protection chunks. Load the Bukkit chunk
+        // first so an unloaded cache entry is not mistaken for an unprotected chunk.
+        world.getChunkAt(chunkX, chunkZ);
+        ProtectionWorld protectionWorld = api.getProtectionWorld(world);
+        if (protectionWorld == null) {
+            return false;
+        }
+        ProtectionChunk chunk = protectionWorld.getBlockProtectionsByChunk(chunkX, chunkZ);
+        return chunk != null && !chunk.getBlockProtections().isEmpty();
     }
 
     @Override

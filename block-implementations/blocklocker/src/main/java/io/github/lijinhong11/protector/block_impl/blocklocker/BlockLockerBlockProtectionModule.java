@@ -17,6 +17,7 @@
 */
 package io.github.lijinhong11.protector.block_impl.blocklocker;
 
+import io.github.lijinhong11.protectorapi.protection.ChunkProtectionLookup;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import java.util.Optional;
 import nl.rutgerkok.blocklocker.BlockLockerAPIv2;
@@ -24,6 +25,7 @@ import nl.rutgerkok.blocklocker.BlockLockerPlugin;
 import nl.rutgerkok.blocklocker.profile.Profile;
 import nl.rutgerkok.blocklocker.protection.Protection;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +36,11 @@ public class BlockLockerBlockProtectionModule implements IBlockProtectionModule 
     @Override
     public @NotNull String getPluginName() {
         return "BlockLocker";
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        return ChunkProtectionLookup.anyBlock(world, chunkX, chunkZ, this::isProtected);
     }
 
     @Override

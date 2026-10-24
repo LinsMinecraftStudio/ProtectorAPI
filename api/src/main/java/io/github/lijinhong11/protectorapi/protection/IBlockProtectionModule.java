@@ -17,15 +17,22 @@
 */
 package io.github.lijinhong11.protectorapi.protection;
 
+import static io.github.lijinhong11.protectorapi.ProtectionCheckScheduler.schedule;
+
+import java.util.concurrent.CompletableFuture;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Provides protection lookups and player permission checks for individual blocks.
- * Calls execute on the caller's thread; asynchronous support is declared per operation.
- * The Block overloads read the block's location and should be called on the server thread.
+ * Synchronous calls execute on the caller's thread; asynchronous support is declared per operation.
+ * Async methods dispatch each operation to its supported thread and complete exceptionally on failure.
+ * Completion may occur on either thread; never block the server thread waiting for the result.
+ * The synchronous Block overloads read the block's location and should be called on the server thread.
  */
 public interface IBlockProtectionModule {
     /**
@@ -47,6 +54,154 @@ public interface IBlockProtectionModule {
      */
     default boolean supportsAsync(@NotNull ProtectionCheck check) {
         return false;
+    }
+
+    /**
+     * Check whether any block protection exists in the chunk.
+     * Every block module must implement this lookup using its protection index or a complete
+     * block scan. Implementations that need live block state may load the chunk and must run
+     * on the server thread. A lookup must not report an unloaded chunk as unprotected merely
+     * because it has not been loaded.
+     *
+     * @param world the chunk's world
+     * @param chunkX the chunk X coordinate
+     * @param chunkZ the chunk Z coordinate
+     * @return true if the chunk is protected
+     */
+    boolean isProtected(@NotNull World world, int chunkX, int chunkZ);
+
+    /**
+     * Check an already obtained chunk for block protection.
+     *
+     * @param chunk the chunk
+     * @return true if the chunk is protected
+     * @see #isProtected(World, int, int)
+     */
+    default boolean isProtected(@NotNull Chunk chunk) {
+        return isProtected(chunk.getWorld(), chunk.getX(), chunk.getZ());
+    }
+
+    /**
+     * Dispatch a chunk-coordinate lookup according to {@link ProtectionCheck#CHUNK_LOOKUP}.
+     *
+     * @param world the chunk's world
+     * @param chunkX the chunk X coordinate
+     * @param chunkZ the chunk Z coordinate
+     * @return a future containing true if the chunk is protected
+     * @see #isProtected(World, int, int)
+     */
+    default CompletableFuture<Boolean> isProtectedAsync(@NotNull World world, int chunkX, int chunkZ) {
+        return schedule(supportsAsync(ProtectionCheck.CHUNK_LOOKUP), () -> isProtected(world, chunkX, chunkZ));
+    }
+
+    /**
+     * Capture the supplied chunk's coordinates on the server thread before dispatching lookup.
+     *
+     * @param chunk the chunk
+     * @return a future containing true if the chunk is protected
+     * @see #isProtectedAsync(World, int, int)
+     */
+    default CompletableFuture<Boolean> isProtectedAsync(@NotNull Chunk chunk) {
+        return schedule(false, () -> isProtectedAsync(chunk.getWorld(), chunk.getX(), chunk.getZ()))
+                .thenCompose(future -> future);
+    }
+
+    /**
+     * Dispatch a lookup using a copy of the supplied location.
+     *
+     * @param block the block location
+     * @return a future containing true if the block is protected
+     * @see #isProtected(Location)
+     */
+    default CompletableFuture<Boolean> isProtectedAsync(@NotNull Location block) {
+        Location snapshot = block.clone();
+        return schedule(supportsAsync(ProtectionCheck.LOOKUP), () -> isProtected(snapshot));
+    }
+
+    /**
+     * Dispatch a break permission check using a copy of the supplied location.
+     *
+     * @param player the player
+     * @param block the block location
+     * @return a future containing true if the player can break the block
+     * @see #allowBreak(Player, Location)
+     */
+    default CompletableFuture<Boolean> allowBreakAsync(@NotNull Player player, @NotNull Location block) {
+        Location snapshot = block.clone();
+        return schedule(supportsAsync(ProtectionCheck.FLAGS), () -> allowBreak(player, snapshot));
+    }
+
+    /**
+     * Dispatch a place permission check using a copy of the supplied location.
+     *
+     * @param player the player
+     * @param block the block location
+     * @return a future containing true if the player can place a block at the location
+     * @see #allowPlace(Player, Location)
+     */
+    default CompletableFuture<Boolean> allowPlaceAsync(@NotNull Player player, @NotNull Location block) {
+        Location snapshot = block.clone();
+        return schedule(supportsAsync(ProtectionCheck.FLAGS), () -> allowPlace(player, snapshot));
+    }
+
+    /**
+     * Dispatch an interaction permission check using a copy of the supplied location.
+     *
+     * @param player the player
+     * @param block the block location
+     * @return a future containing true if the player can interact with the block
+     * @see #allowInteract(Player, Location)
+     */
+    default CompletableFuture<Boolean> allowInteractAsync(@NotNull Player player, @NotNull Location block) {
+        Location snapshot = block.clone();
+        return schedule(supportsAsync(ProtectionCheck.FLAGS), () -> allowInteract(player, snapshot));
+    }
+
+    /**
+     * Capture the block location on the server thread before dispatching lookup.
+     *
+     * @param block the block
+     * @return a future containing true if the block is protected
+     * @see #isProtectedAsync(Location)
+     */
+    default CompletableFuture<Boolean> isProtectedAsync(@NotNull Block block) {
+        return schedule(false, block::getLocation).thenCompose(this::isProtectedAsync);
+    }
+
+    /**
+     * Capture the block location on the server thread before checking break permission.
+     *
+     * @param player the player
+     * @param block the block
+     * @return a future containing true if the player can break the block
+     * @see #allowBreakAsync(Player, Location)
+     */
+    default CompletableFuture<Boolean> allowBreakAsync(@NotNull Player player, @NotNull Block block) {
+        return schedule(false, block::getLocation).thenCompose(location -> allowBreakAsync(player, location));
+    }
+
+    /**
+     * Capture the block location on the server thread before checking place permission.
+     *
+     * @param player the player
+     * @param block the block at the target location
+     * @return a future containing true if the player can place a block at the location
+     * @see #allowPlaceAsync(Player, Location)
+     */
+    default CompletableFuture<Boolean> allowPlaceAsync(@NotNull Player player, @NotNull Block block) {
+        return schedule(false, block::getLocation).thenCompose(location -> allowPlaceAsync(player, location));
+    }
+
+    /**
+     * Capture the block location on the server thread before checking interaction permission.
+     *
+     * @param player the player
+     * @param block the block
+     * @return a future containing true if the player can interact with the block
+     * @see #allowInteractAsync(Player, Location)
+     */
+    default CompletableFuture<Boolean> allowInteractAsync(@NotNull Player player, @NotNull Block block) {
+        return schedule(false, block::getLocation).thenCompose(location -> allowInteractAsync(player, location));
     }
 
     /**

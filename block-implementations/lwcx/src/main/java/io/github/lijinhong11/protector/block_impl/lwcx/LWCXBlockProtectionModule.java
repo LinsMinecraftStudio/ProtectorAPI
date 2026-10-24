@@ -20,6 +20,7 @@ package io.github.lijinhong11.protector.block_impl.lwcx;
 import com.griefcraft.lwc.LWC;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,6 +34,22 @@ public class LWCXBlockProtectionModule implements IBlockProtectionModule {
     @Override
     public @NotNull String getPluginName() {
         return "LWC";
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        int minX = chunkX << 4;
+        int minZ = chunkZ << 4;
+        return !lwc.getPhysicalDatabase()
+                .loadProtections(
+                        world.getName(),
+                        minX,
+                        minX + 15,
+                        world.getMinHeight(),
+                        world.getMaxHeight() - 1,
+                        minZ,
+                        minZ + 15)
+                .isEmpty();
     }
 
     @Override

@@ -33,7 +33,6 @@ import io.github.lijinhong11.protector.block_impl.nobuildplus.NoBuildPlusBlockPr
 import io.github.lijinhong11.protector.block_impl.quickshop.QuickShopHikariProtection;
 import io.github.lijinhong11.protector.block_impl.shopchest.ShopChestBlockProtectionModule;
 import io.github.lijinhong11.protector.block_impl.towny.TownyBlockProtectionModule;
-import io.github.lijinhong11.protector.impl.askyblock.ASkyBlockProtectionModule;
 import io.github.lijinhong11.protector.impl.bentobox.BentoBoxProtectionModule;
 import io.github.lijinhong11.protector.impl.dominion.DominionProtectionModule;
 import io.github.lijinhong11.protector.impl.excellentclaims.ExcellentClaimsBlockProtectionModule;
@@ -96,7 +95,6 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         if (pm.isPluginEnabled("WorldGuard")) {
             WorldGuardProtectionModule module = new WorldGuardProtectionModule();
             ProtectorAPI.registerProtectionModule(module);
-            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("Dominion")) {
@@ -114,35 +112,26 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         if (pm.isPluginEnabled("RedProtect")) {
             RedProtectProtectionModule module = new RedProtectProtectionModule();
             ProtectorAPI.registerProtectionModule(module);
-            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("Residence")) {
             ResidenceProtectionModule module = new ResidenceProtectionModule();
             ProtectorAPI.registerProtectionModule(module);
-            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("BentoBox")) {
             BentoBoxProtectionModule module = new BentoBoxProtectionModule();
             ProtectorAPI.registerProtectionModule(module);
-            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("PlotSquared")) {
             PlotSquaredProtectionModule module = new PlotSquaredProtectionModule();
             ProtectorAPI.registerProtectionModule(module);
-            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("GriefDefender")) {
             GriefDefenderProtectionModule module = new GriefDefenderProtectionModule();
             ProtectorAPI.registerProtectionModule(module);
-            ProtectorAPI.registerChunkProtectionModule(module);
-        }
-
-        if (pm.isPluginEnabled("ASkyBlock")) {
-            ProtectorAPI.registerProtectionModule(new ASkyBlockProtectionModule());
         }
     }
 
@@ -172,7 +161,6 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         if (pm.isPluginEnabled("FactionsUUID")) {
             FactionsUUIDBlockProtectionModule module = new FactionsUUIDBlockProtectionModule();
             ProtectorAPI.registerBlockProtectionModule(module);
-            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("FunnyGuilds")) {
@@ -182,7 +170,6 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         if (pm.isPluginEnabled("GriefPrevention")) {
             GriefPreventionBlockProtectionModule module = new GriefPreventionBlockProtectionModule();
             ProtectorAPI.registerBlockProtectionModule(module);
-            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("HuskTowns")) {
@@ -192,7 +179,6 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         if (pm.isPluginEnabled("LandClaimPlugin")) {
             LandClaimPluginBlockProtectionModule module = new LandClaimPluginBlockProtectionModule();
             ProtectorAPI.registerBlockProtectionModule(module);
-            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("LockettePro")) {
@@ -214,13 +200,11 @@ public class ProtectorAPIPluginImpl extends JavaPlugin {
         if (pm.isPluginEnabled("Towny")) {
             TownyBlockProtectionModule module = new TownyBlockProtectionModule();
             ProtectorAPI.registerBlockProtectionModule(module);
-            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("Lands")) {
             LandsBlockProtectionModule module = new LandsBlockProtectionModule();
             ProtectorAPI.registerBlockProtectionModule(module);
-            ProtectorAPI.registerChunkProtectionModule(module);
         }
 
         if (pm.isPluginEnabled("NoBuildPlus")) {

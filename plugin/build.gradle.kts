@@ -10,7 +10,6 @@ dependencies {
     implementation(project(":implementations:residence"))
     implementation(project(":implementations:bentobox"))
     implementation(project(":implementations:plotsquared"))
-    implementation(project(":implementations:askyblock"))
     implementation(project(":block-implementations:blocklocker"))
     implementation(project(":block-implementations:towny"))
     implementation(project(":block-implementations:chestprotection"))

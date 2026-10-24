@@ -21,17 +21,14 @@ import com.ghostchu.quickshop.api.QuickShopAPI;
 import com.ghostchu.quickshop.api.shop.Shop;
 import com.ghostchu.quickshop.api.shop.permission.BuiltInShopPermission;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
-import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
+import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Objects;
-
-public class QuickShopHikariProtection implements IBlockProtectionModule, IChunkProtectionModule {
+public class QuickShopHikariProtection implements IBlockProtectionModule {
     private final QuickShopAPI api;
 
     public QuickShopHikariProtection() {
@@ -45,12 +42,16 @@ public class QuickShopHikariProtection implements IBlockProtectionModule, IChunk
 
     @Override
     public boolean supportsAsync(@NotNull ProtectionCheck check) {
-        return check == ProtectionCheck.LOOKUP;
+        // The QuickShop-Hikari maintainer confirms getShop(Location) supports async calls.
+        // Its coordinate-based shop index also uses concurrent maps at every level.
+        // Player authorization is a separate operation and has not been confirmed async-safe.
+        return check == ProtectionCheck.LOOKUP || check == ProtectionCheck.CHUNK_LOOKUP;
     }
 
     @Override
     public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
-        return !Objects.requireNonNullElse(api.getShopManager().getShops(world.getName(), chunkX, chunkZ), new HashMap<>()).isEmpty();
+        Map<Location, Shop> shops = api.getShopManager().getShops(world.getName(), chunkX, chunkZ);
+        return shops != null && !shops.isEmpty();
     }
 
     @Override

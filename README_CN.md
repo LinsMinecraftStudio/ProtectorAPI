@@ -61,11 +61,19 @@ WorldEdit 7.2.18、PlotSquared 7.3.0 和 Bolt 1.0.580。
 只有已确认线程安全的操作才会异步执行，其他操作仍在服务器主线程执行。
 各适配器的支持情况和验证依据见[异步支持审计](ASYNC_SUPPORT_AUDIT_CN.md)。
 
+两类模块接口本身也提供 async 方法：方块模块提供 `isProtectedAsync`、`allowBreakAsync`、
+`allowPlaceAsync` 和 `allowInteractAsync`；区域模块提供 `isInProtectionRangeAsync`、
+`getProtectionRangeInfoAsync`、`getProtectionRangeInfosAsync` 和 `getGlobalFlagAsync`。
+两类接口均提供 `isProtectedAsync(World, int, int)` 和 `isProtectedAsync(Chunk)` 区块查询。
+接收玩家、方块和区块对象的异步重载会在服务器主线程获取 Bukkit 状态。
+所属领地枚举通过独立的 `OWNED_RANGES` 能力声明调度；返回的区域对象仍遵循底层插件的线程约定。
+
 ### Chunk 检查
 
-Chunk 检查使用可选的 `IChunkProtectionModule` 接口。
-Chunk 模块的注册独立于区域模块和方块模块。
-基于坐标的重载接收 `World`、`chunkX` 和 `chunkZ`，适配器可以在不调用 Bukkit 加载区块 API 的情况下查询未加载的区块：
+Chunk 检查直接并入 `IProtectionModule` 和 `IBlockProtectionModule`。
+模块只需按区域或方块类型正常注册一次，即可参与区块查询。
+基于坐标的重载接收 `World`、`chunkX` 和 `chunkZ`。
+有保护索引的适配器可直接查询未加载区块；依赖实时方块状态的适配器可能在主线程加载区块：
 
 ```java
 boolean protectedChunk = ProtectorAPI.isChunkProtected(world, chunkX, chunkZ);
@@ -74,8 +82,26 @@ ProtectorAPI.isChunkProtectedAsync(world, chunkX, chunkZ).whenComplete((protecte
 });
 ```
 
-只有底层保护插件提供了具备所需线程安全保证的区块坐标查询时，才应实现 `IChunkProtectionModule`。
+所有 `IBlockProtectionModule` 必须实现 `isProtected(World, int, int)`，
+不再提供直接返回 `false` 的默认实现。查询应使用插件原生保护索引或完整逐方块扫描。
+区域模块也可重写同名方法，仅 `IProtectionModule` 保留返回 `false` 的默认实现。
 通过 `supportsAsync(ProtectionCheck.CHUNK_LOOKUP)` 声明异步支持；未验证的 chunk 查询仍会在服务器主线程执行。
+
+BlockLocker、LockettePro 和 ChestShop 会加载区块并扫描完整建筑高度内的每个方块，
+命中后立即结束；完整扫描有一定开销。
+ChestProtection、ExcellentClaims 也会先取得加载的 Bukkit 区块，再查询插件原生保护数据。
+从工作线程调用时，应使用 async 入口，让这些操作调度到服务器主线程。
+
+`isChunkProtected` 和 `isChunkProtectedAsync` 依次检查区域模块、方块模块，
+各组内部保持注册顺序，命中后立即结束。
+使用 `findModule(World, int, int)` / `findModuleAsync(World, int, int)` 查找区域模块，
+使用相同参数的 `findBlockModule` / `findBlockModuleAsync` 查找方块模块。
+这些方法也支持传入已取得的 `Chunk`。
+
+迁移时移除 `IChunkProtectionModule` 和 `registerChunkProtectionModule`，
+将 `findChunkModule` / `findChunkModuleAsync` 替换为上述对应类型的查询方法。
+独立的 chunk 注册表及其 getter 已删除。
+外部方块适配器现在必须实现区块坐标查询方法。
 
 ```java
 Location target = block.getLocation(); // 在服务器主线程获取目标位置

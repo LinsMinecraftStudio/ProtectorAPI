@@ -27,7 +27,6 @@ import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.flag.*;
 import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
 import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
-import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.List;
@@ -42,8 +41,7 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ResidenceProtectionModule
-        implements IProtectionModule, IChunkProtectionModule, FlagRegisterable, Listener {
+public class ResidenceProtectionModule implements IProtectionModule, FlagRegisterable, Listener {
     public ResidenceProtectionModule() {
         Bukkit.getPluginManager().registerEvents(this, ProtectorAPI.getPluginHost());
     }

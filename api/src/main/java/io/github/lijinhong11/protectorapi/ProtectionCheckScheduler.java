@@ -22,11 +22,25 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Dispatches checks without waiting on the server thread.
  */
-final class ProtectionCheckScheduler {
+@ApiStatus.Internal
+public final class ProtectionCheckScheduler {
+    /**
+     * Shared dispatch for module asynchronous entry points.
+     *
+     * @param async whether the check can run asynchronously
+     * @param check the check to execute
+     * @param <T> the check result type
+     * @return a future containing the check result, completing exceptionally on failure
+     */
+    public static <T> CompletableFuture<T> schedule(boolean async, Supplier<T> check) {
+        return new ProtectionCheckScheduler().execute(request -> request.submit(async, check));
+    }
+
     <T> CompletableFuture<T> execute(Function<Request<T>, CompletableFuture<T>> checks) {
         Request<T> request = new Request<>();
         try {
@@ -44,7 +58,11 @@ final class ProtectionCheckScheduler {
         return request;
     }
 
-    /** Executes one stage and lets the composed future schedule the next stage. */
+    /**
+     * Executes one stage and lets the composed future schedule the next stage.
+     *
+     * @param <T> the request result type
+     */
     static final class Request<T> extends CompletableFuture<T> {
         <R> CompletableFuture<R> submit(boolean async, Supplier<R> check) {
             CompletableFuture<R> stage = new CompletableFuture<>();

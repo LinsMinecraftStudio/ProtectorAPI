@@ -32,8 +32,7 @@ public enum CommonFlags {
             "PLACE_BLOCKS",
             "block_place",
             "BLOCK_PLACE",
-            "block-place"
-    ),
+            "block-place"),
     PVP("pvp", "player_damage", "pvp", "pvp", "pvp", "PVP_OVERWORLD", "player_damage_player", null, null),
     ANIMAL_SPAWN(
             "animal_spawn",
@@ -44,8 +43,7 @@ public enum CommonFlags {
             "ANIMAL_SPAWNERS_SPAWN",
             "passive_mob_spawn",
             null,
-            "entity-spawn"
-    ),
+            "entity-spawn"),
     FIRESPREAD(
             "firespread",
             "fire_spread",
@@ -55,8 +53,7 @@ public enum CommonFlags {
             "FIRE_SPREAD",
             "fire_spread",
             null,
-            "block-spread"
-    ),
+            "block-spread"),
     FLY("fly", "fly", "allow-fly", "fly", "fly", "ISLAND_FLY_PROTECTION", null, null, null),
     CONTAINER(
             "container",
@@ -67,8 +64,7 @@ public enum CommonFlags {
             "CHEST",
             "container_open",
             "OPEN_CONTAINERS",
-            "interact-inventory"
-    ),
+            "interact-inventory"),
     ENDERPEARL(
             "enderpearl",
             "ender_pearl",
@@ -78,8 +74,7 @@ public enum CommonFlags {
             "ENDER_PEARL",
             "ender_pearl_teleport",
             null,
-            "entity-teleport-from"
-    ),
+            "entity-teleport-from"),
     TNT(
             "tnt",
             "tnt_explode",
@@ -89,19 +84,8 @@ public enum CommonFlags {
             "TNT_PRIMING",
             "explosion_damage_terrain",
             null,
-            "explosion-block"
-    ),
-    ITEM_DROP(
-            "itemdrop",
-            "can-drop",
-            "can-drop",
-            "item-drop",
-            "item-drop",
-            "ITEM_DROP",
-            null,
-            null,
-            "item-drop"
-    ),
+            "explosion-block"),
+    ITEM_DROP("itemdrop", "can-drop", "can-drop", "item-drop", "item-drop", "ITEM_DROP", null, null, "item-drop"),
     ITEM_PICKUP(
             "itempickup",
             "can-pickup",
@@ -111,30 +95,9 @@ public enum CommonFlags {
             "ITEM_PICKUP",
             null,
             null,
-            "item-pickup"
-    ),
-    INTERACT(
-            "use",
-            "place",
-            "build",
-            "use",
-            "use",
-            null,
-            "block_interact",
-            "INTERACT",
-            "interact-block-secondary"
-    ),
-    KEEP_INV(
-            "keepinv",
-            "keep-inventory",
-            "keep-inventory",
-            "keep-inventory",
-            "keep-inventory",
-            null,
-            null,
-            null,
-            null
-    ),
+            "item-pickup"),
+    INTERACT("use", "place", "build", "use", "use", null, "block_interact", "INTERACT", "interact-block-secondary"),
+    KEEP_INV("keepinv", "keep-inventory", "keep-inventory", "keep-inventory", "keep-inventory", null, null, null, null),
     KEEP_EXP("keepexp", "keep-levels", "keep-levels", "keep-exp", "keep-exp", null, null, null, null),
     CREEPER(
             "creeper",
@@ -145,10 +108,8 @@ public enum CommonFlags {
             null,
             null,
             null,
-            "explosion-block"
-    ),
-    MOB_ITEM_DROP(
-            "mobitemdrop", "mob_drop_item", "mob-loot", "exp-drops", "exp-drop", null, null, null, "item-drop"),
+            "explosion-block"),
+    MOB_ITEM_DROP("mobitemdrop", "mob_drop_item", "mob-loot", "exp-drops", "exp-drop", null, null, null, "item-drop"),
     MONSTER_SPAWN(
             "monsters",
             "monster_spawn",
@@ -158,8 +119,7 @@ public enum CommonFlags {
             "MONSTER_SPAWNERS_SPAWN",
             "monster_spawn",
             null,
-            "entity-spawn"
-    ),
+            "entity-spawn"),
     MOVE("move", "move", "can-move", "entry", "entry", "MOVE_BOX", null, null, "enter-claim"),
     BREAK(
             "break",
@@ -170,8 +130,7 @@ public enum CommonFlags {
             "BREAK_BLOCKS",
             "block_break",
             "BLOCK_BREAK",
-            "block-break"
-    ),
+            "block-break"),
     PLACE(
             "place",
             "place",
@@ -181,8 +140,7 @@ public enum CommonFlags {
             "PLACE_BLOCKS",
             "block_place",
             "BLOCK_PLACE",
-            "block-place"
-    ),
+            "block-place"),
     RIDING("riding", "riding", null, "ride", null, "RIDING", null, null, "entity_riding"),
     LEAF_DECAY("decay", null, "leaves-decay", "leaf-decay", "leaf-decay", "LEAF_DECAY", null, null, "leaf_decay"),
     CROP_TRAMPLE("trample", "trample", null, "block-trampling", null, "CROP_TRAMPLE", null, null, null),
@@ -196,8 +154,7 @@ public enum CommonFlags {
     EGGS("egg", "egg", null, null, null, "EGGS", null, null, null),
     ENCHANTING("enchant", "enchant", null, null, null, "ENCHANTING", null, null, null),
     FIRE("ignite", "ignite", null, "lighter", null, "FLINT_AND_STEEL", null, null, null),
-    PRESSURE_PLATE(
-            "pressure", "pressure", "press-plate", null, null, "PRESSURE_PLATE", null, null, null),
+    PRESSURE_PLATE("pressure", "pressure", "press-plate", null, null, "PRESSURE_PLATE", null, null, null),
     REDSTONE(null, null, "redstone", null, "redstone", "REDSTONE", "redstone_interact", "REDSTONE", null),
     SHEARING("shear", "shear", null, null, null, "SHEARING", null, null, null),
     HURT_MOBS(
@@ -209,8 +166,7 @@ public enum CommonFlags {
             "HURT_ANIMALS",
             null,
             null,
-            null
-    ),
+            null),
     HURT_MONSTERS(
             "mobkilling",
             "monster_killing",
@@ -220,10 +176,8 @@ public enum CommonFlags {
             "HURT_MONSTERS",
             "player_damage_monster",
             null,
-            null
-    ),
-    ENTER_EXIT_MESSAGES(
-            "title", null, null, null, "titles", "ENTER_EXIT_MESSAGES", null, null, null),
+            null),
+    ENTER_EXIT_MESSAGES("title", null, null, null, "titles", "ENTER_EXIT_MESSAGES", null, null, null),
     VILLAGER_TRADING("trade", "trade", null, null, null, "TRADING", null, null, null);
 
     private final String residence;

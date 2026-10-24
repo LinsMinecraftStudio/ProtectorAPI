@@ -26,7 +26,12 @@ public enum ProtectionCheck {
      */
     LOOKUP,
     /**
-     * Chunk-coordinate protection lookup without loading the chunk.
+     * Enumerating ranges owned by an offline player; independent of location lookup.
+     */
+    OWNED_RANGES,
+    /**
+     * Chunk-coordinate protection lookup. Adapters that load chunks or read live blocks
+     * must keep this operation on the server thread.
      */
     CHUNK_LOOKUP,
     /**

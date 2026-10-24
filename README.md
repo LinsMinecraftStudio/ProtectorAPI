@@ -64,12 +64,22 @@ Only verified thread-safe operations run asynchronously; other operations stay o
 the server thread. See the [async support audit](ASYNC_SUPPORT_AUDIT.md) for adapter
 support and verification details.
 
+Both module interfaces also expose async methods directly. Block modules provide
+`isProtectedAsync`, `allowBreakAsync`, `allowPlaceAsync`, and `allowInteractAsync`;
+region modules provide `isInProtectionRangeAsync`, `getProtectionRangeInfoAsync`,
+`getProtectionRangeInfosAsync`, and `getGlobalFlagAsync`. Both support
+`isProtectedAsync(World, int, int)` and `isProtectedAsync(Chunk)` for chunk queries.
+Async player, block, and chunk overloads capture Bukkit state on the server thread.
+Owned-range enumeration uses the separate `OWNED_RANGES` capability. Returned range
+objects still follow the underlying plugin's threading rules.
+
 ### Chunk checks
 
-Chunk checks use the optional `IChunkProtectionModule` interface. Registering a chunk
-module is independent from region and block modules. The coordinate-based overloads
-accept `World`, `chunkX`, and `chunkZ`, so adapters can query an unloaded chunk without
-calling Bukkit's chunk-loading APIs:
+Chunk checks are part of `IProtectionModule` and `IBlockProtectionModule`. Register a
+module once using its normal region or block registration method. The coordinate-based overloads
+accept `World`, `chunkX`, and `chunkZ`. Adapters with protection indexes can query
+unloaded chunks directly; adapters that require live block state may load chunks on
+the server thread:
 
 ```java
 boolean protectedChunk = ProtectorAPI.isChunkProtected(world, chunkX, chunkZ);
@@ -78,10 +88,29 @@ ProtectorAPI.isChunkProtectedAsync(world, chunkX, chunkZ).whenComplete((protecte
 });
 ```
 
-Implement `IChunkProtectionModule` only when the underlying protection plugin has a
-chunk-coordinate lookup with the required thread-safety guarantee. Declare asynchronous
+Every `IBlockProtectionModule` must implement `isProtected(World, int, int)`;
+there is no default that silently reports no protection. Use a native protection
+index or a complete block scan. Region modules may override the same method; only
+`IProtectionModule` retains a default returning `false`. Declare asynchronous
 support with `supportsAsync(ProtectionCheck.CHUNK_LOOKUP)`; unverified chunk lookups
 remain on the server thread.
+
+BlockLocker, LockettePro and ChestShop scan every block across the chunk's full build
+height, stopping at the first match. These scans load the chunk and can be expensive.
+ChestProtection and ExcellentClaims also obtain a loaded Bukkit chunk before querying
+their native protection data. Use the async entry points so these operations are
+dispatched to the server thread when called from a worker.
+
+`isChunkProtected` and `isChunkProtectedAsync` check region modules first, then block
+modules, preserving registration order within each group and stopping at the first match.
+Use `findModule(World, int, int)` / `findModuleAsync(World, int, int)` to find a region
+module, or `findBlockModule` / `findBlockModuleAsync` with the same arguments to find
+a block module. These methods also accept an already obtained `Chunk`.
+
+Migration: remove `IChunkProtectionModule` and `registerChunkProtectionModule` usages.
+Replace `findChunkModule` / `findChunkModuleAsync` with the corresponding region or
+block lookup above. The separate chunk registry and its getter have been removed.
+External block adapters must now implement the required chunk-coordinate method.
 
 ```java
 Location target = block.getLocation(); // capture on the server thread

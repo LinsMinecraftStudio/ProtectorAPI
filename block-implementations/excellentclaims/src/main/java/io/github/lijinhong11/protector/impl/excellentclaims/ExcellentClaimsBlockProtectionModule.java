@@ -20,6 +20,7 @@ package io.github.lijinhong11.protector.impl.excellentclaims;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.excellentclaims.api.ClaimsAPI;
@@ -36,6 +37,13 @@ public class ExcellentClaimsBlockProtectionModule implements IBlockProtectionMod
     @Override
     public @NotNull String getPluginName() {
         return "ExcellentClaims";
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        return !api.getClaimRegistry()
+                .getInChunk(world.getChunkAt(chunkX, chunkZ))
+                .isEmpty();
     }
 
     @Override

@@ -24,14 +24,13 @@ import com.palmergames.bukkit.towny.object.TownyPermission;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
-import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class TownyBlockProtectionModule implements IBlockProtectionModule, IChunkProtectionModule {
+public class TownyBlockProtectionModule implements IBlockProtectionModule {
     private final TownyAPI api = TownyAPI.getInstance();
 
     @Override

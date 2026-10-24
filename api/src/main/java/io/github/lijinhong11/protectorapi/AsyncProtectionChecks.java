@@ -23,7 +23,6 @@ import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
-import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
@@ -42,72 +41,48 @@ import org.bukkit.entity.Player;
 final class AsyncProtectionChecks {
     private final Collection<IProtectionModule> modules;
     private final Collection<IBlockProtectionModule> blockModules;
-    private final Collection<IChunkProtectionModule> chunkModules;
     private final ProtectionCheckScheduler scheduler = new ProtectionCheckScheduler();
 
     AsyncProtectionChecks(Collection<IProtectionModule> modules, Collection<IBlockProtectionModule> blockModules) {
-        this(modules, blockModules, java.util.List.of());
-    }
-
-    AsyncProtectionChecks(
-            Collection<IProtectionModule> modules,
-            Collection<IBlockProtectionModule> blockModules,
-            Collection<IChunkProtectionModule> chunkModules) {
         this.modules = modules;
         this.blockModules = blockModules;
-        this.chunkModules = chunkModules;
     }
 
     CompletableFuture<IProtectionModule> findModule(Location location) {
         Location snapshot = location.clone();
-        return scheduler.execute(request -> findModule(request, snapshot));
-    }
-
-    private CompletableFuture<IProtectionModule> findModule(
-            ProtectionCheckScheduler.Request<?> request, Location location) {
-        return findFirst(
-                modules,
-                module -> request.submit(
-                        module.supportsAsync(ProtectionCheck.LOOKUP),
-                        () -> module.isInProtectionRange(location.clone())));
+        return scheduler.execute(
+                request -> findFirst(modules, module -> module.isInProtectionRangeAsync(snapshot.clone())));
     }
 
     CompletableFuture<IBlockProtectionModule> findBlockModule(Location location) {
         Location snapshot = location.clone();
-        return scheduler.execute(request -> findBlockModule(request, snapshot));
+        return scheduler.execute(
+                request -> findFirst(blockModules, module -> module.isProtectedAsync(snapshot.clone())));
     }
 
-    CompletableFuture<IChunkProtectionModule> findChunkModule(World world, int chunkX, int chunkZ) {
-        return scheduler.execute(request -> findChunkModule(request, world, chunkX, chunkZ));
+    CompletableFuture<IProtectionModule> findModule(World world, int chunkX, int chunkZ) {
+        return scheduler.execute(
+                request -> findFirst(modules, module -> module.isProtectedAsync(world, chunkX, chunkZ)));
     }
 
-    private CompletableFuture<IChunkProtectionModule> findChunkModule(
-            ProtectionCheckScheduler.Request<?> request, World world, int chunkX, int chunkZ) {
-        return findFirst(
-                chunkModules,
-                module -> request.submit(
-                        module.supportsAsync(ProtectionCheck.CHUNK_LOOKUP),
-                        () -> module.isProtected(world, chunkX, chunkZ)));
+    CompletableFuture<IBlockProtectionModule> findBlockModule(World world, int chunkX, int chunkZ) {
+        return scheduler.execute(
+                request -> findFirst(blockModules, module -> module.isProtectedAsync(world, chunkX, chunkZ)));
     }
 
     CompletableFuture<Boolean> isChunkProtected(World world, int chunkX, int chunkZ) {
-        return findChunkModule(world, chunkX, chunkZ).thenApply(Objects::nonNull);
-    }
-
-    private CompletableFuture<IBlockProtectionModule> findBlockModule(
-            ProtectionCheckScheduler.Request<?> request, Location location) {
-        return findFirst(
-                blockModules,
-                module -> request.submit(
-                        module.supportsAsync(ProtectionCheck.LOOKUP), () -> module.isProtected(location.clone())));
+        return scheduler.execute(request -> findModule(world, chunkX, chunkZ)
+                .thenCompose(module -> module != null
+                        ? completedFuture(true)
+                        : findBlockModule(world, chunkX, chunkZ).thenApply(Objects::nonNull)));
     }
 
     CompletableFuture<Boolean> isInProtectionRange(Location location) {
         Location snapshot = location.clone();
-        return scheduler.execute(request -> findModule(request, snapshot)
+        return scheduler.execute(request -> findModule(snapshot)
                 .thenCompose(module -> module != null
                         ? completedFuture(true)
-                        : findBlockModule(request, snapshot).thenApply(Objects::nonNull)));
+                        : findBlockModule(snapshot).thenApply(Objects::nonNull)));
     }
 
     CompletableFuture<Boolean> allow(Player player, CommonFlags flag) {
@@ -120,18 +95,15 @@ final class AsyncProtectionChecks {
     CompletableFuture<Boolean> allow(Player player, Location block, CommonFlags flag) {
         Location snapshot = block.clone();
         return scheduler.execute(request -> allowRegion(request, player, snapshot, flag)
-                .thenCompose(
-                        allowed -> allowed ? allowBlock(request, player, snapshot, flag) : completedFuture(false)));
+                .thenCompose(allowed -> allowed ? allowBlock(player, snapshot, flag) : completedFuture(false)));
     }
 
     private CompletableFuture<Boolean> allowRegion(
             ProtectionCheckScheduler.Request<?> request, Player player, Location location, CommonFlags flag) {
-        return findModule(request, location)
+        return findModule(location)
                 .thenCompose(module -> module == null
                         ? allowGlobal(request, location, flag)
-                        : request.submit(
-                                        module.supportsAsync(ProtectionCheck.LOOKUP),
-                                        () -> module.getProtectionRangeInfo(location.clone()))
+                        : module.getProtectionRangeInfoAsync(location.clone())
                                 .thenCompose(range -> allowRange(request, module, range, player, flag)));
     }
 
@@ -174,24 +146,21 @@ final class AsyncProtectionChecks {
                                 .toBooleanOrThrow()));
     }
 
-    private CompletableFuture<Boolean> allowBlock(
-            ProtectionCheckScheduler.Request<?> request, Player player, Location location, CommonFlags flag) {
-        return findBlockModule(request, location).thenCompose(module -> {
+    private CompletableFuture<Boolean> allowBlock(Player player, Location location, CommonFlags flag) {
+        return findBlockModule(location).thenCompose(module -> {
             if (module == null) {
                 return completedFuture(true);
             }
-            return request.submit(
-                    module.supportsAsync(ProtectionCheck.FLAGS),
-                    () -> checkBlockFlag(module, player, location.clone(), flag));
+            return checkBlockFlag(module, player, location.clone(), flag);
         });
     }
 
-    private static boolean checkBlockFlag(
+    private static CompletableFuture<Boolean> checkBlockFlag(
             IBlockProtectionModule module, Player player, Location location, CommonFlags flag) {
         return switch (flag) {
-            case BREAK -> module.allowBreak(player, location);
-            case PLACE -> module.allowPlace(player, location);
-            case INTERACT -> module.allowInteract(player, location);
+            case BREAK -> module.allowBreakAsync(player, location);
+            case PLACE -> module.allowPlaceAsync(player, location);
+            case INTERACT -> module.allowInteractAsync(player, location);
             default -> throw new IllegalArgumentException("Unsupported permission check: " + flag);
         };
     }

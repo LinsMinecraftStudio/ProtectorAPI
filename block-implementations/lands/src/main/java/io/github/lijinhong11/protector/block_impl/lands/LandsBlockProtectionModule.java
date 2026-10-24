@@ -21,7 +21,6 @@ import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.flag.CustomFlag;
 import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
-import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.flags.type.Flags;
@@ -34,7 +33,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 // terrible condition check
-public class LandsBlockProtectionModule implements IBlockProtectionModule, IChunkProtectionModule, FlagRegisterable {
+public class LandsBlockProtectionModule implements IBlockProtectionModule, FlagRegisterable {
     private final LandsIntegration api;
 
     public LandsBlockProtectionModule() {

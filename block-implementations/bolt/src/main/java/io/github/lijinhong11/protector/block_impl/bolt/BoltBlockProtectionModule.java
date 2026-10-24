@@ -20,7 +20,9 @@ package io.github.lijinhong11.protector.block_impl.bolt;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 import org.popcraft.bolt.BoltAPI;
 import org.popcraft.bolt.util.Permission;
@@ -35,6 +37,15 @@ public class BoltBlockProtectionModule implements IBlockProtectionModule {
     @Override
     public @NotNull String getPluginName() {
         return "Bolt";
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        int minX = chunkX << 4;
+        int minZ = chunkZ << 4;
+        BoundingBox bounds =
+                new BoundingBox(minX, world.getMinHeight(), minZ, minX + 16, world.getMaxHeight(), minZ + 16);
+        return !api.findProtections(world, bounds).isEmpty();
     }
 
     @Override

@@ -17,15 +17,25 @@
 */
 package io.github.lijinhong11.protectorapi.protection;
 
+import static io.github.lijinhong11.protectorapi.ProtectionCheckScheduler.schedule;
+
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Region and optional chunk protection. Async methods dispatch to the thread supported by each operation.
+ * Completion may occur on either thread; never block the server thread waiting for the result.
+ * Returned ranges retain their underlying plugin's thread-safety restrictions.
+ */
 public interface IProtectionModule {
     /**
      * Get the name of the corresponding plugin
@@ -46,6 +56,138 @@ public interface IProtectionModule {
      */
     default boolean supportsAsync(@NotNull ProtectionCheck check) {
         return false;
+    }
+
+    /**
+     * Check whether any protection intersects the chunk, without loading it.
+     * Override when the plugin supports an exact chunk lookup. The default reports no chunk protection;
+     * it does not approximate region protection by sampling locations.
+     *
+     * @param world the chunk's world
+     * @param chunkX the chunk X coordinate
+     * @param chunkZ the chunk Z coordinate
+     * @return true if the chunk is protected
+     */
+    default boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        return false;
+    }
+
+    /**
+     * Check an already obtained chunk without loading it.
+     *
+     * @param chunk the chunk
+     * @return true if the chunk is protected
+     * @see #isProtected(World, int, int)
+     */
+    default boolean isProtected(@NotNull Chunk chunk) {
+        return isProtected(chunk.getWorld(), chunk.getX(), chunk.getZ());
+    }
+
+    /**
+     * Dispatch a chunk-coordinate lookup according to {@link ProtectionCheck#CHUNK_LOOKUP}.
+     *
+     * @param world the chunk's world
+     * @param chunkX the chunk X coordinate
+     * @param chunkZ the chunk Z coordinate
+     * @return a future containing true if the chunk is protected
+     * @see #isProtected(World, int, int)
+     */
+    default CompletableFuture<Boolean> isProtectedAsync(@NotNull World world, int chunkX, int chunkZ) {
+        return schedule(supportsAsync(ProtectionCheck.CHUNK_LOOKUP), () -> isProtected(world, chunkX, chunkZ));
+    }
+
+    /**
+     * Capture the supplied chunk's coordinates on the server thread before dispatching lookup.
+     *
+     * @param chunk the chunk
+     * @return a future containing true if the chunk is protected
+     * @see #isProtectedAsync(World, int, int)
+     */
+    default CompletableFuture<Boolean> isProtectedAsync(@NotNull Chunk chunk) {
+        return schedule(false, () -> isProtectedAsync(chunk.getWorld(), chunk.getX(), chunk.getZ()))
+                .thenCompose(future -> future);
+    }
+
+    /**
+     * Dispatch a region lookup using a copy of the supplied location.
+     *
+     * @param location the location
+     * @return a future containing true if the location is in the protection range
+     * @see #isInProtectionRange(Location)
+     */
+    default CompletableFuture<Boolean> isInProtectionRangeAsync(@NotNull Location location) {
+        Location snapshot = location.clone();
+        return schedule(supportsAsync(ProtectionCheck.LOOKUP), () -> isInProtectionRange(snapshot));
+    }
+
+    /**
+     * Capture the player's location on the server thread before dispatching lookup.
+     *
+     * @param player the player
+     * @return a future containing true if the player is in the protection range
+     * @see #isInProtectionRangeAsync(Location)
+     */
+    default CompletableFuture<Boolean> isInProtectionRangeAsync(@NotNull Player player) {
+        return schedule(false, player::getLocation).thenCompose(this::isInProtectionRangeAsync);
+    }
+
+    /**
+     * Dispatch range retrieval using a copy of the supplied location.
+     *
+     * @param location the location
+     * @return a future containing the protection range info, or null if the location is not protected
+     * @see #getProtectionRangeInfo(Location)
+     */
+    default CompletableFuture<IProtectionRange> getProtectionRangeInfoAsync(@NotNull Location location) {
+        Location snapshot = location.clone();
+        return schedule(supportsAsync(ProtectionCheck.LOOKUP), () -> getProtectionRangeInfo(snapshot));
+    }
+
+    /**
+     * Capture the player's location on the server thread before retrieving the range.
+     *
+     * @param player the player
+     * @return a future containing the protection range info, or null if the player is not in a protection range
+     * @see #getProtectionRangeInfoAsync(Location)
+     */
+    default CompletableFuture<IProtectionRange> getProtectionRangeInfoAsync(@NotNull Player player) {
+        return schedule(false, player::getLocation).thenCompose(this::getProtectionRangeInfoAsync);
+    }
+
+    /**
+     * Dispatch owned-range enumeration independently of location lookup capability.
+     *
+     * @param player the player
+     * @return a future containing all protection range info that the player owns
+     * @see #getProtectionRangeInfos(OfflinePlayer)
+     */
+    default CompletableFuture<List<? extends IProtectionRange>> getProtectionRangeInfosAsync(
+            @NotNull OfflinePlayer player) {
+        return schedule(supportsAsync(ProtectionCheck.OWNED_RANGES), () -> getProtectionRangeInfos(player));
+    }
+
+    /**
+     * Dispatch a global flag read; flag mutations remain subject to the plugin's threading rules.
+     *
+     * @param flag the flag
+     * @param world the world
+     * @return a future containing the global flag, completing exceptionally if global flags are unsupported
+     * @see #getGlobalFlag(String, String)
+     */
+    default CompletableFuture<FlagState<?>> getGlobalFlagAsync(@NotNull String flag, @NotNull String world) {
+        return schedule(supportsAsync(ProtectionCheck.GLOBAL_FLAGS), () -> getGlobalFlag(flag, world));
+    }
+
+    /**
+     * Dispatch a global flag read according to {@link ProtectionCheck#GLOBAL_FLAGS}.
+     *
+     * @param flag the flag
+     * @param world the world
+     * @return a future containing the global flag, completing exceptionally if global flags are unsupported
+     * @see #getGlobalFlag(CommonFlags, String)
+     */
+    default CompletableFuture<FlagState<?>> getGlobalFlagAsync(@NotNull CommonFlags flag, @NotNull String world) {
+        return schedule(supportsAsync(ProtectionCheck.GLOBAL_FLAGS), () -> getGlobalFlag(flag, world));
     }
 
     /**

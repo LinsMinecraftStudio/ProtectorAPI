@@ -17,9 +17,11 @@
 */
 package io.github.lijinhong11.protector.block_impl.lockettepro;
 
+import io.github.lijinhong11.protectorapi.protection.ChunkProtectionLookup;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import me.crafter.mc.lockettepro.LocketteProAPI;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,6 +29,11 @@ public class LocketteProBlockProtectionModule implements IBlockProtectionModule 
     @Override
     public @NotNull String getPluginName() {
         return "LockettePro";
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        return ChunkProtectionLookup.anyBlock(world, chunkX, chunkZ, this::isProtected);
     }
 
     @Override

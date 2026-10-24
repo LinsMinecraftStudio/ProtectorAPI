@@ -29,7 +29,6 @@ import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import io.github.lijinhong11.protectorapi.flag.*;
-import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
@@ -44,7 +43,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class WorldGuardProtectionModule implements IProtectionModule, IChunkProtectionModule, FlagRegisterable {
+public class WorldGuardProtectionModule implements IProtectionModule, FlagRegisterable {
     private final RegionContainer api;
     private final ConfigurationManager globalFlags;
 

@@ -19,6 +19,7 @@ package io.github.lijinhong11.protector.block_impl.nobuildplus;
 
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import p1xel.nobuildplus.API.NBPAPI;
@@ -31,6 +32,11 @@ public class NoBuildPlusBlockProtectionModule implements IBlockProtectionModule 
     @Override
     public @NotNull String getPluginName() {
         return "NoBuildPlus";
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        return api.isWorldEnabled(world.getName());
     }
 
     @Override

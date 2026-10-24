@@ -18,7 +18,6 @@
 package io.github.lijinhong11.protector.block_impl.landclaimplugin;
 
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
-import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.ProtectionCheck;
 import org.ayosynk.landClaimPlugin.api.LandClaimAPI;
 import org.ayosynk.landClaimPlugin.models.ClaimProfile;
@@ -27,7 +26,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class LandClaimPluginBlockProtectionModule implements IBlockProtectionModule, IChunkProtectionModule {
+public class LandClaimPluginBlockProtectionModule implements IBlockProtectionModule {
     private final LandClaimAPI api = LandClaimAPI.getInstance();
 
     @Override

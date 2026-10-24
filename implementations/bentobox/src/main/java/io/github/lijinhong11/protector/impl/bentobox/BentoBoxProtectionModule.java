@@ -22,7 +22,6 @@ import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
 import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
-import io.github.lijinhong11.protectorapi.protection.IChunkProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionModule;
 import io.github.lijinhong11.protectorapi.protection.IProtectionRange;
 import java.util.*;
@@ -40,7 +39,7 @@ import world.bentobox.bentobox.api.events.island.IslandCreatedEvent;
 import world.bentobox.bentobox.api.events.island.IslandDeletedEvent;
 import world.bentobox.bentobox.database.objects.Island;
 
-public class BentoBoxProtectionModule implements IProtectionModule, IChunkProtectionModule, Listener {
+public class BentoBoxProtectionModule implements IProtectionModule, Listener {
     private final BentoBox bentoBox;
 
     public BentoBoxProtectionModule() {

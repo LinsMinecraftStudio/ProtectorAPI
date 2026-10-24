@@ -21,8 +21,10 @@ import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.protection.GuildProtectionPermission;
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
+import net.dzikoysk.funnyguilds.guild.Region;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -35,6 +37,22 @@ public class FunnyGuildsBlockProtectionModule implements IBlockProtectionModule 
     @Override
     public @NotNull String getPluginName() {
         return "FunnyGuilds";
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        int minX = chunkX << 4;
+        int minZ = chunkZ << 4;
+        for (Region region : FunnyGuilds.getInstance().getRegionManager().getRegions()) {
+            if (world.equals(region.getWorld())
+                    && region.getLowerX() <= minX + 15
+                    && region.getUpperX() >= minX
+                    && region.getLowerZ() <= minZ + 15
+                    && region.getUpperZ() >= minZ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

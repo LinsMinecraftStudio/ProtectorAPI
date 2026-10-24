@@ -21,8 +21,10 @@ import com.Acrobot.ChestShop.Permission;
 import com.Acrobot.ChestShop.Security;
 import com.Acrobot.ChestShop.Signs.ChestShopSign;
 import com.Acrobot.ChestShop.Utils.uBlock;
+import io.github.lijinhong11.protectorapi.protection.ChunkProtectionLookup;
 import io.github.lijinhong11.protectorapi.protection.IBlockProtectionModule;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -32,6 +34,11 @@ public class ChestShopBlockProtectionModule implements IBlockProtectionModule {
     @Override
     public @NotNull String getPluginName() {
         return "ChestShop";
+    }
+
+    @Override
+    public boolean isProtected(@NotNull World world, int chunkX, int chunkZ) {
+        return ChunkProtectionLookup.anyBlock(world, chunkX, chunkZ, this::isProtected);
     }
 
     @Override
