@@ -47,8 +47,7 @@ public class FlagStates {
         return new SimpleFlagState<>(value);
     }
 
-    private record SimpleFlagState<T>(T value) implements FlagState<T> {
-    }
+    private record SimpleFlagState<T>(T value) implements FlagState<T> {}
 
     public static class UnsupportedFlagState implements FlagState<Object> {
         UnsupportedFlagState() {}

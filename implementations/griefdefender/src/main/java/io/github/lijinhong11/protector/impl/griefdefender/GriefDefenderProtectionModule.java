@@ -156,7 +156,7 @@ public class GriefDefenderProtectionModule implements IProtectionModule, FlagReg
         @Override
         public Component getDescription() {
             return this.flag.description() == null
-                    ? Component.text("Not defined.") //use default text from GriefDefender
+                    ? Component.text("Not defined.") // use default text from GriefDefender
                     : LegacyComponentSerializer.legacyAmpersand().deserialize(this.flag.description());
         }
 

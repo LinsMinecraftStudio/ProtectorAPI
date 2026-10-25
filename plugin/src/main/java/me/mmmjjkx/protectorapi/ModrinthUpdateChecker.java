@@ -27,7 +27,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -153,6 +152,6 @@ public class ModrinthUpdateChecker {
         String versionNumber;
 
         @SerializedName("date_published")
-        OffsetDateTime datePublished;
+        long datePublished;
     }
 }

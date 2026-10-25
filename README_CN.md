@@ -98,11 +98,6 @@ ChestProtection、ExcellentClaims 也会先取得加载的 Bukkit 区块，再�
 使用相同参数的 `findBlockModule` / `findBlockModuleAsync` 查找方块模块。
 这些方法也支持传入已取得的 `Chunk`。
 
-迁移时移除 `IChunkProtectionModule` 和 `registerChunkProtectionModule`，
-将 `findChunkModule` / `findChunkModuleAsync` 替换为上述对应类型的查询方法。
-独立的 chunk 注册表及其 getter 已删除。
-外部方块和区域适配器现在都必须实现区块坐标查询方法。
-
 ```java
 Location target = block.getLocation(); // 在服务器主线程获取目标位置
 ProtectorAPI.allowBreakAsync(player, target).whenComplete((allowed, error) -> {

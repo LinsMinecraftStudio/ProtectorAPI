@@ -65,7 +65,10 @@ public class GriefDefenderClaimInfo implements IProtectionRange {
         FlagMap flagMap = new FlagMap();
 
         for (Flag flag : GriefDefender.getRegistry().getAllOf(Flag.class)) {
-            flagMap.put(flag.getId(), triStateToFlagState(claim.getActiveFlagPermissionValue(flag, GriefDefender.getCore().getDefaultSubject(), contexts)));
+            flagMap.put(
+                    flag.getId(),
+                    triStateToFlagState(claim.getActiveFlagPermissionValue(
+                            flag, GriefDefender.getCore().getDefaultSubject(), contexts)));
         }
 
         return flagMap;

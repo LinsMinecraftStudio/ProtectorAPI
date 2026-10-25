@@ -108,11 +108,6 @@ Use `findModule(World, int, int)` / `findModuleAsync(World, int, int)` to find a
 module, or `findBlockModule` / `findBlockModuleAsync` with the same arguments to find
 a block module. These methods also accept an already obtained `Chunk`.
 
-Migration: remove `IChunkProtectionModule` and `registerChunkProtectionModule` usages.
-Replace `findChunkModule` / `findChunkModuleAsync` with the corresponding region or
-block lookup above. The separate chunk registry and its getter have been removed.
-External block and region adapters must now implement the required chunk-coordinate method.
-
 ```java
 Location target = block.getLocation(); // capture on the server thread
 ProtectorAPI.allowBreakAsync(player, target).whenComplete((allowed, error) -> {
