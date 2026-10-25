@@ -1,0 +1,39 @@
+# English
+## Fixes
+1. Flags values now get correctly in claim context (GriefDefender)
+2. Block checks get corrected result (Bolt)
+
+## Addition
+1. Chunk checks
+   * Run checks through `ProtectorAPI.isChunkProtected(Chunk)`
+2. Async
+   * Add async support for some adapters
+   * ProtectorAPI added the corresponding methods to check asynchronously
+3. GriefDefender now supports registering flags
+
+## Edits
+1. `CustomFlag` now requires a Material for icon
+
+## Removes
+1. ASkyBlock module
+2. QuickShop-Reremake module
+
+# Chinese (Simplified)
+## 修复
+1. 标志的值现在可以正确的从 claim 上下文中获取 (GriefDefender)
+2. 方块检查会得到正确的值 (Bolt)
+
+## 新增
+1. 区块检查
+   * 可通过 `ProtectorAPI.isChunkProtected(Chunk)` 进行检查
+2. 异步
+   * 对部分适配器添加异步支持
+   * ProtectorAPI 添加了相应的方法可异步查询
+3. GriefDefender 现在支持注册标志
+
+## 修改
+1. `CustomFlag` 现在需要一个 `Material` 参数当作图标
+
+## 删除
+1. ASkyBlock 模块
+2. QuickShop-Reremake 模块
