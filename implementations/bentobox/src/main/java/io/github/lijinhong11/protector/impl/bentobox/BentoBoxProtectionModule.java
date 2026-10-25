@@ -19,6 +19,8 @@ package io.github.lijinhong11.protector.impl.bentobox;
 
 import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
+import io.github.lijinhong11.protectorapi.flag.CustomFlag;
+import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
 import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
@@ -36,11 +38,13 @@ import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.api.addons.Pladdon;
 import world.bentobox.bentobox.api.events.island.IslandCreatedEvent;
 import world.bentobox.bentobox.api.events.island.IslandDeletedEvent;
+import world.bentobox.bentobox.api.flags.Flag;
 import world.bentobox.bentobox.database.objects.Island;
 
-public class BentoBoxProtectionModule implements IProtectionModule, Listener {
+public class BentoBoxProtectionModule implements IProtectionModule, FlagRegisterable, Listener {
     private final BentoBox bentoBox;
 
     public BentoBoxProtectionModule() {
@@ -141,5 +145,21 @@ public class BentoBoxProtectionModule implements IProtectionModule, Listener {
         BentoBoxIslandInfo info = new BentoBoxIslandInfo(e.getIsland());
 
         ProtectorAPI.getHandlers(RangeDeleteHandler.class).forEach(a -> a.onDelete(this, info));
+    }
+
+    @Override
+    public void registerFlag(CustomFlag flag) {
+        Flag.Builder flagBuilder = new Flag.Builder(flag.id(), flag.icon())
+                .defaultSetting(flag.defaultValue())
+                .type(Flag.Type.PROTECTION)
+                .mode(Flag.Mode.EXPERT);
+
+        if (flag.plugin() instanceof Pladdon pladdon) {
+            flagBuilder.addon(pladdon.getAddon());
+        }
+
+        Flag bboxFlag = flagBuilder.build();
+
+        BentoBox.getInstance().getFlagsManager().registerFlag(bboxFlag);
     }
 }

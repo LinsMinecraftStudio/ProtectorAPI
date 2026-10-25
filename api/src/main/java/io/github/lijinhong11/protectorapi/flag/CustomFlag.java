@@ -42,7 +42,7 @@ public record CustomFlag(
      * @param defaultValue the default value
      * @param displayName  the display name of the flag (optional)
      * @param description  the description about the flag (optional)
-     * @param icon         the display icon of the flag (BentoBox & Dominion is required)
+     * @param icon         the display icon of the flag (BentoBox and Dominion is required)
      */
     public CustomFlag {}
 }
