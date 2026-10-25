@@ -46,7 +46,3 @@ nexusMCPublisher {
 
     artifact("build/libs/ProtectorAPI-Plugin-${project.version}.jar")
 }
-
-tasks.withType<Javadoc>().configureEach {
-    title = "ProtectorAPI"
-}
