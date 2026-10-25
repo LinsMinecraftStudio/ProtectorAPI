@@ -55,16 +55,16 @@ public class BoltBlockProtectionModule implements IBlockProtectionModule {
 
     @Override
     public boolean allowBreak(Player player, Location block) {
-        return api.canAccess(block.getBlock(), player, Permission.DESTROY);
+        return !isProtected(block) || api.canAccess(block.getBlock(), player, Permission.DESTROY);
     }
 
     @Override
     public boolean allowPlace(Player player, Location block) {
-        return api.canAccess(block.getBlock(), player, Permission.INTERACT);
+        return !isProtected(block) || api.canAccess(block.getBlock(), player, Permission.INTERACT);
     }
 
     @Override
     public boolean allowInteract(Player player, Location block) {
-        return api.canAccess(block.getBlock(), player, Permission.INTERACT);
+        return !isProtected(block) || api.canAccess(block.getBlock(), player, Permission.INTERACT);
     }
 }

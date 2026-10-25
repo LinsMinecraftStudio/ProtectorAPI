@@ -18,9 +18,10 @@
 package io.github.lijinhong11.protector.impl.griefdefender;
 
 import com.griefdefender.api.GriefDefender;
+import com.griefdefender.api.Tristate;
 import com.griefdefender.api.claim.Claim;
-import com.griefdefender.api.claim.ClaimContexts;
 import com.griefdefender.api.permission.Context;
+import com.griefdefender.api.permission.flag.Flag;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.flag.FlagStates;
@@ -59,10 +60,15 @@ public class GriefDefenderClaimInfo implements IProtectionRange {
     public @NotNull Map<String, FlagState<?>> getFlags() {
         Set<Context> contexts = new HashSet<>();
 
-        contexts.add(ClaimContexts.BASIC_DEFAULT_CONTEXT);
-        contexts.add(ClaimContexts.BASIC_OVERRIDE_CONTEXT);
+        contexts.add(claim.getContext());
 
-        return new FlagMap(GriefDefender.getPermissionManager().getFlagPermissions(contexts), FlagStates::fromBoolean);
+        FlagMap flagMap = new FlagMap();
+
+        for (Flag flag : GriefDefender.getRegistry().getAllOf(Flag.class)) {
+            flagMap.put(flag.getId(), triStateToFlagState(claim.getActiveFlagPermissionValue(flag, GriefDefender.getCore().getDefaultSubject(), contexts)));
+        }
+
+        return flagMap;
     }
 
     @Override
@@ -96,11 +102,19 @@ public class GriefDefenderClaimInfo implements IProtectionRange {
 
     @Override
     public List<OfflinePlayer> getMembers() {
-        return new ArrayList<>();
+        return claim.getUserTrusts().stream().map(Bukkit::getOfflinePlayer).toList();
     }
 
     @Override
     public @Nullable OfflinePlayer getOwner() {
         return Bukkit.getOfflinePlayer(claim.getOwnerUniqueId());
+    }
+
+    private FlagState<Boolean> triStateToFlagState(Tristate tristate) {
+        return switch (tristate) {
+            case TRUE -> FlagStates.ALLOW;
+            case FALSE -> FlagStates.DENY;
+            case UNDEFINED -> FlagStates.NOT_SET;
+        };
     }
 }

@@ -80,7 +80,7 @@ public class HuskClaimsClaimInfo implements IProtectionRange {
     @Override
     public FlagState<?> getFlagState(@NotNull String flag, OfflinePlayer player) {
         Optional<OperationType> type = OperationType.get(flag);
-        if (!type.isPresent()) {
+        if (type.isEmpty()) {
             return FlagStates.UNSUPPORTED;
         }
 

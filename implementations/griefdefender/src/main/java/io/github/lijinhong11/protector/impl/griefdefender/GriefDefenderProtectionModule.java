@@ -21,10 +21,16 @@ import com.griefdefender.api.Core;
 import com.griefdefender.api.GriefDefender;
 import com.griefdefender.api.claim.Claim;
 import com.griefdefender.api.claim.ClaimManager;
+import com.griefdefender.api.claim.ClaimType;
 import com.griefdefender.api.event.CreateClaimEvent;
 import com.griefdefender.api.event.RemoveClaimEvent;
+import com.griefdefender.api.permission.flag.Flag;
+import com.griefdefender.lib.kyori.adventure.text.Component;
+import com.griefdefender.lib.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import io.github.lijinhong11.protectorapi.ProtectorAPI;
 import io.github.lijinhong11.protectorapi.flag.CommonFlags;
+import io.github.lijinhong11.protectorapi.flag.CustomFlag;
+import io.github.lijinhong11.protectorapi.flag.FlagRegisterable;
 import io.github.lijinhong11.protectorapi.flag.FlagState;
 import io.github.lijinhong11.protectorapi.handlers.RangeCreateHandler;
 import io.github.lijinhong11.protectorapi.handlers.RangeDeleteHandler;
@@ -40,7 +46,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class GriefDefenderProtectionModule implements IProtectionModule {
+public class GriefDefenderProtectionModule implements IProtectionModule, FlagRegisterable {
     private final Core api = GriefDefender.getCore();
 
     public GriefDefenderProtectionModule() {
@@ -121,5 +127,47 @@ public class GriefDefenderProtectionModule implements IProtectionModule {
     @Override
     public void setGlobalFlag(@NotNull String world, @NotNull CommonFlags flag, Object value) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void registerFlag(CustomFlag flag) {
+        GriefDefenderFlag griefDefenderFlag = new GriefDefenderFlag(flag);
+
+        GriefDefender.getRegistry().registerBuilderSupplier(Flag.class, () -> griefDefenderFlag);
+    }
+
+    public static class GriefDefenderFlag implements Flag {
+        private final CustomFlag flag;
+
+        public GriefDefenderFlag(CustomFlag flag) {
+            this.flag = flag;
+        }
+
+        @Override
+        public boolean getDefaultClaimTypeValue(ClaimType claimType) {
+            return flag.defaultValue();
+        }
+
+        @Override
+        public String getPermission() {
+            return "griefdefender.flag." + this.flag.id().toLowerCase();
+        }
+
+        @Override
+        public Component getDescription() {
+            return this.flag.description() == null
+                    ? Component.text("Not defined.") //use default text from GriefDefender
+                    : LegacyComponentSerializer.legacyAmpersand().deserialize(this.flag.description());
+        }
+
+        @Override
+        public String getId() {
+            return flag.id();
+        }
+
+        @Override
+        public String getName() {
+            return flag.displayName() == null ? flag.id() : flag.displayName();
+        }
     }
 }
